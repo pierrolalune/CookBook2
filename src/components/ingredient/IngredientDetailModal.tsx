@@ -194,23 +194,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: spacing.lg,
+    padding: spacing.md,
   },
 
   modalContainer: {
     backgroundColor: colors.backgroundLight,
     borderRadius: spacing.borderRadius.xl,
-    maxWidth: screenWidth - spacing.xl * 2,
-    maxHeight: screenHeight * 0.8,
-    minWidth: 300,
+    width: screenWidth - spacing.md * 2,
+    maxHeight: screenHeight * 0.85,
     ...commonStyles.shadowLarge,
+    alignSelf: 'center',
   },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: spacing.lg,
+    padding: spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
     borderTopLeftRadius: spacing.borderRadius.xl,
@@ -225,8 +225,8 @@ const styles = StyleSheet.create({
   },
 
   categoryIcon: {
-    fontSize: 32,
-    marginRight: spacing.md,
+    fontSize: 28,
+    marginRight: spacing.sm,
   },
 
   headerText: {
@@ -247,13 +247,13 @@ const styles = StyleSheet.create({
   },
 
   closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: colors.backgroundDark,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: spacing.md,
+    marginLeft: spacing.sm,
   },
 
   closeButtonText: {
@@ -267,8 +267,8 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
@@ -276,12 +276,12 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
 
   sectionIcon: {
-    fontSize: 20,
-    marginRight: spacing.sm,
+    fontSize: 18,
+    marginRight: spacing.xs,
   },
 
   sectionTitle: {
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   },
 
   sectionContent: {
-    paddingLeft: spacing.lg + spacing.sm + 20, // Align with title text
+    paddingLeft: spacing.md + spacing.xs + 18, // Align with title text
   },
 
   availabilityText: {
@@ -320,9 +320,9 @@ const styles = StyleSheet.create({
   },
 
   currentStatusContainer: {
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    paddingVertical: 4,
     backgroundColor: colors.primaryLight,
     borderRadius: spacing.borderRadius.md,
     alignSelf: 'flex-start',
@@ -388,8 +388,8 @@ const styles = StyleSheet.create({
   },
 
   userCreatedBadge: {
-    margin: spacing.lg,
-    padding: spacing.md,
+    margin: spacing.md,
+    padding: spacing.sm,
     backgroundColor: colors.favoriteLight,
     borderRadius: spacing.borderRadius.lg,
     flexDirection: 'row',
@@ -409,6 +409,6 @@ const styles = StyleSheet.create({
   },
 
   bottomPadding: {
-    height: spacing.lg,
+    height: spacing.sm,
   },
 });

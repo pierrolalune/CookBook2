@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  StyleSheet,
   TouchableOpacity,
   Animated,
   LayoutAnimation,
   Platform,
-  UIManager 
+  UIManager
 } from 'react-native';
 import { Ingredient } from '../../types';
 import { colors, spacing, typography } from '../../styles';
@@ -47,7 +47,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
   const toggleExpanded = () => {
     const willExpand = !isExpanded;
-    
+
     // Configure layout animation
     LayoutAnimation.configureNext({
       duration: 300,
@@ -94,7 +94,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <View style={styles.container}>
       {/* Header */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.header, headerStyle]}
         onPress={toggleExpanded}
         activeOpacity={0.7}
@@ -103,14 +103,14 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
           <Text style={styles.headerIcon}>{icon}</Text>
           <Text style={styles.headerTitle}>{title}</Text>
         </View>
-        
+
         <View style={styles.headerRight}>
           {showCount && (
             <View style={styles.countBadge}>
               <Text style={styles.countText}>{ingredients.length}</Text>
             </View>
           )}
-          
+
           <Animated.View style={[
             styles.chevronContainer,
             { transform: [{ rotate: chevronRotation }] }
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -160,30 +160,30 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
-  
+
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
-  
+
   headerIcon: {
     fontSize: typography.sizes.lg,
     marginRight: spacing.sm,
   },
-  
+
   headerTitle: {
     ...typography.styles.body,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
     flex: 1,
   },
-  
+
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  
+
   countBadge: {
     backgroundColor: colors.primaryLight,
     borderRadius: spacing.borderRadius.lg,
@@ -193,32 +193,32 @@ const styles = StyleSheet.create({
     minWidth: 24,
     alignItems: 'center',
   },
-  
+
   countText: {
     ...typography.styles.small,
     fontWeight: typography.weights.medium,
     color: colors.primary,
   },
-  
+
   chevronContainer: {
     padding: spacing.xs,
   },
-  
+
   chevron: {
     fontSize: 12,
     color: colors.textLight,
   },
-  
+
   content: {
     padding: spacing.cardPadding,
     paddingTop: 0,
   },
-  
+
   emptyContainer: {
     padding: spacing.xl,
     alignItems: 'center',
   },
-  
+
   emptyText: {
     ...typography.styles.caption,
     color: colors.textLight,

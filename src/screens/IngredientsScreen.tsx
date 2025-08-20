@@ -247,9 +247,9 @@ export const IngredientsScreen: React.FC = () => {
           <CategoryChips
             selectedCategory={selectedCategory}
             onCategorySelect={handleCategorySelect}
-            favoriteCount={favoriteIds.length}
-            userIngredientCount={ingredients.filter(ing => ing.isUserCreated).length}
-            seasonalCount={ingredients.filter(ing => ing.seasonal && seasonalActions.isIngredientInSeason(ing)).length}
+            favoriteCount={0}
+            userIngredientCount={0}
+            seasonalCount={0}
           />
         </View>
 

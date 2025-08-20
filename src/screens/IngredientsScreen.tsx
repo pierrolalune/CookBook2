@@ -91,8 +91,8 @@ export const IngredientsScreen: React.FC = () => {
 
   // Group ingredients by category for display
   const groupedIngredients = useMemo(() => {
-    // Show grouped view for 'all', 'favoris', and 'myproduct' categories
-    if ((selectedCategory === 'all' || selectedCategory === 'favoris' || selectedCategory === 'myproduct') && !searchQuery.trim()) {
+    // Show grouped view for 'all', 'favoris', 'myproduct', and 'saison' categories
+    if ((selectedCategory === 'all' || selectedCategory === 'favoris' || selectedCategory === 'myproduct' || selectedCategory === 'saison') && !searchQuery.trim()) {
       const groups: { [key: string]: Ingredient[] } = {};
       
       if (selectedCategory === 'all') {
@@ -129,7 +129,7 @@ export const IngredientsScreen: React.FC = () => {
             ing.category === category && !ing.isUserCreated
           );
         } else {
-          // For "favoris" and "myproduct", show all ingredients in each category
+          // For "favoris", "myproduct", and "saison", show all ingredients in each category
           categoryIngredients = filteredIngredients.filter(ing => 
             ing.category === category
           );
@@ -267,7 +267,7 @@ export const IngredientsScreen: React.FC = () => {
           }
         >
           {/* Grouped categories view with collapsible sections */}
-          {(selectedCategory === 'all' || selectedCategory === 'favoris' || selectedCategory === 'myproduct') && groupedIngredients && !searchQuery.trim() ? (
+          {(selectedCategory === 'all' || selectedCategory === 'favoris' || selectedCategory === 'myproduct' || selectedCategory === 'saison') && groupedIngredients && !searchQuery.trim() ? (
             Object.entries(groupedIngredients).map(([categoryKey, categoryIngredients]) => {
               const categoryInfo = getCategoryInfo(categoryKey);
               
@@ -295,7 +295,7 @@ export const IngredientsScreen: React.FC = () => {
           ) : (
             /* Specific category view or search results - flat list */
             <>
-              {selectedCategory !== 'all' && selectedCategory !== 'favoris' && selectedCategory !== 'myproduct' && (
+              {selectedCategory !== 'all' && selectedCategory !== 'favoris' && selectedCategory !== 'myproduct' && selectedCategory !== 'saison' && (
                 <View style={styles.categoryHeader}>
                   <Text style={styles.categoryHeaderIcon}>
                     {getCategoryInfo(selectedCategory).icon}

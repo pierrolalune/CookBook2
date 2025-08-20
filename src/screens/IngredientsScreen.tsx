@@ -4,7 +4,6 @@ import {
   StyleSheet, 
   ScrollView, 
   RefreshControl, 
-  Alert,
   Text 
 } from 'react-native';
 import { router } from 'expo-router';
@@ -17,6 +16,7 @@ import { CategorySection } from '../components/ingredient/CategorySection';
 import { IngredientCard } from '../components/ingredient/IngredientCard';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
+import { IngredientDetailModal } from '../components/ingredient/IngredientDetailModal';
 import { Ingredient, IngredientCategory } from '../types';
 import { colors, spacing, commonStyles } from '../styles';
 import { SeasonalUtils } from '../utils/seasonalUtils';
@@ -25,6 +25,8 @@ export const IngredientsScreen: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { 
     ingredients, 
@@ -146,49 +148,13 @@ export const IngredientsScreen: React.FC = () => {
   }, [filteredIngredients, selectedCategory, searchQuery, seasonalActions]);
 
   const handleIngredientPress = (ingredient: Ingredient) => {
-    const seasonalInfo = SeasonalUtils.getSeasonalInfo(ingredient);
-    
-    // Build detailed information
-    const details: string[] = [];
-    
-    // Category information
-    details.push(`Catégorie: ${ingredient.subcategory}`);
-    
-    // Seasonal information
-    if (ingredient.seasonal) {
-      details.push(`Disponibilité: ${seasonalInfo.availability}`);
-      
-      if (seasonalInfo.peakPeriod) {
-        details.push(`Pic de saison: ${seasonalInfo.peakPeriod}`);
-      }
-      
-      if (seasonalInfo.currentStatus) {
-        details.push(`État actuel: ${seasonalInfo.currentStatus}`);
-      }
-    } else {
-      details.push(`Disponibilité: ${seasonalInfo.availability}`);
-    }
-    
-    // Available units
-    if (ingredient.units && ingredient.units.length > 0) {
-      details.push(`Unités: ${ingredient.units.join(', ')}`);
-    }
-    
-    // Description (only if it exists)
-    if (ingredient.description && ingredient.description.trim()) {
-      details.push(`\nDescription: ${ingredient.description}`);
-    }
-    
-    // Notes (only if they exist)
-    if (ingredient.notes && ingredient.notes.trim()) {
-      details.push(`Notes: ${ingredient.notes}`);
-    }
-    
-    Alert.alert(
-      ingredient.name,
-      details.join('\n'),
-      [{ text: 'OK' }]
-    );
+    setSelectedIngredient(ingredient);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedIngredient(null);
   };
 
   const handleAddIngredient = () => {
@@ -212,7 +178,7 @@ export const IngredientsScreen: React.FC = () => {
         favoriteActions.loadFavorites()
       ]);
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible de rafraîchir les données');
+      console.error('Error refreshing data:', error);
     }
     setRefreshing(false);
   };
@@ -371,6 +337,12 @@ export const IngredientsScreen: React.FC = () => {
         </ScrollView>
 
         <FloatingAddButton onPress={handleAddIngredient} />
+
+        <IngredientDetailModal
+          ingredient={selectedIngredient}
+          visible={modalVisible}
+          onClose={handleCloseModal}
+        />
       </View>
     </ScreenErrorBoundary>
   );

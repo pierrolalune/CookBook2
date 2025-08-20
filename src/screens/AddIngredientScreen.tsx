@@ -12,7 +12,7 @@ import {
   Platform 
 } from 'react-native';
 import { router } from 'expo-router';
-import { useIngredients } from '../hooks/useIngredients';
+import { useIngredientsContext } from '../contexts/IngredientsContext';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { IngredientCategory, CreateIngredientInput, SeasonalData } from '../types';
 import { colors, spacing, typography, commonStyles } from '../styles';
@@ -58,7 +58,7 @@ const CATEGORIES: Array<{ id: IngredientCategory; name: string; icon: string }> 
 const DEFAULT_UNITS = ['pièce', 'kg', 'g', 'L', 'ml', 'c. à soupe', 'c. à café'];
 
 export const AddIngredientScreen: React.FC = () => {
-  const { actions: ingredientActions, loading } = useIngredients();
+  const { createIngredient, loading } = useIngredientsContext();
   
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -168,7 +168,7 @@ export const AddIngredientScreen: React.FC = () => {
     };
 
     try {
-      const newIngredient = await ingredientActions.createIngredient(createInput);
+      const newIngredient = await createIngredient(createInput);
       if (newIngredient) {
         Alert.alert(
           'Succès!',

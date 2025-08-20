@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { initializeDatabase, resetDatabase } from '../src/database';
 import { ScreenErrorBoundary } from '../src/components/common/ErrorBoundary';
+import { IngredientsProvider } from '../src/contexts/IngredientsContext';
+import { FavoritesProvider } from '../src/contexts/FavoritesContext';
 
 export default function RootLayout() {
   const [isDbReady, setIsDbReady] = useState(false);
@@ -48,33 +50,37 @@ export default function RootLayout() {
 
   return (
     <ScreenErrorBoundary>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#667eea',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerTitleAlign: 'center',
-        }}
-      >
-        <Stack.Screen
-          name="index"
-          options={{
-            title: 'Ingrédients',
-            headerShown: true
-          }}
-        />
-        <Stack.Screen
-          name="add-ingredient"
-          options={{
-            title: 'Nouvel Ingrédient',
-            presentation: 'modal'
-          }}
-        />
-      </Stack>
+      <IngredientsProvider>
+        <FavoritesProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: '#667eea',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              headerTitleAlign: 'center',
+            }}
+          >
+            <Stack.Screen
+              name="index"
+              options={{
+                title: 'Ingrédients',
+                headerShown: true
+              }}
+            />
+            <Stack.Screen
+              name="add-ingredient"
+              options={{
+                title: 'Nouvel Ingrédient',
+                presentation: 'modal'
+              }}
+            />
+          </Stack>
+        </FavoritesProvider>
+      </IngredientsProvider>
     </ScreenErrorBoundary>
   );
 }

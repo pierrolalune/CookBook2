@@ -1,41 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { FavoritesRepository } from '../repositories/FavoritesRepository';
-import { useFavoritesContext } from '../contexts/FavoritesContext';
 
-export const useFavorites = () => {
-  // Try to use context if available
-  try {
-    const context = useFavoritesContext();
-    
-    return {
-      favoriteIds: context.favoriteIds,
-      loading: context.loading,
-      error: context.error,
-      actions: {
-        toggleFavorite: context.toggleFavorite,
-        addFavorite: context.addFavorite,
-        removeFavorite: context.removeFavorite,
-        isFavorite: context.isFavorite,
-        getFavoriteCount: async () => context.favoriteIds.length,
-        clearAllFavorites: async () => {
-          // Clear all favorites in context
-          const promises = context.favoriteIds.map(id => context.removeFavorite(id));
-          await Promise.all(promises);
-          return true;
-        },
-        loadFavorites: context.loadFavorites
-      }
-    };
-  } catch (error) {
-    // Fallback to local state if context is not available
-    // This maintains backward compatibility
-  }
+interface FavoritesContextType {
+  favoriteIds: string[];
+  loading: boolean;
+  error: string | null;
+  toggleFavorite: (ingredientId: string) => Promise<boolean>;
+  addFavorite: (ingredientId: string) => Promise<boolean>;
+  removeFavorite: (ingredientId: string) => Promise<boolean>;
+  isFavorite: (ingredientId: string) => boolean;
+  loadFavorites: () => Promise<void>;
+}
 
-  // Original implementation as fallback
+const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
+
+export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  
   const repository = new FavoritesRepository();
 
   const loadFavorites = useCallback(async () => {
@@ -108,47 +91,33 @@ export const useFavorites = () => {
     return favoriteIds.includes(ingredientId);
   }, [favoriteIds]);
 
-  const getFavoriteCount = useCallback(async (): Promise<number> => {
-    try {
-      return await repository.getFavoriteCount();
-    } catch (err) {
-      console.error('Error getting favorite count:', err);
-      return 0;
-    }
-  }, []);
-
-  const clearAllFavorites = useCallback(async (): Promise<boolean> => {
-    try {
-      setLoading(true);
-      await repository.clearAllFavorites();
-      setFavoriteIds([]);
-      return true;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error clearing favorites');
-      console.error('Error clearing favorites:', err);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   // Load favorites on mount
   useEffect(() => {
     loadFavorites();
-  }, [loadFavorites]);
+  }, []);
 
-  return {
+  const value: FavoritesContextType = {
     favoriteIds,
     loading,
     error,
-    actions: {
-      toggleFavorite,
-      addFavorite,
-      removeFavorite,
-      isFavorite,
-      getFavoriteCount,
-      clearAllFavorites,
-      loadFavorites
-    }
+    toggleFavorite,
+    addFavorite,
+    removeFavorite,
+    isFavorite,
+    loadFavorites,
   };
+
+  return (
+    <FavoritesContext.Provider value={value}>
+      {children}
+    </FavoritesContext.Provider>
+  );
+};
+
+export const useFavoritesContext = (): FavoritesContextType => {
+  const context = useContext(FavoritesContext);
+  if (!context) {
+    throw new Error('useFavoritesContext must be used within FavoritesProvider');
+  }
+  return context;
 };

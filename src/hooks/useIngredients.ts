@@ -1,8 +1,89 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { IngredientRepository } from '../repositories/IngredientRepository';
 import { Ingredient, IngredientFilters, CreateIngredientInput, UpdateIngredientInput, IngredientCategory } from '../types';
+import { useIngredientsContext } from '../contexts/IngredientsContext';
 
 export const useIngredients = (initialFilters?: IngredientFilters) => {
+  // Try to use context if available
+  try {
+    const context = useIngredientsContext();
+    const [filters, setFilters] = useState<IngredientFilters>(initialFilters || {});
+    
+    // Filter ingredients based on local filters
+    const filteredIngredients = useCallback(() => {
+      let filtered = context.ingredients;
+      
+      if (filters.searchQuery) {
+        const query = filters.searchQuery.toLowerCase();
+        filtered = filtered.filter(ing => 
+          ing.name.toLowerCase().includes(query) ||
+          ing.subcategory.toLowerCase().includes(query) ||
+          ing.description?.toLowerCase().includes(query)
+        );
+      }
+      
+      if (filters.category) {
+        filtered = filtered.filter(ing => ing.category === filters.category);
+      }
+      
+      if (filters.favoritesOnly) {
+        filtered = filtered.filter(ing => ing.isFavorite);
+      }
+      
+      if (filters.userCreatedOnly) {
+        filtered = filtered.filter(ing => ing.isUserCreated);
+      }
+      
+      return filtered;
+    }, [context.ingredients, filters]);
+    
+    return {
+      ingredients: filteredIngredients(),
+      loading: context.loading,
+      error: context.error,
+      filters,
+      actions: {
+        loadIngredients: context.loadIngredients,
+        searchIngredients: async (query: string) => {
+          setFilters(prev => ({ ...prev, searchQuery: query }));
+        },
+        filterByCategory: async (category: IngredientCategory | 'favoris' | 'myproduct' | 'saison') => {
+          const newFilters: IngredientFilters = { ...filters };
+          
+          if (category === 'favoris') {
+            newFilters.favoritesOnly = true;
+            delete newFilters.category;
+          } else if (category === 'myproduct') {
+            newFilters.userCreatedOnly = true;
+            delete newFilters.category;
+          } else if (category === 'saison') {
+            newFilters.currentSeason = true;
+            delete newFilters.category;
+          } else {
+            newFilters.category = category;
+          }
+          
+          setFilters(newFilters);
+        },
+        createIngredient: context.createIngredient,
+        updateIngredient: context.updateIngredient,
+        deleteIngredient: context.deleteIngredient,
+        getIngredientById: async (id: string) => {
+          return context.ingredients.find(ing => ing.id === id) || null;
+        },
+        refreshIngredients: context.refreshIngredients,
+        clearFilters: () => {
+          setFilters({});
+        },
+        setFilters
+      }
+    };
+  } catch (error) {
+    // Fallback to local state if context is not available
+    // This maintains backward compatibility
+  }
+  
+  // Original implementation as fallback
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

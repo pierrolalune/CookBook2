@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category category="Épicerie">
+    <!-- Grains & Cereals -->
+    <ingredient name="Riz">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Riz basmati">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Riz complet">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pâtes">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Spaghetti">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Penne">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Tagliatelles">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Quinoa">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Boulgour">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Avoine">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Céréales">
+        <subcategory>Petit-déjeuner</subcategory>
+        <units>
+            <unit>boîte</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Muesli">
+        <subcategory>Petit-déjeuner</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Flocons d'avoine">
+        <subcategory>Petit-déjeuner</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Legumes & Beans -->
+    <ingredient name="Lentilles">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Lentilles vertes">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Lentilles corail">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Haricots rouges">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Haricots blancs">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pois chiches">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Flageolets">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pois cassés">
+        <subcategory>Légumineuses</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Baking & Cooking -->
+    <ingredient name="Farine">
+        <subcategory>Produits de boulangerie</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Farine complète">
+        <subcategory>Produits de boulangerie</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Levure">
+        <subcategory>Produits de boulangerie</subcategory>
+        <units>
+            <unit>sachet</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Levure chimique">
+        <subcategory>Produits de boulangerie</subcategory>
+        <units>
+            <unit>sachet</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Bicarbonate">
+        <subcategory>Produits de boulangerie</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sucre">
+        <subcategory>Sucres et édulcorants</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sucre roux">
+        <subcategory>Sucres et édulcorants</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sucre glace">
+        <subcategory>Sucres et édulcorants</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Miel">
+        <subcategory>Sucres et édulcorants</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+            <unit>ml</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sirop d'érable">
+        <subcategory>Sucres et édulcorants</subcategory>
+        <units>
+            <unit>bouteille</unit>
+            <unit>ml</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Oils & Vinegars -->
+    <ingredient name="Huile d'olive">
+        <subcategory>Huiles</subcategory>
+        <units>
+            <unit>litre</unit>
+            <unit>ml</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Huile de tournesol">
+        <subcategory>Huiles</subcategory>
+        <units>
+            <unit>litre</unit>
+            <unit>ml</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Huile de colza">
+        <subcategory>Huiles</subcategory>
+        <units>
+            <unit>litre</unit>
+            <unit>ml</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Vinaigre">
+        <subcategory>Vinaigres</subcategory>
+        <units>
+            <unit>litre</unit>
+            <unit>ml</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Vinaigre balsamique">
+        <subcategory>Vinaigres</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Vinaigre de cidre">
+        <subcategory>Vinaigres</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Condiments -->
+    <ingredient name="Sel">
+        <subcategory>Condiments</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Poivre">
+        <subcategory>Condiments</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>moulin</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Moutarde">
+        <subcategory>Condiments</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Ketchup">
+        <subcategory>Sauces</subcategory>
+        <units>
+            <unit>bouteille</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Mayonnaise">
+        <subcategory>Sauces</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sauce soja">
+        <subcategory>Sauces</subcategory>
+        <units>
+            <unit>bouteille</unit>
+            <unit>ml</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Tabasco">
+        <subcategory>Sauces</subcategory>
+        <units>
+            <unit>bouteille</unit>
+            <unit>ml</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Herbs & Spices -->
+    <ingredient name="Basilic">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>botte</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Thym">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>branche</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Romarin">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>branche</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Persil">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>botte</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Coriandre">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>botte</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Menthe">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>botte</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Laurier">
+        <subcategory>Herbes aromatiques</subcategory>
+        <units>
+            <unit>feuille</unit>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Paprika">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Cumin">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Curry">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Cannelle">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>bâton</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Vanille">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>gousse</unit>
+            <unit>g</unit>
+            <unit>extrait ml</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Gingembre moulu">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Muscade">
+        <subcategory>Épices</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>noix</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Canned & Preserved -->
+    <ingredient name="Tomates en conserve">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>boîte</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Concentré de tomate">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>tube</unit>
+            <unit>boîte</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Coulis de tomate">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>brique</unit>
+            <unit>ml</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Bouillon cube">
+        <subcategory>Aides culinaires</subcategory>
+        <units>
+            <unit>cube</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Fond de volaille">
+        <subcategory>Aides culinaires</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>ml</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Cornichons">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>bocal</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Olives">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>bocal</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Câpres">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>bocal</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Bread & Bakery -->
+    <ingredient name="Pain">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>baguette</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pain de mie">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>paquet</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Biscottes">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>paquet</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Crackers">
+        <subcategory>Biscuits salés</subcategory>
+        <units>
+            <unit>paquet</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Chapelure">
+        <subcategory>Produits de boulangerie</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    
+    <!-- Confiture & Spreads -->
+    <ingredient name="Confiture">
+        <subcategory>Tartinables sucrés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Confiture d'abricot">
+        <subcategory>Tartinables sucrés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Confiture de fraise">
+        <subcategory>Tartinables sucrés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Nutella">
+        <subcategory>Tartinables sucrés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Beurre de cacahuète">
+        <subcategory>Tartinables sucrés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+</category>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category category="Viande">
+    <ingredient name="Poulet" />
+    <ingredient name="Bœuf" />
+    <ingredient name="Porc" />
+    <ingredient name="Agneau" />
+    <ingredient name="Dinde" />
+    <ingredient name="Canard" />
+    <ingredient name="Veau" />
+    <ingredient name="Lapin" />
+    <ingredient name="Jambon" />
+    <ingredient name="Bacon" />
+    <ingredient name="Saucisse" />
+    <ingredient name="Merguez" />
+    <ingredient name="Chorizo" />
+    <ingredient name="Steak haché" />
+    <ingredient name="Escalope" />
+</category>

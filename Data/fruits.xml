@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category category="Fruits">
+    <!-- Seasonal Fruits -->
+    <ingredient name="Abricot">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8</months>
+            <peak_months>7</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Airelle">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10</months>
+            <peak_months>9</peak_months>
+            <season>fin été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Amande fraîche">
+        <subcategory>Fruits secs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>9,10</months>
+            <peak_months>9</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Arbouse">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12</months>
+            <peak_months>11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Bergamote">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>12,1,2,3</months>
+            <peak_months>1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Brugnon">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Cassis">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8</months>
+            <peak_months>7</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Cédrat">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2</months>
+            <peak_months>11,12</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Cerise">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>5,6,7</months>
+            <peak_months>6</peak_months>
+            <season>printemps-été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Châtaigne">
+        <subcategory>Fruits secs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12</months>
+            <peak_months>10,11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Citron vert">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>11,12,1</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Clémentine">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>12,1</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Coing">
+        <subcategory>Fruits à pépins</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11</months>
+            <peak_months>10</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Cornouille">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10</months>
+            <peak_months>9</peak_months>
+            <season>fin été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Cynorrhodon">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12</months>
+            <peak_months>10,11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Datte fraîche">
+        <subcategory>Fruits exotiques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12</months>
+            <peak_months>11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Figue">
+        <subcategory>Fruits méditerranéens</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>7,8,9,10</months>
+            <peak_months>8,9</peak_months>
+            <season>été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Figue de Barbarie">
+        <subcategory>Fruits exotiques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10</months>
+            <peak_months>9</peak_months>
+            <season>fin été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Fraise">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>4,5,6,7,8,9</months>
+            <peak_months>5,6</peak_months>
+            <season>printemps-été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Fraise des bois">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Framboise">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Grenade">
+        <subcategory>Fruits exotiques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12</months>
+            <peak_months>10,11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Griotte">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7</months>
+            <peak_months>7</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Groseille">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+            <unit>grappe</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8</months>
+            <peak_months>7</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Groseille à maquereau">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8</months>
+            <peak_months>7</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Kaki">
+        <subcategory>Fruits exotiques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1</months>
+            <peak_months>11,12</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Kiwi">
+        <subcategory>Fruits exotiques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>11,12,1,2,3,4</months>
+            <peak_months>12,1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Kumquat">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>11,12,1,2,3</months>
+            <peak_months>12,1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Mandarine">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>11,12,1</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Marron">
+        <subcategory>Fruits secs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12</months>
+            <peak_months>11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Melon">
+        <subcategory>Melons et pastèques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Mirabelle">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>8,9</months>
+            <peak_months>8</peak_months>
+            <season>fin été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Mûre">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>7,8,9,10</months>
+            <peak_months>8,9</peak_months>
+            <season>été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Myrtille">
+        <subcategory>Baies</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>7,8,9</months>
+            <peak_months>8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Nectarine">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Nèfle">
+        <subcategory>Fruits méditerranéens</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12</months>
+            <peak_months>11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Noisette">
+        <subcategory>Fruits secs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11</months>
+            <peak_months>10</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Noix">
+        <subcategory>Fruits secs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>sachet</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12</months>
+            <peak_months>10,11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Orange">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>11,12,1,2,3,4</months>
+            <peak_months>12,1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Orange sanguine">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>12,1,2,3,4</months>
+            <peak_months>1,2,3</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pamplemousse">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>11,12,1,2,3,4,5</months>
+            <peak_months>1,2,3</peak_months>
+            <season>hiver-printemps</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pastèque">
+        <subcategory>Melons et pastèques</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pêche">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pêche de vigne">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10</months>
+            <peak_months>9</peak_months>
+            <season>fin été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Physalis">
+        <subcategory>Fruits exotiques</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12</months>
+            <peak_months>10,11</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Poire">
+        <subcategory>Fruits à pépins</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10,11,12,1,2</months>
+            <peak_months>9,10,11</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pomelo">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>11,12,1,2,3,4</months>
+            <peak_months>12,1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pomme">
+        <subcategory>Fruits à pépins</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10,11,12,1,2,3,4,5</months>
+            <peak_months>9,10,11</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Pruneau frais">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10</months>
+            <peak_months>9</peak_months>
+            <season>fin été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Prune">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>7,8,9</months>
+            <peak_months>8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Quetsche">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10</months>
+            <peak_months>9</peak_months>
+            <season>fin été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Raisin">
+        <subcategory>Raisins</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>grappe</unit>
+        </units>
+        <seasonal>
+            <months>8,9,10,11</months>
+            <peak_months>9,10</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Reine-claude">
+        <subcategory>Fruits à noyau</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>7,8,9</months>
+            <peak_months>8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Rhubarbe">
+        <subcategory>Tiges comestibles</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>botte</unit>
+        </units>
+        <seasonal>
+            <months>4,5,6,7</months>
+            <peak_months>5,6</peak_months>
+            <season>printemps</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Sorbe">
+        <subcategory>Fruits à pépins</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11</months>
+            <peak_months>10</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    
+    <!-- Year-round Fruits (imported or stored) -->
+    <ingredient name="Ananas">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Avocat">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Banane">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>régime</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Carambole">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Citron">
+        <subcategory>Agrumes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Fruit de la passion">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Goyave">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Litchi">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Mangoustan">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Mangue">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Noix de coco">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>g râpée</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Papaye">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pitaya">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Ramboutan">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Tamarillo">
+        <subcategory>Fruits tropicaux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+</category>

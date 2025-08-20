@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category category="Pêche">
+    <!-- Seasonal Seafood -->
+    <ingredient name="Moules">
+        <subcategory>Coquillages</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>litre</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1,2</months>
+            <peak_months>10,11,12</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Huîtres">
+        <subcategory>Coquillages</subcategory>
+        <units>
+            <unit>douzaine</unit>
+            <unit>pièce</unit>
+            <unit>bourriche</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1,2,3,4</months>
+            <peak_months>11,12,1</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Coquilles Saint-Jacques">
+        <subcategory>Coquillages</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>noix</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>11,12,1</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    
+    <!-- Year-round Seafood -->
+    <ingredient name="Saumon">
+        <subcategory>Poissons gras</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pavé</unit>
+            <unit>filet</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Thon">
+        <subcategory>Poissons gras</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>steak</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Cabillaud">
+        <subcategory>Poissons blancs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>filet</unit>
+            <unit>dos</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sole">
+        <subcategory>Poissons blancs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Dorade">
+        <subcategory>Poissons blancs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Bar">
+        <subcategory>Poissons blancs</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Truite">
+        <subcategory>Poissons d'eau douce</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Maquereau">
+        <subcategory>Poissons gras</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Sardines">
+        <subcategory>Poissons gras</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Anchois">
+        <subcategory>Poissons gras</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>boîte</unit>
+            <unit>bocal</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Crevettes">
+        <subcategory>Crustacés</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>sachet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Langoustines">
+        <subcategory>Crustacés</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Crabe">
+        <subcategory>Crustacés</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>boîte miettes</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Homard">
+        <subcategory>Crustacés</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Calamar">
+        <subcategory>Céphalopodes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>tube</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Seiche">
+        <subcategory>Céphalopodes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Surimi">
+        <subcategory>Produits transformés</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>bâtonnet</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+</category>

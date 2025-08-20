@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category category="Légumes">
+    <!-- Seasonal Vegetables -->
+    <ingredient name="Artichaut">
+        <subcategory>Légumes fleurs</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+        <seasonal>
+            <months>5,6,7,8,9</months>
+            <peak_months>6,7</peak_months>
+            <season>printemps-été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Asperge">
+        <subcategory>Légumes tiges</subcategory>
+        <units>
+            <unit>botte</unit>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>4,5,6</months>
+            <peak_months>5</peak_months>
+            <season>printemps</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Aubergine">
+        <subcategory>Légumes fruits</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Brocoli">
+        <subcategory>Légumes fleurs</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1,2,3,4</months>
+            <peak_months>10,11</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Céleri-branche">
+        <subcategory>Légumes tiges</subcategory>
+        <units>
+            <unit>pied</unit>
+            <unit>branche</unit>
+            <unit>kg</unit>
+        </units>
+        <seasonal>
+            <months>7,8,9,10,11,12</months>
+            <peak_months>9,10</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Chou">
+        <subcategory>Choux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>12,1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Chou de Bruxelles">
+        <subcategory>Choux</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>11,12,1</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Chou-fleur">
+        <subcategory>Choux</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1,2,3,4,5</months>
+            <peak_months>10,11,12</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Concombre">
+        <subcategory>Légumes fruits</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+        <seasonal>
+            <months>5,6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Courge">
+        <subcategory>Courges et potirons</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>tranche</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1</months>
+            <peak_months>10,11</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Courgette">
+        <subcategory>Courges et potirons</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>5,6,7,8,9,10</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Endive">
+        <subcategory>Salades</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3,4</months>
+            <peak_months>12,1,2</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Épinard">
+        <subcategory>Légumes feuilles</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>botte</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>1,2,3,4,5,9,10,11,12</months>
+            <peak_months>3,4,10,11</peak_months>
+            <season>printemps-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Fenouil">
+        <subcategory>Légumes bulbes</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+        </units>
+        <seasonal>
+            <months>5,6,7,8,9,10,11</months>
+            <peak_months>7,8,9</peak_months>
+            <season>été-automne</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Haricot vert">
+        <subcategory>Légumes gousses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>filet</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9,10</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Laitue">
+        <subcategory>Salades</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>4,5,6,7,8,9,10</months>
+            <peak_months>5,6,7</peak_months>
+            <season>printemps-été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Navet">
+        <subcategory>Légumes racines</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>botte</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3,4,5</months>
+            <peak_months>11,12,1</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Panais">
+        <subcategory>Légumes racines</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>11,12,1</peak_months>
+            <season>hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Patate douce">
+        <subcategory>Légumes tubercules</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1,2,3</months>
+            <peak_months>10,11,12</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Petit pois">
+        <subcategory>Légumes gousses</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>boîte</unit>
+            <unit>sachet surgelé</unit>
+        </units>
+        <seasonal>
+            <months>4,5,6,7</months>
+            <peak_months>5,6</peak_months>
+            <season>printemps</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Poireau">
+        <subcategory>Légumes bulbes</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>botte</unit>
+        </units>
+        <seasonal>
+            <months>1,2,3,4,9,10,11,12</months>
+            <peak_months>10,11,12,1</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Poivron">
+        <subcategory>Légumes fruits</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9</months>
+            <peak_months>7,8</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Potiron">
+        <subcategory>Courges et potirons</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>kg</unit>
+            <unit>tranche</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11,12,1</months>
+            <peak_months>10,11</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Radis">
+        <subcategory>Légumes racines</subcategory>
+        <units>
+            <unit>botte</unit>
+            <unit>g</unit>
+            <unit>sachet</unit>
+        </units>
+        <seasonal>
+            <months>3,4,5,6,7,8,9,10</months>
+            <peak_months>4,5,6</peak_months>
+            <season>printemps-été</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Tomate">
+        <subcategory>Légumes fruits</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>6,7,8,9,10</months>
+            <peak_months>7,8,9</peak_months>
+            <season>été</season>
+        </seasonal>
+    </ingredient>
+    
+    <!-- Mushrooms -->
+    <ingredient name="Champignon de Paris">
+        <subcategory>Champignons</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pleurote">
+        <subcategory>Champignons</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>barquette</unit>
+        </units>
+        <seasonal>
+            <months>10,11,12,1,2,3</months>
+            <peak_months>11,12</peak_months>
+            <season>automne-hiver</season>
+        </seasonal>
+    </ingredient>
+    <ingredient name="Cèpe">
+        <subcategory>Champignons</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+        <seasonal>
+            <months>9,10,11</months>
+            <peak_months>10</peak_months>
+            <season>automne</season>
+        </seasonal>
+    </ingredient>
+    
+    <!-- Year-round Vegetables -->
+    <ingredient name="Ail">
+        <subcategory>Légumes bulbes</subcategory>
+        <units>
+            <unit>tête</unit>
+            <unit>gousse</unit>
+            <unit>kg</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Betterave rouge">
+        <subcategory>Légumes racines</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>sachet cuit</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Carotte">
+        <subcategory>Légumes racines</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>botte</unit>
+            <unit>sachet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Échalote">
+        <subcategory>Légumes bulbes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Gingembre">
+        <subcategory>Légumes racines</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>racine</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Oignon">
+        <subcategory>Légumes bulbes</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>pièce</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Pomme de terre">
+        <subcategory>Légumes tubercules</subcategory>
+        <units>
+            <unit>kg</unit>
+            <unit>g</unit>
+            <unit>filet</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+</category>

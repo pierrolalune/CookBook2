@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category category="Produits Laitiers">
+    <ingredient name="Lait">
+        <subcategory>Laits</subcategory>
+        <units>
+            <unit>litre</unit>
+            <unit>bouteille</unit>
+            <unit>brique</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Beurre">
+        <subcategory>Beurres et matières grasses</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>plaquette</unit>
+            <unit>motte</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Crème fraîche">
+        <subcategory>Crèmes</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>cl</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Crème liquide">
+        <subcategory>Crèmes</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>cl</unit>
+            <unit>brique</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Fromage blanc">
+        <subcategory>Fromages frais</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Yaourt">
+        <subcategory>Yaourts et desserts lactés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>pack</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Yaourt grec">
+        <subcategory>Yaourts et desserts lactés</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Petit-suisse">
+        <subcategory>Fromages frais</subcategory>
+        <units>
+            <unit>pot</unit>
+            <unit>pack</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Mascarpone">
+        <subcategory>Fromages frais</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Ricotta">
+        <subcategory>Fromages frais</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pot</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Mozzarella">
+        <subcategory>Fromages à pâte filée</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>boule</unit>
+            <unit>sachet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Fromage râpé">
+        <subcategory>Fromages râpés</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>sachet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Parmesan">
+        <subcategory>Fromages à pâte dure</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>morceau</unit>
+            <unit>sachet râpé</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Emmental">
+        <subcategory>Fromages à pâte dure</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>tranche</unit>
+            <unit>morceau</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Comté">
+        <subcategory>Fromages à pâte dure</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>morceau</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Gruyère">
+        <subcategory>Fromages à pâte dure</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>morceau</unit>
+            <unit>sachet râpé</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Camembert">
+        <subcategory>Fromages à pâte molle</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>portion</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Brie">
+        <subcategory>Fromages à pâte molle</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pointe</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Roquefort">
+        <subcategory>Fromages à pâte persillée</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>portion</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Chèvre">
+        <subcategory>Fromages de chèvre</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>bûche</unit>
+            <unit>crottin</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Feta">
+        <subcategory>Fromages de brebis</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>bloc</unit>
+            <unit>dés</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Œufs">
+        <subcategory>Œufs</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>boîte de 6</unit>
+            <unit>boîte de 12</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Lait concentré">
+        <subcategory>Laits spéciaux</subcategory>
+        <units>
+            <unit>boîte</unit>
+            <unit>tube</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Lait de coco">
+        <subcategory>Laits végétaux</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>boîte</unit>
+            <unit>brique</unit>
+        </units>
+    </ingredient>
+</category>

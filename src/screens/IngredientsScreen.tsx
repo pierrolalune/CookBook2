@@ -73,7 +73,8 @@ export const IngredientsScreen: React.FC = () => {
         filtered = filtered.filter(ing => ing.isUserCreated);
         break;
       case 'saison':
-        filtered = filtered.filter(ing => seasonalActions.isIngredientInSeason(ing));
+        // Only show ingredients with seasonal data that are currently in season
+        filtered = filtered.filter(ing => ing.seasonal && seasonalActions.isIngredientInSeason(ing));
         break;
       case 'all':
         break;
@@ -93,7 +94,8 @@ export const IngredientsScreen: React.FC = () => {
       
       // Special categories first
       const favorites = filteredIngredients.filter(ing => ing.isFavorite);
-      const seasonal = filteredIngredients.filter(ing => seasonalActions.isIngredientInSeason(ing));
+      // Only show seasonal ingredients that have seasonal data and are in season
+      const seasonal = filteredIngredients.filter(ing => ing.seasonal && seasonalActions.isIngredientInSeason(ing));
       const userCreated = filteredIngredients.filter(ing => ing.isUserCreated);
       
       if (favorites.length > 0) {
@@ -230,7 +232,7 @@ export const IngredientsScreen: React.FC = () => {
             onCategorySelect={handleCategorySelect}
             favoriteCount={favoriteIds.length}
             userIngredientCount={ingredients.filter(ing => ing.isUserCreated).length}
-            seasonalCount={seasonalData.currentSeason.length}
+            seasonalCount={ingredients.filter(ing => ing.seasonal && seasonalActions.isIngredientInSeason(ing)).length}
           />
         </View>
 

@@ -55,20 +55,29 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
   };
 
 
-  const getSeasonStatus = () => {
-    if (!ingredient.seasonal) return null;
-    return SeasonalUtils.getIngredientSeasonStatus(ingredient);
-  };
-
   const getSeasonalBadge = () => {
     if (!showSeasonalBadge || !ingredient.seasonal) return null;
     
-    const status = getSeasonStatus();
+    const status = SeasonalUtils.getDetailedSeasonStatus(ingredient);
     if (status === 'year-round' || status === 'out-of-season') return null;
 
     const badgeConfig = {
-      'in-season': { text: 'Saison', color: colors.inSeason },
-      'peak-season': { text: 'Pic', color: colors.peakSeason },
+      'beginning-of-season': { 
+        text: '🌱 Début', 
+        color: colors.beginningOfSeason 
+      },
+      'peak-season': { 
+        text: '🔥 Pic', 
+        color: colors.peakSeason 
+      },
+      'end-of-season': { 
+        text: '🍂 Fin', 
+        color: colors.endOfSeason 
+      },
+      'in-season': { 
+        text: '✓ Saison', 
+        color: colors.inSeason 
+      },
     };
 
     const config = badgeConfig[status as keyof typeof badgeConfig];
@@ -206,7 +215,7 @@ const styles = StyleSheet.create({
     ...typography.styles.small,
     fontWeight: typography.weights.semibold,
     color: colors.textWhite,
-    fontSize: 10,
+    fontSize: 11,
   },
   
   favoriteButton: {

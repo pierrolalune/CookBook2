@@ -1,4 +1,4 @@
-import { Ingredient } from '../types';
+import { Ingredient, DetailedSeasonStatus } from '../types';
 
 export class SeasonalUtils {
   static getCurrentMonth(): number {
@@ -24,7 +24,7 @@ export class SeasonalUtils {
 
   static isIngredientInSeason(ingredient: Ingredient): boolean {
     if (!ingredient.seasonal) {
-      return true; // Non-seasonal ingredients are always "in season"
+      return false; // Non-seasonal ingredients are NOT considered "in season"
     }
 
     const currentMonth = this.getCurrentMonth();
@@ -119,6 +119,87 @@ export class SeasonalUtils {
       'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
     ];
     return monthNames[month - 1] || '';
+  }
+
+  static getDetailedSeasonStatus(ingredient: Ingredient): DetailedSeasonStatus {
+    if (!ingredient.seasonal) {
+      return 'year-round';
+    }
+
+    const currentMonth = this.getCurrentMonth();
+    const { months, peak_months } = ingredient.seasonal;
+    
+    if (!months.includes(currentMonth)) {
+      return 'out-of-season';
+    }
+    
+    // Check if in peak season
+    if (peak_months.includes(currentMonth)) {
+      return 'peak-season';
+    }
+    
+    // Check if it's the first month of the season
+    const sortedMonths = [...months].sort((a, b) => a - b);
+    const currentIndex = sortedMonths.indexOf(currentMonth);
+    
+    // Handle year-crossing seasons (e.g., December to February)
+    let isBeginning = false;
+    let isEnd = false;
+    
+    if (sortedMonths.length > 1) {
+      // Check if it's a continuous season or split (winter crops)
+      const gaps = [];
+      for (let i = 1; i < sortedMonths.length; i++) {
+        if (sortedMonths[i] - sortedMonths[i-1] > 1) {
+          gaps.push(i);
+        }
+      }
+      
+      // Also check wrap-around (December to January)
+      if (sortedMonths.includes(12) && sortedMonths.includes(1)) {
+        if (sortedMonths[sortedMonths.length - 1] === 12 && sortedMonths[0] === 1) {
+          // This is a continuous season crossing year boundary
+        } else {
+          gaps.push(0);
+        }
+      }
+      
+      if (gaps.length === 0) {
+        // Continuous season
+        isBeginning = currentIndex === 0;
+        isEnd = currentIndex === sortedMonths.length - 1;
+      } else {
+        // Split season - find which segment we're in
+        let segmentStart = 0;
+        let segmentEnd = sortedMonths.length - 1;
+        
+        for (let gap of gaps) {
+          if (currentIndex < gap) {
+            segmentEnd = gap - 1;
+            break;
+          } else {
+            segmentStart = gap;
+          }
+        }
+        
+        isBeginning = currentIndex === segmentStart;
+        isEnd = currentIndex === segmentEnd;
+      }
+    } else {
+      // Single month season
+      isBeginning = true;
+      isEnd = true;
+    }
+    
+    if (isBeginning && !isEnd) {
+      return 'beginning-of-season';
+    }
+    
+    if (isEnd && !isBeginning) {
+      return 'end-of-season';
+    }
+    
+    return 'in-season';
   }
 
   static getSeasonName(season: string): string {

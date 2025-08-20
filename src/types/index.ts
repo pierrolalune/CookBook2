@@ -76,6 +76,14 @@ export interface DatabaseSchema {
   };
 }
 
+export type DetailedSeasonStatus = 
+  | 'beginning-of-season'
+  | 'peak-season'
+  | 'end-of-season'
+  | 'in-season'
+  | 'out-of-season'
+  | 'year-round';
+
 export interface SeasonalUtility {
   getCurrentMonth(): number;
   getCurrentSeason(): string;

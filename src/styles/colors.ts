@@ -43,6 +43,8 @@ export const colors = {
   // Seasonal colors
   inSeason: '#4caf50',
   peakSeason: '#ff9800',
+  beginningOfSeason: '#81c784',
+  endOfSeason: '#8d6e63',
   outOfSeason: '#757575',
   
   // Gradients (for StyleSheet, you'll need to use libraries like react-native-linear-gradient)

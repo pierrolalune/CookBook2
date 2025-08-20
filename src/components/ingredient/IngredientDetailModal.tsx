@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     maxHeight: screenHeight * 0.8,
     ...commonStyles.shadowLarge,
     alignSelf: 'center',
+    minHeight: screenHeight * 0.50,
   },
 
   header: {

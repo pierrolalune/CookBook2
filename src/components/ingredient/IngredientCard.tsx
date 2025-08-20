@@ -1,11 +1,11 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
   Animated,
-  Alert 
+  Alert
 } from 'react-native';
 import { Ingredient, IngredientCategory } from '../../types';
 import { colors, spacing, typography, commonStyles } from '../../styles';
@@ -57,26 +57,26 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
 
   const getSeasonalBadge = () => {
     if (!showSeasonalBadge || !ingredient.seasonal) return null;
-    
+
     const status = SeasonalUtils.getDetailedSeasonStatus(ingredient);
     if (status === 'year-round' || status === 'out-of-season') return null;
 
     const badgeConfig = {
-      'beginning-of-season': { 
-        text: '🌱 Début', 
-        color: colors.beginningOfSeason 
+      'beginning-of-season': {
+        text: '🌱 Début',
+        color: colors.beginningOfSeason
       },
-      'peak-season': { 
-        text: '🔥 Pic', 
-        color: colors.peakSeason 
+      'peak-season': {
+        text: '🔥 Pic',
+        color: colors.peakSeason
       },
-      'end-of-season': { 
-        text: '🍂 Fin', 
-        color: colors.endOfSeason 
+      'end-of-season': {
+        text: '🍂 Fin',
+        color: colors.endOfSeason
       },
-      'in-season': { 
-        text: '✓ Saison', 
-        color: colors.inSeason 
+      'in-season': {
+        text: '✓ Saison',
+        color: colors.inSeason
       },
     };
 
@@ -91,10 +91,10 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
   };
 
   const cardStyle = compact ? styles.compactCard : styles.card;
-  
+
   return (
-    <TouchableOpacity 
-      style={[cardStyle, ingredient.isFavorite && styles.favoriteCard]} 
+    <TouchableOpacity
+      style={[cardStyle, ingredient.isFavorite && styles.favoriteCard]}
       onPress={handlePress}
       activeOpacity={0.7}
     >
@@ -118,7 +118,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
       <View style={styles.rightContainer}>
         {/* Seasonal Badge */}
         {getSeasonalBadge()}
-        
+
         {/* User Created Badge */}
         {ingredient.isUserCreated && (
           <View style={[styles.badge, styles.userBadge]}>
@@ -127,14 +127,14 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
         )}
 
         {/* Favorite Heart */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.favoriteButton}
           onPress={handleFavoritePress}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Animated.Text 
+          <Animated.Text
             style={[
-              styles.favoriteIcon, 
+              styles.favoriteIcon,
               { transform: [{ scale: heartScale }] }
             ]}
           >
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.cardMargin,
     minHeight: 70,
   },
-  
+
   compactCard: {
     backgroundColor: colors.backgroundLight,
     borderRadius: spacing.borderRadius.lg,
@@ -164,41 +164,41 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
     minHeight: 50,
   },
-  
+
   favoriteCard: {
     borderLeftWidth: 3,
     borderLeftColor: colors.favorite,
   },
-  
+
   infoContainer: {
     flex: 1,
     justifyContent: 'center',
     paddingLeft: spacing.sm,
   },
-  
+
   name: {
     ...typography.styles.body,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
     marginBottom: 2,
   },
-  
+
   details: {
     ...typography.styles.small,
     color: colors.textLight,
   },
-  
+
   description: {
     ...typography.styles.small,
     color: colors.textSecondary,
     marginTop: 2,
   },
-  
+
   rightContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
-  
+
   badge: {
     backgroundColor: colors.success,
     borderRadius: spacing.borderRadius.xl,
@@ -206,22 +206,22 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     marginBottom: spacing.xs,
   },
-  
+
   userBadge: {
     backgroundColor: colors.primary,
   },
-  
+
   badgeText: {
     ...typography.styles.small,
     fontWeight: typography.weights.semibold,
     color: colors.textWhite,
     fontSize: 11,
   },
-  
+
   favoriteButton: {
     padding: spacing.xs,
   },
-  
+
   favoriteIcon: {
     fontSize: 16,
   },

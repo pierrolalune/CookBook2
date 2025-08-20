@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { FavoritesRepository } from '../repositories/FavoritesRepository';
+import { useIngredientsContext } from './IngredientsContext';
 
 interface FavoritesContextType {
   favoriteIds: string[];
@@ -18,8 +19,14 @@ export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const ingredientsContext = useIngredientsContext();
   
   const repository = new FavoritesRepository();
+
+  // Sync favorites with ingredients context whenever they change
+  useEffect(() => {
+    ingredientsContext.syncFavorites(favoriteIds);
+  }, [favoriteIds, ingredientsContext]);
 
   const loadFavorites = useCallback(async () => {
     try {

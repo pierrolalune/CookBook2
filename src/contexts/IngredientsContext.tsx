@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { IngredientRepository } from '../repositories/IngredientRepository';
 import { Ingredient, IngredientFilters, CreateIngredientInput, UpdateIngredientInput } from '../types';
-import { useFavoritesContext } from './FavoritesContext';
 
 interface IngredientsContextType {
   ingredients: Ingredient[];
@@ -12,15 +11,16 @@ interface IngredientsContextType {
   updateIngredient: (input: UpdateIngredientInput) => Promise<Ingredient | null>;
   deleteIngredient: (id: string) => Promise<boolean>;
   refreshIngredients: () => Promise<void>;
+  syncFavorites: (favoriteIds: string[]) => void;
 }
 
 const IngredientsContext = createContext<IngredientsContextType | undefined>(undefined);
 
-const IngredientsProviderContent: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const IngredientsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [rawIngredients, setRawIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const favoritesContext = useFavoritesContext();
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   
   const repository = new IngredientRepository();
 
@@ -28,9 +28,14 @@ const IngredientsProviderContent: React.FC<{ children: ReactNode }> = ({ childre
   const ingredients = React.useMemo(() => {
     return rawIngredients.map(ingredient => ({
       ...ingredient,
-      isFavorite: favoritesContext.favoriteIds.includes(ingredient.id)
+      isFavorite: favoriteIds.includes(ingredient.id)
     }));
-  }, [rawIngredients, favoritesContext.favoriteIds]);
+  }, [rawIngredients, favoriteIds]);
+
+  // Function to sync favorites from FavoritesContext
+  const syncFavorites = useCallback((newFavoriteIds: string[]) => {
+    setFavoriteIds(newFavoriteIds);
+  }, []);
 
   const loadIngredients = useCallback(async (filters?: IngredientFilters) => {
     try {
@@ -129,20 +134,13 @@ const IngredientsProviderContent: React.FC<{ children: ReactNode }> = ({ childre
     updateIngredient,
     deleteIngredient,
     refreshIngredients,
+    syncFavorites,
   };
 
   return (
     <IngredientsContext.Provider value={value}>
       {children}
     </IngredientsContext.Provider>
-  );
-};
-
-export const IngredientsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  return (
-    <IngredientsProviderContent>
-      {children}
-    </IngredientsProviderContent>
   );
 };
 

@@ -202,6 +202,79 @@ export class SeasonalUtils {
     return 'in-season';
   }
 
+  static formatMonthRange(months: number[]): string {
+    if (!months || months.length === 0) return '';
+    
+    if (months.length === 1) {
+      return this.getMonthName(months[0]);
+    }
+    
+    const sortedMonths = [...months].sort((a, b) => a - b);
+    
+    // Check if it's a continuous range
+    const ranges: number[][] = [];
+    let currentRange = [sortedMonths[0]];
+    
+    for (let i = 1; i < sortedMonths.length; i++) {
+      const current = sortedMonths[i];
+      const previous = sortedMonths[i - 1];
+      
+      // Handle year wrap-around (December to January)
+      if (current === previous + 1 || (previous === 12 && current === 1)) {
+        currentRange.push(current);
+      } else {
+        ranges.push(currentRange);
+        currentRange = [current];
+      }
+    }
+    ranges.push(currentRange);
+    
+    // Format ranges
+    return ranges.map(range => {
+      if (range.length === 1) {
+        return this.getMonthName(range[0]);
+      } else {
+        return `${this.getMonthName(range[0])} à ${this.getMonthName(range[range.length - 1])}`;
+      }
+    }).join(', ');
+  }
+
+  static getSeasonalInfo(ingredient: Ingredient): {
+    availability: string;
+    peakPeriod: string;
+    currentStatus: string;
+  } {
+    if (!ingredient.seasonal) {
+      return {
+        availability: 'Toute l\'année',
+        peakPeriod: '',
+        currentStatus: ''
+      };
+    }
+    
+    const { months, peak_months } = ingredient.seasonal;
+    const availability = this.formatMonthRange(months);
+    const peakPeriod = peak_months.length > 0 ? this.formatMonthRange(peak_months) : '';
+    
+    const detailedStatus = this.getDetailedSeasonStatus(ingredient);
+    const statusMap = {
+      'beginning-of-season': '🌱 Début de saison',
+      'peak-season': '🔥 Pic de saison',
+      'end-of-season': '🍂 Fin de saison',
+      'in-season': '✓ En saison',
+      'out-of-season': '❌ Hors saison',
+      'year-round': 'Toute l\'année'
+    };
+    
+    const currentStatus = statusMap[detailedStatus] || '';
+    
+    return {
+      availability,
+      peakPeriod,
+      currentStatus
+    };
+  }
+
   static getSeasonName(season: string): string {
     const seasonMap: { [key: string]: string } = {
       'printemps': 'Printemps',

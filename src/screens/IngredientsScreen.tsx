@@ -19,6 +19,7 @@ import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { Ingredient, IngredientCategory } from '../types';
 import { colors, spacing, commonStyles } from '../styles';
+import { SeasonalUtils } from '../utils/seasonalUtils';
 
 export const IngredientsScreen: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
@@ -145,10 +146,47 @@ export const IngredientsScreen: React.FC = () => {
   }, [filteredIngredients, selectedCategory, searchQuery, seasonalActions]);
 
   const handleIngredientPress = (ingredient: Ingredient) => {
-    // TODO: Navigate to ingredient detail screen
+    const seasonalInfo = SeasonalUtils.getSeasonalInfo(ingredient);
+    
+    // Build detailed information
+    const details: string[] = [];
+    
+    // Category information
+    details.push(`Catégorie: ${ingredient.subcategory}`);
+    
+    // Seasonal information
+    if (ingredient.seasonal) {
+      details.push(`Disponibilité: ${seasonalInfo.availability}`);
+      
+      if (seasonalInfo.peakPeriod) {
+        details.push(`Pic de saison: ${seasonalInfo.peakPeriod}`);
+      }
+      
+      if (seasonalInfo.currentStatus) {
+        details.push(`État actuel: ${seasonalInfo.currentStatus}`);
+      }
+    } else {
+      details.push(`Disponibilité: ${seasonalInfo.availability}`);
+    }
+    
+    // Available units
+    if (ingredient.units && ingredient.units.length > 0) {
+      details.push(`Unités: ${ingredient.units.join(', ')}`);
+    }
+    
+    // Description (only if it exists)
+    if (ingredient.description && ingredient.description.trim()) {
+      details.push(`\nDescription: ${ingredient.description}`);
+    }
+    
+    // Notes (only if they exist)
+    if (ingredient.notes && ingredient.notes.trim()) {
+      details.push(`Notes: ${ingredient.notes}`);
+    }
+    
     Alert.alert(
       ingredient.name,
-      `Catégorie: ${ingredient.subcategory}\n${ingredient.description || 'Aucune description'}`,
+      details.join('\n'),
       [{ text: 'OK' }]
     );
   };
@@ -275,7 +313,7 @@ export const IngredientsScreen: React.FC = () => {
                   ingredients={categoryIngredients}
                   onIngredientPress={handleIngredientPress}
                   headerStyle={categoryInfo.headerStyle}
-                  initiallyExpanded={true}
+                  initiallyExpanded={false}
                   compact={true}
                   showCount={true}
                   emptyMessage={

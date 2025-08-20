@@ -3,8 +3,7 @@ import {
   View, 
   Text, 
   StyleSheet, 
-  TouchableOpacity, 
-  ScrollView 
+  TouchableOpacity
 } from 'react-native';
 import { IngredientCategory } from '../../types';
 import { colors, spacing, typography } from '../../styles';
@@ -37,32 +36,41 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
 }) => {
   const categories: CategoryChip[] = [
     { id: 'all', label: 'Tous', icon: '📋' },
-    { id: 'favoris', label: `❤️ Favoris${favoriteCount > 0 ? ` (${favoriteCount})` : ''}`, icon: '❤️', color: colors.favorite },
+    { id: 'favoris', label: `Favoris${favoriteCount > 0 ? ` (${favoriteCount})` : ''}`, icon: '❤️', color: colors.favorite },
     { id: 'fruits', label: 'Fruits', icon: '🍎' },
     { id: 'legumes', label: 'Légumes', icon: '🥬' },
     { id: 'peche', label: 'Poisson', icon: '🐟' },
     { id: 'viande', label: 'Viande', icon: '🥩' },
     { id: 'epicerie', label: 'Épicerie', icon: '🛒' },
-    { id: 'saison', label: `🌿 Saison${seasonalCount > 0 ? ` (${seasonalCount})` : ''}`, icon: '🌿' },
-    { id: 'myproduct', label: `⭐ Mes produits${userIngredientCount > 0 ? ` (${userIngredientCount})` : ''}`, icon: '⭐' },
+    { id: 'saison', label: `Saison${seasonalCount > 0 ? ` (${seasonalCount})` : ''}`, icon: '🌿' },
+    { id: 'myproduct', label: `Mes produits${userIngredientCount > 0 ? ` (${userIngredientCount})` : ''}`, icon: '⭐' },
   ];
 
   const getChipStyle = (category: CategoryChip) => {
     const isSelected = selectedCategory === category.id;
     const isSpecial = ['favoris', 'myproduct'].includes(category.id);
+    const isWide = ['all', 'favoris'].includes(category.id);
+    
+    const baseStyles: any[] = [styles.chip];
+    
+    if (isWide) {
+      baseStyles.push(styles.chipWide);
+    }
     
     if (isSelected) {
+      baseStyles.push(styles.chipSelected);
       if (category.id === 'favoris') {
-        return [styles.chip, styles.chipSelected, styles.favoritesChipSelected];
+        baseStyles.push(styles.favoritesChipSelected);
       }
-      return [styles.chip, styles.chipSelected];
+    } else if (category.id === 'all') {
+      baseStyles.push(styles.allChip);
+    } else if (category.id === 'favoris') {
+      baseStyles.push(styles.favoritesChip);
+    } else if (isSpecial) {
+      baseStyles.push(styles.specialChip);
     }
     
-    if (isSpecial) {
-      return [styles.chip, styles.specialChip];
-    }
-    
-    return [styles.chip];
+    return baseStyles;
   };
 
   const getTextStyle = (category: CategoryChip) => {
@@ -77,11 +85,7 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+      <View style={styles.gridContainer}>
         {categories.map((category) => (
           <TouchableOpacity
             key={category.id}
@@ -89,36 +93,53 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
             onPress={() => onCategorySelect(category.id)}
             activeOpacity={0.7}
           >
+            <Text style={styles.chipIcon}>{category.icon}</Text>
             <Text style={getTextStyle(category)}>
               {category.label}
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: spacing.lg,
+    backgroundColor: colors.backgroundLight,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.screenPadding,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
   },
   
-  scrollContent: {
-    paddingHorizontal: spacing.screenPadding,
-    gap: spacing.sm,
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
   },
   
   chip: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
     borderRadius: spacing.borderRadius.xl,
     backgroundColor: colors.backgroundDark,
     borderWidth: 2,
     borderColor: 'transparent',
-    minHeight: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
+    minHeight: 32,
+    gap: 4,
+    width: '23.5%', // 4 columns with gap
+  },
+  
+  chipWide: {
+    width: '48.5%', // 2 columns with gap
+  },
+  
+  allChip: {
+    backgroundColor: '#333',
   },
   
   chipSelected: {
@@ -127,9 +148,11 @@ const styles = StyleSheet.create({
   },
   
   specialChip: {
-    backgroundColor: colors.primaryLight,
-    borderColor: colors.primary,
-    borderWidth: 1,
+    backgroundColor: colors.backgroundDark,
+  },
+  
+  favoritesChip: {
+    backgroundColor: colors.favoriteLight,
   },
   
   favoritesChipSelected: {
@@ -137,8 +160,13 @@ const styles = StyleSheet.create({
     borderColor: colors.favorite,
   },
   
+  chipIcon: {
+    fontSize: 12,
+  },
+  
   chipText: {
     ...typography.styles.small,
+    fontSize: 11,
     fontWeight: typography.weights.medium,
     color: colors.textSecondary,
     textAlign: 'center',

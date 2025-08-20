@@ -15,10 +15,10 @@ export default function RootLayout() {
         // First initialize the database
         await initializeDatabase();
         console.log('Database initialized, now resetting for development...');
-        
+
         // Reset database for fresh start (development only)
-        await resetDatabase();
-        console.log('🚀 App ready - Database reset and reseeded complete');
+        //await resetDatabase();
+        //console.log('🚀 App ready - Database reset and reseeded complete');
         setIsDbReady(true);
       } catch (error) {
         console.error('Failed to setup database:', error);
@@ -60,19 +60,19 @@ export default function RootLayout() {
           headerTitleAlign: 'center',
         }}
       >
-        <Stack.Screen 
-          name="index" 
-          options={{ 
+        <Stack.Screen
+          name="index"
+          options={{
             title: 'Ingrédients',
-            headerShown: true 
-          }} 
+            headerShown: true
+          }}
         />
-        <Stack.Screen 
-          name="add-ingredient" 
-          options={{ 
+        <Stack.Screen
+          name="add-ingredient"
+          options={{
             title: 'Nouvel Ingrédient',
             presentation: 'modal'
-          }} 
+          }}
         />
       </Stack>
     </ScreenErrorBoundary>

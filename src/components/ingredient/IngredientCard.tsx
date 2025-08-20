@@ -54,31 +54,6 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
     }
   };
 
-  const getIngredientIcon = (category: IngredientCategory): string => {
-    const iconMap: Record<IngredientCategory, string> = {
-      fruits: '🍎',
-      legumes: '🥬',
-      viande: '🥩',
-      produits_laitiers: '🥛',
-      epicerie: '🛒',
-      peche: '🐟',
-      autres: '🏷️'
-    };
-    return iconMap[category] || '🏷️';
-  };
-
-  const getIconBackgroundColor = (category: IngredientCategory): string => {
-    const colorMap: Record<IngredientCategory, string> = {
-      fruits: colors.fruits,
-      legumes: colors.vegetables,
-      viande: colors.meat,
-      produits_laitiers: colors.backgroundLight,
-      epicerie: colors.grocery,
-      peche: colors.fish,
-      autres: colors.backgroundDark
-    };
-    return colorMap[category] || colors.backgroundDark;
-  };
 
   const getSeasonStatus = () => {
     if (!ingredient.seasonal) return null;
@@ -114,16 +89,6 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
       onPress={handlePress}
       activeOpacity={0.7}
     >
-      {/* Ingredient Icon */}
-      <View style={[
-        styles.iconContainer, 
-        { backgroundColor: getIconBackgroundColor(ingredient.category) }
-      ]}>
-        <Text style={styles.iconText}>
-          {getIngredientIcon(ingredient.category)}
-        </Text>
-      </View>
-
       {/* Ingredient Info */}
       <View style={styles.infoContainer}>
         <Text style={styles.name} numberOfLines={1}>
@@ -196,22 +161,10 @@ const styles = StyleSheet.create({
     borderLeftColor: colors.favorite,
   },
   
-  iconContainer: {
-    width: spacing.component.iconSize,
-    height: spacing.component.iconSize,
-    borderRadius: spacing.borderRadius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.cardPadding,
-  },
-  
-  iconText: {
-    fontSize: 20,
-  },
-  
   infoContainer: {
     flex: 1,
     justifyContent: 'center',
+    paddingLeft: spacing.sm,
   },
   
   name: {

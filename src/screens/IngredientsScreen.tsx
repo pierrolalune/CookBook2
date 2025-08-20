@@ -14,6 +14,7 @@ import { useSeasonalIngredients } from '../hooks/useSeasonalIngredients';
 import { SearchBar } from '../components/common/SearchBar';
 import { CategoryChips, FilterCategory } from '../components/common/CategoryChips';
 import { CategorySection } from '../components/ingredient/CategorySection';
+import { IngredientCard } from '../components/ingredient/IngredientCard';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { Ingredient, IngredientCategory } from '../types';
@@ -86,46 +87,46 @@ export const IngredientsScreen: React.FC = () => {
 
   // Group ingredients by category for display
   const groupedIngredients = useMemo(() => {
-    if (selectedCategory !== 'all' || searchQuery.trim()) {
-      // Show flat list for specific categories or search results
-      return { [selectedCategory]: filteredIngredients };
-    }
-
-    // Group by category for "all" view
-    const groups: { [key: string]: Ingredient[] } = {};
-    
-    // Special categories first
-    const favorites = filteredIngredients.filter(ing => ing.isFavorite);
-    const seasonal = filteredIngredients.filter(ing => seasonalActions.isIngredientInSeason(ing));
-    const userCreated = filteredIngredients.filter(ing => ing.isUserCreated);
-    
-    if (favorites.length > 0) {
-      groups['favoris'] = favorites;
-    }
-    
-    if (seasonal.length > 0) {
-      groups['saison'] = seasonal;
-    }
-
-    if (userCreated.length > 0) {
-      groups['myproduct'] = userCreated;
-    }
-
-    // Regular categories
-    const categoryOrder: IngredientCategory[] = [
-      'fruits', 'legumes', 'peche', 'viande', 'produits_laitiers', 'epicerie'
-    ];
-
-    categoryOrder.forEach(category => {
-      const categoryIngredients = filteredIngredients.filter(ing => 
-        ing.category === category && !ing.isUserCreated
-      );
-      if (categoryIngredients.length > 0) {
-        groups[category] = categoryIngredients;
+    if (selectedCategory === 'all' && !searchQuery.trim()) {
+      // Group by category for "all" view
+      const groups: { [key: string]: Ingredient[] } = {};
+      
+      // Special categories first
+      const favorites = filteredIngredients.filter(ing => ing.isFavorite);
+      const seasonal = filteredIngredients.filter(ing => seasonalActions.isIngredientInSeason(ing));
+      const userCreated = filteredIngredients.filter(ing => ing.isUserCreated);
+      
+      if (favorites.length > 0) {
+        groups['favoris'] = favorites;
       }
-    });
+      
+      if (seasonal.length > 0) {
+        groups['saison'] = seasonal;
+      }
 
-    return groups;
+      if (userCreated.length > 0) {
+        groups['myproduct'] = userCreated;
+      }
+
+      // Regular categories
+      const categoryOrder: IngredientCategory[] = [
+        'fruits', 'legumes', 'peche', 'viande', 'produits_laitiers', 'epicerie'
+      ];
+
+      categoryOrder.forEach(category => {
+        const categoryIngredients = filteredIngredients.filter(ing => 
+          ing.category === category && !ing.isUserCreated
+        );
+        if (categoryIngredients.length > 0) {
+          groups[category] = categoryIngredients;
+        }
+      });
+
+      return groups;
+    }
+    
+    // For specific categories or search, return flat list
+    return null;
   }, [filteredIngredients, selectedCategory, searchQuery, seasonalActions]);
 
   const handleIngredientPress = (ingredient: Ingredient) => {
@@ -166,40 +167,40 @@ export const IngredientsScreen: React.FC = () => {
   const getCategoryInfo = (categoryKey: string) => {
     const categoryMap: { [key: string]: { title: string; icon: string; headerStyle?: any } } = {
       favoris: { 
-        title: '❤️ Mes Favoris', 
+        title: 'Mes Favoris', 
         icon: '❤️',
         headerStyle: { backgroundColor: colors.favoriteLight }
       },
       saison: { 
-        title: '🌿 Produits de saison', 
+        title: 'Produits de saison', 
         icon: '🌿' 
       },
       myproduct: { 
-        title: '⭐ Mes produits', 
+        title: 'Mes produits', 
         icon: '⭐' 
       },
       fruits: { 
-        title: '🍎 Fruits', 
+        title: 'Fruits', 
         icon: '🍎' 
       },
       legumes: { 
-        title: '🥬 Légumes', 
+        title: 'Légumes', 
         icon: '🥬' 
       },
       peche: { 
-        title: '🐟 Poisson', 
+        title: 'Poisson', 
         icon: '🐟' 
       },
       viande: { 
-        title: '🥩 Viande', 
+        title: 'Viande', 
         icon: '🥩' 
       },
       produits_laitiers: { 
-        title: '🥛 Produits laitiers', 
+        title: 'Produits laitiers', 
         icon: '🥛' 
       },
       epicerie: { 
-        title: '🛒 Épicerie', 
+        title: 'Épicerie', 
         icon: '🛒' 
       },
     };
@@ -246,38 +247,70 @@ export const IngredientsScreen: React.FC = () => {
             />
           }
         >
-          {Object.entries(groupedIngredients).map(([categoryKey, categoryIngredients]) => {
-            const categoryInfo = getCategoryInfo(categoryKey);
-            
-            return (
-              <CategorySection
-                key={categoryKey}
-                title={categoryInfo.title}
-                icon={categoryInfo.icon}
-                ingredients={categoryIngredients}
-                onIngredientPress={handleIngredientPress}
-                headerStyle={categoryInfo.headerStyle}
-                initiallyExpanded={selectedCategory !== 'all' || Object.keys(groupedIngredients).length <= 3}
-                emptyMessage={
-                  selectedCategory === 'favoris' 
-                    ? 'Aucun favori. Appuyez sur ❤️ pour ajouter des ingrédients favoris.'
-                    : selectedCategory === 'myproduct'
-                    ? 'Aucun produit personnel. Utilisez le bouton + pour en créer.'
-                    : 'Aucun ingrédient dans cette catégorie.'
-                }
-              />
-            );
-          })}
-
-          {Object.keys(groupedIngredients).length === 0 && (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>
-                {searchQuery.trim() 
-                  ? `Aucun ingrédient trouvé pour "${searchQuery}"`
-                  : 'Aucun ingrédient disponible'
-                }
-              </Text>
-            </View>
+          {/* All categories view with collapsible sections */}
+          {selectedCategory === 'all' && groupedIngredients && !searchQuery.trim() ? (
+            Object.entries(groupedIngredients).map(([categoryKey, categoryIngredients]) => {
+              const categoryInfo = getCategoryInfo(categoryKey);
+              
+              return (
+                <CategorySection
+                  key={categoryKey}
+                  title={categoryInfo.title}
+                  icon={categoryInfo.icon}
+                  ingredients={categoryIngredients}
+                  onIngredientPress={handleIngredientPress}
+                  headerStyle={categoryInfo.headerStyle}
+                  initiallyExpanded={true}
+                  compact={true}
+                  showCount={true}
+                  emptyMessage={
+                    categoryKey === 'favoris' 
+                      ? 'Aucun favori. Appuyez sur ❤️ pour ajouter des ingrédients favoris.'
+                      : categoryKey === 'myproduct'
+                      ? 'Aucun produit personnel. Utilisez le bouton + pour en créer.'
+                      : 'Aucun ingrédient dans cette catégorie.'
+                  }
+                />
+              );
+            })
+          ) : (
+            /* Specific category view or search results - flat list */
+            <>
+              {selectedCategory !== 'all' && (
+                <View style={styles.categoryHeader}>
+                  <Text style={styles.categoryHeaderIcon}>
+                    {getCategoryInfo(selectedCategory).icon}
+                  </Text>
+                  <Text style={styles.categoryHeaderTitle}>
+                    {getCategoryInfo(selectedCategory).title}
+                  </Text>
+                </View>
+              )}
+              <View style={styles.flatListContainer}>
+                {filteredIngredients.map((ingredient) => (
+                  <IngredientCard
+                    key={ingredient.id}
+                    ingredient={ingredient}
+                    onPress={handleIngredientPress}
+                    showSeasonalBadge={true}
+                  />
+                ))}
+              </View>
+              {filteredIngredients.length === 0 && (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyStateText}>
+                    {searchQuery.trim() 
+                      ? `Aucun ingrédient trouvé pour "${searchQuery}"`
+                      : selectedCategory === 'favoris'
+                      ? 'Aucun favori. Appuyez sur ❤️ pour ajouter des ingrédients favoris.'
+                      : selectedCategory === 'myproduct'
+                      ? 'Aucun produit personnel. Utilisez le bouton + pour en créer.'
+                      : 'Aucun ingrédient dans cette catégorie.'
+                    }
+                  </Text>
+                </View>
+              )}
+            </>
           )}
 
           {/* Extra padding for floating button */}
@@ -310,6 +343,31 @@ const styles = StyleSheet.create({
   
   scrollContent: {
     padding: spacing.screenPadding,
+  },
+  
+  categoryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.screenPadding,
+    paddingVertical: spacing.md,
+    backgroundColor: colors.backgroundLight,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+    marginBottom: spacing.md,
+  },
+  
+  categoryHeaderIcon: {
+    fontSize: 24,
+    marginRight: spacing.sm,
+  },
+  
+  categoryHeaderTitle: {
+    ...commonStyles.textH2,
+    color: colors.textPrimary,
+  },
+  
+  flatListContainer: {
+    paddingHorizontal: spacing.screenPadding,
   },
   
   emptyState: {

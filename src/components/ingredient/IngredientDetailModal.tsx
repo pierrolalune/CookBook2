@@ -41,7 +41,7 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
 
   const getAvailabilityIcon = (): string => {
     if (!ingredient.seasonal) return '🗓️';
-    
+
     const status = SeasonalUtils.getDetailedSeasonStatus(ingredient);
     const statusIcons = {
       'beginning-of-season': '🌱',
@@ -51,7 +51,7 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
       'out-of-season': '❌',
       'year-round': '🗓️'
     };
-    
+
     return statusIcons[status] || '🗓️';
   };
 
@@ -80,7 +80,11 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
             {/* Seasonal Information */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
@@ -89,14 +93,14 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
               </View>
               <View style={styles.sectionContent}>
                 <Text style={styles.availabilityText}>{seasonalInfo.availability}</Text>
-                
+
                 {seasonalInfo.peakPeriod && (
                   <View style={styles.peakSeasonContainer}>
                     <Text style={styles.peakSeasonLabel}>Pic de saison</Text>
                     <Text style={styles.peakSeasonText}>{seasonalInfo.peakPeriod}</Text>
                   </View>
                 )}
-                
+
                 {seasonalInfo.currentStatus && ingredient.seasonal && (
                   <View style={styles.currentStatusContainer}>
                     <Text style={styles.currentStatusText}>{seasonalInfo.currentStatus}</Text>
@@ -201,7 +205,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundLight,
     borderRadius: spacing.borderRadius.xl,
     width: screenWidth - spacing.md * 2,
-    maxHeight: screenHeight * 0.85,
+    maxHeight: screenHeight * 0.8,
     ...commonStyles.shadowLarge,
     alignSelf: 'center',
   },
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: spacing.md,
+    padding: spacing.lg,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
     borderTopLeftRadius: spacing.borderRadius.xl,
@@ -266,9 +270,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  scrollContent: {
+    flexGrow: 1,
+  },
+
   section: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
@@ -276,7 +284,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.xs,
+    marginBottom: spacing.sm,
   },
 
   sectionIcon: {
@@ -291,7 +299,8 @@ const styles = StyleSheet.create({
   },
 
   sectionContent: {
-    paddingLeft: spacing.md + spacing.xs + 18, // Align with title text
+    paddingLeft: spacing.lg + spacing.xs + 18, // Align with title text
+    minHeight: 30, // Ensure minimum height for content
   },
 
   availabilityText: {
@@ -320,9 +329,9 @@ const styles = StyleSheet.create({
   },
 
   currentStatusContainer: {
-    marginTop: spacing.xs,
+    marginTop: spacing.sm,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
+    paddingVertical: spacing.xs,
     backgroundColor: colors.primaryLight,
     borderRadius: spacing.borderRadius.md,
     alignSelf: 'flex-start',
@@ -409,6 +418,6 @@ const styles = StyleSheet.create({
   },
 
   bottomPadding: {
-    height: spacing.sm,
+    height: spacing.md,
   },
 });

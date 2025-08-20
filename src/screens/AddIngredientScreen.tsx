@@ -9,7 +9,8 @@ import {
   Alert,
   Switch,
   KeyboardAvoidingView,
-  Platform 
+  Platform,
+  SafeAreaView
 } from 'react-native';
 import { router } from 'expo-router';
 import { useIngredientsContext } from '../contexts/IngredientsContext';
@@ -199,16 +200,18 @@ export const AddIngredientScreen: React.FC = () => {
 
   return (
     <ScreenErrorBoundary>
-      <KeyboardAvoidingView 
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView 
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         >
+          <ScrollView 
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
         {/* Info Box */}
         <View style={styles.infoBox}>
           <Text style={styles.infoIcon}>ℹ️</Text>
@@ -387,38 +390,43 @@ export const AddIngredientScreen: React.FC = () => {
             numberOfLines={3}
           />
         </View>
-      </ScrollView>
+          </ScrollView>
 
-      {/* Bottom Actions */}
-      <View style={styles.bottomActions}>
-        <TouchableOpacity 
-          style={[commonStyles.button, styles.cancelButton]}
-          onPress={handleCancel}
-        >
-          <Text style={[commonStyles.secondaryButtonText, styles.cancelButtonText]}>
-            Annuler
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[commonStyles.button, commonStyles.primaryButton, styles.submitButton]}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          <Text style={commonStyles.buttonText}>
-            {loading ? 'Création...' : 'Ajouter l\'ingrédient'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+          {/* Bottom Actions */}
+          <View style={styles.bottomActions}>
+            <TouchableOpacity 
+              style={[commonStyles.button, styles.cancelButton]}
+              onPress={handleCancel}
+            >
+              <Text style={[commonStyles.secondaryButtonText, styles.cancelButtonText]}>
+                Annuler
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[commonStyles.button, commonStyles.primaryButton, styles.submitButton]}
+              onPress={handleSubmit}
+              disabled={loading}
+            >
+              <Text style={commonStyles.buttonText}>
+                {loading ? 'Création...' : 'Ajouter l\'ingrédient'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </ScreenErrorBoundary>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  
+  container: {
+    flex: 1,
   },
   
   scrollView: {

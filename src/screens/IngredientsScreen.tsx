@@ -88,37 +88,50 @@ export const IngredientsScreen: React.FC = () => {
 
   // Group ingredients by category for display
   const groupedIngredients = useMemo(() => {
-    if (selectedCategory === 'all' && !searchQuery.trim()) {
-      // Group by category for "all" view
+    // Show grouped view for 'all', 'favoris', and 'myproduct' categories
+    if ((selectedCategory === 'all' || selectedCategory === 'favoris' || selectedCategory === 'myproduct') && !searchQuery.trim()) {
       const groups: { [key: string]: Ingredient[] } = {};
       
-      // Special categories first
-      const favorites = filteredIngredients.filter(ing => ing.isFavorite);
-      // Only show seasonal ingredients that have seasonal data and are in season
-      const seasonal = filteredIngredients.filter(ing => ing.seasonal && seasonalActions.isIngredientInSeason(ing));
-      const userCreated = filteredIngredients.filter(ing => ing.isUserCreated);
-      
-      if (favorites.length > 0) {
-        groups['favoris'] = favorites;
-      }
-      
-      if (seasonal.length > 0) {
-        groups['saison'] = seasonal;
+      if (selectedCategory === 'all') {
+        // Special categories first for "all" view
+        const favorites = filteredIngredients.filter(ing => ing.isFavorite);
+        // Only show seasonal ingredients that have seasonal data and are in season
+        const seasonal = filteredIngredients.filter(ing => ing.seasonal && seasonalActions.isIngredientInSeason(ing));
+        const userCreated = filteredIngredients.filter(ing => ing.isUserCreated);
+        
+        if (favorites.length > 0) {
+          groups['favoris'] = favorites;
+        }
+        
+        if (seasonal.length > 0) {
+          groups['saison'] = seasonal;
+        }
+
+        if (userCreated.length > 0) {
+          groups['myproduct'] = userCreated;
+        }
       }
 
-      if (userCreated.length > 0) {
-        groups['myproduct'] = userCreated;
-      }
-
-      // Regular categories
+      // Regular categories for all views
       const categoryOrder: IngredientCategory[] = [
         'fruits', 'legumes', 'peche', 'viande', 'produits_laitiers', 'epicerie'
       ];
 
       categoryOrder.forEach(category => {
-        const categoryIngredients = filteredIngredients.filter(ing => 
-          ing.category === category && !ing.isUserCreated
-        );
+        let categoryIngredients: Ingredient[];
+        
+        if (selectedCategory === 'all') {
+          // For "all" view, exclude user created from regular categories
+          categoryIngredients = filteredIngredients.filter(ing => 
+            ing.category === category && !ing.isUserCreated
+          );
+        } else {
+          // For "favoris" and "myproduct", show all ingredients in each category
+          categoryIngredients = filteredIngredients.filter(ing => 
+            ing.category === category
+          );
+        }
+        
         if (categoryIngredients.length > 0) {
           groups[category] = categoryIngredients;
         }
@@ -127,7 +140,7 @@ export const IngredientsScreen: React.FC = () => {
       return groups;
     }
     
-    // For specific categories or search, return flat list
+    // For other specific categories or search, return flat list
     return null;
   }, [filteredIngredients, selectedCategory, searchQuery, seasonalActions]);
 
@@ -249,8 +262,8 @@ export const IngredientsScreen: React.FC = () => {
             />
           }
         >
-          {/* All categories view with collapsible sections */}
-          {selectedCategory === 'all' && groupedIngredients && !searchQuery.trim() ? (
+          {/* Grouped categories view with collapsible sections */}
+          {(selectedCategory === 'all' || selectedCategory === 'favoris' || selectedCategory === 'myproduct') && groupedIngredients && !searchQuery.trim() ? (
             Object.entries(groupedIngredients).map(([categoryKey, categoryIngredients]) => {
               const categoryInfo = getCategoryInfo(categoryKey);
               
@@ -278,7 +291,7 @@ export const IngredientsScreen: React.FC = () => {
           ) : (
             /* Specific category view or search results - flat list */
             <>
-              {selectedCategory !== 'all' && (
+              {selectedCategory !== 'all' && selectedCategory !== 'favoris' && selectedCategory !== 'myproduct' && (
                 <View style={styles.categoryHeader}>
                   <Text style={styles.categoryHeaderIcon}>
                     {getCategoryInfo(selectedCategory).icon}

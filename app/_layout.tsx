@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { initializeDatabase } from '../src/database';
+import { initializeDatabase, resetDatabase } from '../src/database';
 import { ScreenErrorBoundary } from '../src/components/common/ErrorBoundary';
 
 export default function RootLayout() {
@@ -12,12 +12,17 @@ export default function RootLayout() {
     // Initialize database on app startup
     const setupDatabase = async () => {
       try {
+        // First initialize the database
         await initializeDatabase();
-        console.log('🚀 App ready - Database initialization complete');
+        console.log('Database initialized, now resetting for development...');
+        
+        // Reset database for fresh start (development only)
+        await resetDatabase();
+        console.log('🚀 App ready - Database reset and reseeded complete');
         setIsDbReady(true);
       } catch (error) {
-        console.error('Failed to initialize database:', error);
-        setDbError(error instanceof Error ? error.message : 'Database initialization failed');
+        console.error('Failed to setup database:', error);
+        setDbError(error instanceof Error ? error.message : 'Database setup failed');
       }
     };
 
@@ -36,7 +41,7 @@ export default function RootLayout() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#667eea" />
-        <Text style={styles.loadingText}>Initializing database...</Text>
+        <Text style={styles.loadingText}>Setting up fresh database...</Text>
       </View>
     );
   }

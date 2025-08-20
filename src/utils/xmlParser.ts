@@ -1,5 +1,6 @@
 import { IngredientCategory, Ingredient } from '../types';
 import uuid from 'react-native-uuid';
+import { Asset } from 'expo-asset';
 
 interface XMLIngredient {
   name: string;
@@ -75,21 +76,39 @@ export class XMLDataLoader {
     
     // Category mapping from XML filenames to our type system
     const categoryFiles = [
-      { file: 'fruits.xml', category: 'fruits' as IngredientCategory },
-      { file: 'legumes.xml', category: 'legumes' as IngredientCategory },
-      { file: 'viande.xml', category: 'viande' as IngredientCategory },
-      { file: 'produits_laitiers.xml', category: 'produits_laitiers' as IngredientCategory },
-      { file: 'epicerie.xml', category: 'epicerie' as IngredientCategory },
-      { file: 'peche.xml', category: 'peche' as IngredientCategory }
+      { file: require('../../Data/fruits.xml'), category: 'fruits' as IngredientCategory },
+      { file: require('../../Data/legumes.xml'), category: 'legumes' as IngredientCategory },
+      { file: require('../../Data/viande.xml'), category: 'viande' as IngredientCategory },
+      { file: require('../../Data/produits_laitiers.xml'), category: 'produits_laitiers' as IngredientCategory },
+      { file: require('../../Data/epicerie.xml'), category: 'epicerie' as IngredientCategory },
+      { file: require('../../Data/peche.xml'), category: 'peche' as IngredientCategory }
     ];
     
     try {
-      // Note: In a real React Native app, we would use require() or import the XML files
-      // For now, we'll return this structure. The actual file reading will be implemented
-      // when we integrate with the main app
+      console.log('Loading ingredients from XML files...');
       
-      console.log('XML Data Loader initialized. File reading to be implemented in main app.');
+      for (const categoryFile of categoryFiles) {
+        try {
+          // Load the asset and read its content
+          const asset = Asset.fromModule(categoryFile.file);
+          await asset.downloadAsync();
+          
+          // Read the XML content
+          const response = await fetch(asset.localUri || asset.uri);
+          const xmlContent = await response.text();
+          
+          // Parse the XML content using our existing parser
+          const categoryIngredients = this.parseXMLContent(xmlContent, categoryFile.category);
+          ingredients.push(...categoryIngredients);
+          
+          console.log(`Loaded ${categoryIngredients.length} ingredients from ${categoryFile.category}`);
+        } catch (fileError) {
+          console.error(`Error loading ${categoryFile.category} XML:`, fileError);
+          // Continue with other files even if one fails
+        }
+      }
       
+      console.log(`✅ Total ingredients loaded: ${ingredients.length}`);
       return ingredients;
     } catch (error) {
       console.error('Error loading ingredient data from XML:', error);

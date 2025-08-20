@@ -1,5 +1,5 @@
 import { SQLiteDatabase, openDatabaseSync } from 'expo-sqlite';
-import { createTables, DATABASE_NAME, DATABASE_VERSION, migrateDatabase } from './schema';
+import { createTables, DATABASE_NAME, DATABASE_VERSION, migrateDatabase, resetDatabaseForDevelopment } from './schema';
 
 let db: SQLiteDatabase | null = null;
 
@@ -82,4 +82,13 @@ export const closeDatabase = async (): Promise<void> => {
 // Utility function to check if database is initialized
 export const isDatabaseInitialized = (): boolean => {
   return db !== null;
+};
+
+// Development utility to reset database completely
+export const resetDatabase = async (): Promise<void> => {
+  if (!db) {
+    throw new Error('Database not initialized. Call initializeDatabase() first.');
+  }
+  
+  await resetDatabaseForDevelopment(db);
 };

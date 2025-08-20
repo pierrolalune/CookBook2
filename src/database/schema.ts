@@ -1,12 +1,14 @@
 import { SQLiteDatabase } from 'expo-sqlite';
+import { xmlDataLoader } from '../utils/xmlParser';
+import { IngredientRepository } from '../repositories/IngredientRepository';
 
 export const DATABASE_NAME = 'cookbook.db';
-export const DATABASE_VERSION = 2;
+export const DATABASE_VERSION = 3;
 
 export const createTables = async (db: SQLiteDatabase): Promise<void> => {
   try {
     console.log(" --> Deb createTables <-- ");
-    
+
     // Set SQLite pragmas
     try {
       console.log('Setting PRAGMA journal_mode...');
@@ -17,7 +19,7 @@ export const createTables = async (db: SQLiteDatabase): Promise<void> => {
       console.error('Error setting pragmas:', error);
       throw error;
     }
-    
+
     // Create ingredients table
     try {
       console.log('Creating ingredients table...');
@@ -40,16 +42,16 @@ export const createTables = async (db: SQLiteDatabase): Promise<void> => {
         );
       `);
       console.log('✅ Ingredients table created successfully');
-      
+
       // Verify the table was created with correct schema
       const tableInfo = await db.getAllAsync('PRAGMA table_info(ingredients)');
       console.log('Ingredients table schema:', tableInfo);
-      
+
     } catch (error) {
       console.error('Error creating ingredients table:', error);
       throw error;
     }
-    
+
     // Create favorites table
     try {
       console.log('Creating favorites table...');
@@ -63,16 +65,16 @@ export const createTables = async (db: SQLiteDatabase): Promise<void> => {
         );
       `);
       console.log('✅ Favorites table created successfully');
-      
+
       // Verify the table was created
       const favTableInfo = await db.getAllAsync('PRAGMA table_info(favorites)');
       console.log('Favorites table schema:', favTableInfo);
-      
+
     } catch (error) {
       console.error('Error creating favorites table:', error);
       throw error;
     }
-    
+
     // Create indexes
     try {
       console.log('Creating indexes...');
@@ -89,7 +91,7 @@ export const createTables = async (db: SQLiteDatabase): Promise<void> => {
       console.error('Error creating indexes:', error);
       throw error;
     }
-    
+
     // Create trigger
     try {
       console.log('Creating update trigger...');
@@ -105,36 +107,75 @@ export const createTables = async (db: SQLiteDatabase): Promise<void> => {
       console.error('Error creating trigger:', error);
       throw error;
     }
-    
+
     console.log('✅ Database tables created successfully');
+
+    // Seed database with XML data on first creation
+    await seedDatabaseWithXML(db);
+
   } catch (error) {
     console.error('Error creating database tables:', error);
     throw error;
   }
 };
 
+// Function to seed database with XML ingredient data
+const seedDatabaseWithXML = async (db: SQLiteDatabase): Promise<void> => {
+  try {
+    console.log('🌱 Starting database seeding with XML data...');
+
+    // Check if ingredients already exist to avoid duplicate seeding
+    const existingCount = await db.getFirstAsync('SELECT COUNT(*) as count FROM ingredients') as { count: number } | null;
+    if (existingCount && existingCount.count > 0) {
+      console.log(`Database already contains ${existingCount.count} ingredients, skipping seeding`);
+      return;
+    }
+
+    // Load ingredients from XML files
+    const ingredients = await xmlDataLoader.loadIngredientsFromAssets();
+
+    if (ingredients.length === 0) {
+      console.warn('No ingredients loaded from XML files');
+      return;
+    }
+
+    // Use repository to bulk insert ingredients
+    // Note: We need to create a temporary repository instance
+    // In a more sophisticated setup, we'd inject this dependency
+    const tempRepository = new IngredientRepository();
+    await tempRepository.bulkInsert(ingredients);
+
+    console.log(`✅ Database seeded successfully with ${ingredients.length} ingredients`);
+
+  } catch (error) {
+    console.error('❌ Error seeding database with XML data:', error);
+    // Don't throw here - we want database creation to succeed even if seeding fails
+    console.log('Database creation will continue without seeding');
+  }
+};
+
 export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number): Promise<void> => {
   try {
     console.log(`Migrating database from version ${currentVersion} to ${DATABASE_VERSION}`);
-    
+
     // For any version less than 2, we need to recreate the tables
     // This handles both new installations and upgrades from old schemas
     if (currentVersion < 2) {
       console.log('Running migration to version 2 - recreating tables with proper schema...');
-      
+
       // First, try to backup any existing data if the ingredients table exists
       let existingIngredients: any[] = [];
       let existingFavorites: any[] = [];
-      
+
       try {
         // Check if tables exist and try to backup data
         const tables = await db.getAllAsync(`
-          SELECT name FROM sqlite_master 
+          SELECT name FROM sqlite_master
           WHERE type='table' AND name IN ('ingredients', 'favorites')
         `);
-        
+
         const tableNames = (tables as any[]).map(t => t.name);
-        
+
         if (tableNames.includes('ingredients')) {
           try {
             existingIngredients = await db.getAllAsync('SELECT * FROM ingredients') as any[];
@@ -143,7 +184,7 @@ export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number
             console.log('Could not backup ingredients, they may not exist or have different schema');
           }
         }
-        
+
         if (tableNames.includes('favorites')) {
           try {
             existingFavorites = await db.getAllAsync('SELECT * FROM favorites') as any[];
@@ -155,11 +196,11 @@ export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number
       } catch (error) {
         console.log('No existing data to backup or backup failed');
       }
-      
+
       // Drop existing tables and create new ones
       await dropTables(db);
       await createTables(db);
-      
+
       // Restore backed up data if possible and it matches the new schema
       if (existingIngredients.length > 0) {
         try {
@@ -169,7 +210,7 @@ export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number
             if (ingredient.id && ingredient.name && ingredient.category && ingredient.subcategory) {
               await db.runAsync(`
                 INSERT OR IGNORE INTO ingredients (
-                  id, name, category, subcategory, units, 
+                  id, name, category, subcategory, units,
                   seasonal_months, seasonal_peak_months, seasonal_season,
                   is_user_created, description, tags, notes,
                   created_at, updated_at
@@ -197,7 +238,7 @@ export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number
           console.log('Could not restore ingredients, but new schema is ready');
         }
       }
-      
+
       if (existingFavorites.length > 0) {
         try {
           console.log('Attempting to restore existing favorites...');
@@ -219,7 +260,7 @@ export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number
         }
       }
     }
-    
+
     console.log('✅ Database migration completed successfully');
   } catch (error) {
     console.error('Error during database migration:', error);
@@ -230,7 +271,7 @@ export const migrateDatabase = async (db: SQLiteDatabase, currentVersion: number
 export const dropTables = async (db: SQLiteDatabase): Promise<void> => {
   try {
     console.log('Dropping existing database structures...');
-    
+
     // Drop trigger first
     try {
       await db.execAsync('DROP TRIGGER IF EXISTS update_ingredients_updated_at;');
@@ -238,7 +279,7 @@ export const dropTables = async (db: SQLiteDatabase): Promise<void> => {
     } catch (error) {
       console.log('Trigger drop failed (may not exist):', error);
     }
-    
+
     // Drop indexes
     try {
       await db.execAsync('DROP INDEX IF EXISTS idx_favorites_ingredient_id;');
@@ -249,7 +290,7 @@ export const dropTables = async (db: SQLiteDatabase): Promise<void> => {
     } catch (error) {
       console.log('Some indexes drop failed (may not exist):', error);
     }
-    
+
     // Drop tables
     try {
       await db.execAsync('DROP TABLE IF EXISTS favorites;');
@@ -257,29 +298,53 @@ export const dropTables = async (db: SQLiteDatabase): Promise<void> => {
     } catch (error) {
       console.log('Favorites table drop failed (may not exist):', error);
     }
-    
+
     try {
       await db.execAsync('DROP TABLE IF EXISTS ingredients;');
       console.log('Dropped ingredients table');
     } catch (error) {
       console.log('Ingredients table drop failed (may not exist):', error);
     }
-    
+
     // Verify tables are gone
     const remainingTables = await db.getAllAsync(`
-      SELECT name FROM sqlite_master 
+      SELECT name FROM sqlite_master
       WHERE type='table' AND name IN ('ingredients', 'favorites')
     `);
-    
+
     if ((remainingTables as any[]).length > 0) {
       console.log('Warning: Some tables still exist:', remainingTables);
     } else {
       console.log('✅ All tables successfully dropped');
     }
-    
+
     console.log('Database tables dropped successfully');
   } catch (error) {
     console.error('Error dropping database tables:', error);
+    throw error;
+  }
+};
+
+// Development utility function to completely reset the database
+export const resetDatabaseForDevelopment = async (db: SQLiteDatabase): Promise<void> => {
+  try {
+    console.log('🔄 Resetting database for development...');
+    
+    // Drop all tables
+    await dropTables(db);
+    
+    // Reset database version to 0
+    await db.execAsync('PRAGMA user_version = 0');
+    
+    // Recreate tables and seed with XML data
+    await createTables(db);
+    
+    // Update version to current
+    await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
+    
+    console.log('✅ Database reset completed successfully');
+  } catch (error) {
+    console.error('❌ Error resetting database:', error);
     throw error;
   }
 };

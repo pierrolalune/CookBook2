@@ -114,33 +114,25 @@ export const EditRecipeScreen: React.FC<EditRecipeScreenProps> = ({ recipeId }) 
 
   return (
     <ScreenErrorBoundary>
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <RecipeForm
-            initialData={{
-              name: recipe.name,
-              description: recipe.description,
-              prepTime: recipe.prepTime,
-              cookTime: recipe.cookTime,
-              servings: recipe.servings,
-              difficulty: recipe.difficulty,
-              category: recipe.category,
-              photoUri: recipe.photoUri,
-              ingredients: recipe.ingredients,
-              instructions: recipe.instructions
-            }}
-            onSubmit={handleSave}
-            onCancel={handleCancel}
-            submitButtonText="Mettre à jour"
-            isLoading={saving}
-            mode="edit"
-          />
-        </ScrollView>
-      </View>
+      <RecipeForm
+        initialData={{
+          name: recipe.name,
+          description: recipe.description,
+          prepTime: recipe.prepTime,
+          cookTime: recipe.cookTime,
+          servings: recipe.servings,
+          difficulty: recipe.difficulty,
+          category: recipe.category,
+          photoUri: recipe.photoUri,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions
+        }}
+        onSubmit={handleSave}
+        onCancel={handleCancel}
+        submitButtonText="Mettre à jour"
+        isLoading={saving}
+        mode="edit"
+      />
     </ScreenErrorBoundary>
   );
 };

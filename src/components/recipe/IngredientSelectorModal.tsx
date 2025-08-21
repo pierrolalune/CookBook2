@@ -27,6 +27,7 @@ interface IngredientSelectorModalProps {
   onClose: () => void;
   onAddIngredient: (ingredient: Ingredient, quantity: number, unit: string, optional?: boolean) => void;
   excludeIngredientIds?: string[];
+  editingIngredient?: { ingredientId: string; ingredient?: Ingredient; quantity: number; unit: string; optional?: boolean } | null;
 }
 
 interface CategorySectionProps {
@@ -137,13 +138,15 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
   visible,
   onClose,
   onAddIngredient,
-  excludeIngredientIds = []
+  excludeIngredientIds = [],
+  editingIngredient = null
 }) => {
   const [modalAnimation] = useState(new Animated.Value(0));
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
   const [quantity, setQuantity] = useState('1');
   const [selectedUnit, setSelectedUnit] = useState('');
+  const [optional, setOptional] = useState(false);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set(['viande', 'peche', 'produits_laitiers']));
   const [step, setStep] = useState<'select' | 'quantity'>('select');
 
@@ -204,6 +207,16 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
   useEffect(() => {
     if (visible) {
       actions.loadIngredients();
+      
+      // Initialize editing mode
+      if (editingIngredient) {
+        setSelectedIngredient(editingIngredient.ingredient || null);
+        setQuantity(editingIngredient.quantity.toString());
+        setSelectedUnit(editingIngredient.unit);
+        setOptional(editingIngredient.optional || false);
+        setStep('quantity');
+      }
+      
       // Animate modal in
       Animated.spring(modalAnimation, {
         toValue: 1,
@@ -225,10 +238,11 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
         setSelectedIngredient(null);
         setQuantity('1');
         setSelectedUnit('');
+        setOptional(false);
         setStep('select');
       }, 250);
     }
-  }, [visible]);
+  }, [visible, editingIngredient]);
 
   const handleSelectIngredient = (ingredient: Ingredient) => {
     setSelectedIngredient(ingredient);
@@ -240,7 +254,7 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
     if (!selectedIngredient) return;
     
     const numQuantity = parseFloat(quantity) || 1;
-    onAddIngredient(selectedIngredient, numQuantity, selectedUnit);
+    onAddIngredient(selectedIngredient, numQuantity, selectedUnit, optional);
     onClose();
   };
 
@@ -318,7 +332,10 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
                   </Text>
                 </TouchableOpacity>
                 <Text style={styles.modalTitle}>
-                  {step === 'select' ? 'Ajouter un ingrédient' : 'Quantité'}
+                  {editingIngredient ? 
+                    (step === 'select' ? 'Modifier l\'ingrédient' : 'Modifier la quantité') :
+                    (step === 'select' ? 'Ajouter un ingrédient' : 'Quantité')
+                  }
                 </Text>
                 <View style={styles.spacer} />
               </View>
@@ -425,6 +442,20 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
                       </View>
                     </View>
                   </View>
+                  
+                  {/* Optional Toggle */}
+                  <View style={styles.optionalToggle}>
+                    <TouchableOpacity
+                      style={styles.optionalToggleRow}
+                      onPress={() => setOptional(!optional)}
+                      activeOpacity={0.7}
+                    >
+                      <View style={[styles.checkbox, optional && styles.checkboxChecked]}>
+                        {optional && <Text style={styles.checkboxText}>✓</Text>}
+                      </View>
+                      <Text style={styles.optionalToggleText}>Ingrédient optionnel</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
             </View>
@@ -447,7 +478,9 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
                 disabled={!selectedIngredient || (step === 'quantity' && (!quantity || !selectedUnit))}
               >
                 <Text style={styles.addButtonText}>
-                  {step === 'select' ? 'Suivant' : 'Ajouter à la recette'}
+                  {step === 'select' ? 'Suivant' : 
+                    (editingIngredient ? 'Mettre à jour' : 'Ajouter à la recette')
+                  }
                 </Text>
               </TouchableOpacity>
             </View>
@@ -820,5 +853,41 @@ const styles = StyleSheet.create({
     ...typography.styles.body,
     color: colors.textWhite,
     fontWeight: typography.weights.semibold,
+  },
+
+  optionalToggle: {
+    marginTop: spacing.md,
+  },
+
+  optionalToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.sm,
+  },
+
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+
+  checkboxText: {
+    color: colors.textWhite,
+    fontSize: 12,
+    fontWeight: typography.weights.bold,
+  },
+
+  optionalToggleText: {
+    ...typography.styles.body,
+    color: colors.textPrimary,
   },
 });

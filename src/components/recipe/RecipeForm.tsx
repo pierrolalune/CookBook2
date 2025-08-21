@@ -75,6 +75,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
     return [{ stepNumber: 1, instruction: '' }];
   });
   const [showIngredientModal, setShowIngredientModal] = useState(false);
+  const [editingIngredient, setEditingIngredient] = useState<RecipeIngredientItem | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
 
   // Initialize recipe ingredients hook with initial data
@@ -170,9 +171,30 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
   }, [validateForm, recipeName, recipeDescription, prepTime, cookTime, servings, category, difficulty, photos, initialData?.photoUri, selectedIngredients, instructions, onSubmit]);
 
   const handleAddIngredient = useCallback((ingredient: Ingredient, quantity: number, unit: string, optional = false) => {
-    ingredientActions.addIngredientToRecipe(ingredient, quantity, unit, optional);
+    if (editingIngredient) {
+      // Update existing ingredient
+      ingredientActions.updateRecipeIngredient(editingIngredient.tempId!, {
+        quantity,
+        unit,
+        optional
+      });
+      setEditingIngredient(null);
+    } else {
+      // Add new ingredient
+      ingredientActions.addIngredientToRecipe(ingredient, quantity, unit, optional);
+    }
     setShowIngredientModal(false);
-  }, [ingredientActions]);
+  }, [ingredientActions, editingIngredient]);
+
+  const handleEditIngredient = useCallback((ingredient: RecipeIngredientItem) => {
+    setEditingIngredient(ingredient);
+    setShowIngredientModal(true);
+  }, []);
+
+  const handleCloseIngredientModal = useCallback(() => {
+    setShowIngredientModal(false);
+    setEditingIngredient(null);
+  }, []);
 
   const handleRemoveIngredient = useCallback((tempId: string) => {
     Alert.alert(
@@ -391,7 +413,11 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
             ) : (
               selectedIngredients.map((ingredient) => (
                 <View key={ingredient.tempId} style={styles.ingredientItem}>
-                  <View style={styles.ingredientInfo}>
+                  <TouchableOpacity 
+                    style={styles.ingredientInfo}
+                    onPress={() => handleEditIngredient(ingredient)}
+                    activeOpacity={0.7}
+                  >
                     <Text style={styles.ingredientName}>
                       {ingredient.ingredient?.name || 'Ingrédient inconnu'}
                     </Text>
@@ -401,7 +427,8 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
                         <Text style={styles.optionalText}> (optionnel)</Text>
                       )}
                     </Text>
-                  </View>
+                    <Text style={styles.editHint}>Appuyer pour modifier</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.removeIngredientButton}
                     onPress={() => handleRemoveIngredient(ingredient.tempId!)}
@@ -477,9 +504,10 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
         {/* Ingredient Selector Modal */}
         <IngredientSelectorModal
           visible={showIngredientModal}
-          onClose={() => setShowIngredientModal(false)}
+          onClose={handleCloseIngredientModal}
           onAddIngredient={handleAddIngredient}
-          excludeIngredientIds={excludedIngredientIds}
+          excludeIngredientIds={editingIngredient ? excludedIngredientIds.filter(id => id !== editingIngredient.ingredientId) : excludedIngredientIds}
+          editingIngredient={editingIngredient}
         />
       </KeyboardAvoidingView>
     </ErrorBoundary>
@@ -667,6 +695,13 @@ const styles = StyleSheet.create({
   optionalText: {
     fontStyle: 'italic',
     color: colors.textLight,
+  },
+
+  editHint: {
+    ...typography.styles.small,
+    color: colors.primary,
+    fontStyle: 'italic',
+    marginTop: 2,
   },
 
   removeIngredientButton: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,32 +12,43 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '../styles';
 import { resetDatabase, initializeDatabase } from '../database';
 import { useIngredients } from '../hooks/useIngredients';
+import { IngredientRepository } from '../repositories/IngredientRepository';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 
 export const SettingsScreen: React.FC = () => {
   const [isResetting, setIsResetting] = useState(false);
-  const { ingredients, actions: ingredientActions } = useIngredients();
+  const { ingredients, loading, actions: ingredientActions } = useIngredients();
+
+  // Load ingredients when component mounts
+  useEffect(() => {
+    ingredientActions.loadIngredients();
+  }, []);
 
   const handleLogIngredients = async () => {
     try {
-      // Ensure ingredients are loaded
-      if (ingredients.length === 0) {
-        await ingredientActions.loadIngredients();
-      }
+      console.log('🔍 [Settings] Starting ingredient export...');
+      
+      // Fetch directly from repository to get fresh data
+      const repository = new IngredientRepository();
+      const freshIngredients = await repository.findAll();
       
       console.log('📋 [Settings] Logging all ingredients:');
       console.log('=====================================');
       
-      ingredients.forEach((ingredient, index) => {
-        console.log(`${index + 1}. ID: ${ingredient.id} | Name: ${ingredient.name}`);
-      });
+      if (freshIngredients.length === 0) {
+        console.log('⚠️ No ingredients found in the database');
+      } else {
+        freshIngredients.forEach((ingredient, index) => {
+          console.log(`${index + 1}. ID: ${ingredient.id} | Name: ${ingredient.name}`);
+        });
+      }
       
       console.log('=====================================');
-      console.log(`📊 Total ingredients: ${ingredients.length}`);
+      console.log(`📊 Total ingredients: ${freshIngredients.length}`);
       
       Alert.alert(
         'Ingrédients exportés',
-        `${ingredients.length} ingrédients ont été exportés dans la console.\n\nOuvrez les outils de développement pour voir la liste complète.`,
+        `${freshIngredients.length} ingrédients ont été exportés dans la console.\n\nOuvrez les outils de développement pour voir la liste complète.`,
         [{ text: 'OK' }]
       );
       

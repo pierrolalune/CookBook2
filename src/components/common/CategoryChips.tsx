@@ -113,11 +113,7 @@ export const CategoryChips = <T = FilterCategory,>({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.backgroundLight,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.screenPadding,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    paddingVertical: spacing.xs,
   },
   
   gridContainer: {
@@ -133,10 +129,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: spacing.borderRadius.xl,
-    backgroundColor: colors.backgroundDark,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    backgroundColor: colors.backgroundLight,
+    borderWidth: 1,
+    borderColor: colors.border,
     minHeight: 32,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 0.5,
     gap: 4,
     width: '23.5%', // 4 columns with gap
   },
@@ -146,7 +147,8 @@ const styles = StyleSheet.create({
   },
   
   allChip: {
-    backgroundColor: '#333',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
   },
   
   chipSelected: {
@@ -155,7 +157,8 @@ const styles = StyleSheet.create({
   },
   
   specialChip: {
-    backgroundColor: colors.backgroundDark,
+    backgroundColor: colors.backgroundLight,
+    borderColor: colors.primary,
   },
   
   favoritesChip: {

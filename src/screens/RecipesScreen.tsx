@@ -418,23 +418,24 @@ export const RecipesScreen: React.FC = () => {
           )}
         </View>
 
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <SearchBar
-            value={searchQuery}
-            onChangeText={handleSearch}
-            placeholder="Rechercher une recette..."
-          />
-        </View>
+        {/* Search and Filters Section */}
+        <View style={styles.searchAndFiltersSection}>
+          <View style={styles.searchContainer}>
+            <SearchBar
+              value={searchQuery}
+              onChangeText={handleSearch}
+              placeholder="Rechercher une recette..."
+            />
+          </View>
 
-        {/* Category Filters */}
-        <View style={styles.filtersContainer}>
-          <CategoryChips
-            categories={categoryChips}
-            selectedCategory={selectedCategory}
-            onCategorySelect={handleCategorySelect}
-            loading={categoriesLoading}
-          />
+          <View style={styles.filtersContainer}>
+            <CategoryChips
+              categories={categoryChips}
+              selectedCategory={selectedCategory}
+              onCategorySelect={handleCategorySelect}
+              loading={categoriesLoading}
+            />
+          </View>
         </View>
 
         {/* Recipes List */}
@@ -501,14 +502,25 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
+  searchAndFiltersSection: {
+    backgroundColor: colors.backgroundLight,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.lg,
+    borderRadius: spacing.borderRadius.lg,
+    padding: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+
   searchContainer: {
-    paddingHorizontal: spacing.lg,
     marginBottom: spacing.md,
   },
 
   filtersContainer: {
-    paddingHorizontal: spacing.lg,
-    marginBottom: spacing.md,
+    // Container now just holds the CategoryChips
   },
 
 

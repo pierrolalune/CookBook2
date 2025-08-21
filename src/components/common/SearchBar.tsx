@@ -82,7 +82,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <TextInput
           style={styles.input}
           placeholder={placeholder}
-          placeholderTextColor={colors.textLight}
+          placeholderTextColor={colors.textSecondary}
           value={searchQuery}
           onChangeText={setSearchQuery}
           onFocus={() => setIsFocused(true)}
@@ -108,7 +108,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: spacing.lg,
+    // Container styling is now handled by parent
   },
   
   searchContainer: {
@@ -116,8 +116,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: spacing.borderRadius.lg,
     borderWidth: 1,
+    borderColor: colors.border,
     paddingHorizontal: spacing.lg,
-    backgroundColor: colors.backgroundDark,
+    backgroundColor: colors.background,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.02,
+    shadowRadius: 1,
+    elevation: 0.5,
   },
   
   searchIcon: {
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
   
   searchIconText: {
     fontSize: typography.sizes.lg,
-    color: colors.textLight,
+    color: colors.textSecondary,
   },
   
   input: {

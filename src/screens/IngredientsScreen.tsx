@@ -6,6 +6,7 @@ import {
   RefreshControl, 
   Text 
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useIngredients } from '../hooks/useIngredients';
 import { useFavorites } from '../hooks/useFavorites';
@@ -23,6 +24,7 @@ import { colors, spacing, commonStyles } from '../styles';
 import { SeasonalUtils } from '../utils/seasonalUtils';
 
 export const IngredientsScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -260,7 +262,8 @@ export const IngredientsScreen: React.FC = () => {
 
   return (
     <ScreenErrorBoundary>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <View style={styles.content}>
         <View style={styles.header}>
           <SearchBar 
             onSearch={handleSearch}
@@ -408,6 +411,7 @@ export const IngredientsScreen: React.FC = () => {
           visible={modalVisible}
           onClose={handleCloseModal}
         />
+        </View>
       </View>
     </ScreenErrorBoundary>
   );
@@ -419,16 +423,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   
+  content: {
+    flex: 1,
+  },
+  
   header: {
     backgroundColor: colors.backgroundLight,
     paddingTop: spacing.md,
     paddingBottom: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
-  },
-  
-  content: {
-    flex: 1,
   },
   
   scrollContent: {

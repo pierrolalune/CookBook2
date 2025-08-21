@@ -61,7 +61,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const animatedBackgroundColor = focusAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [colors.backgroundDark, colors.backgroundLight],
+    outputRange: [colors.background, colors.backgroundLight],
   });
 
   return (

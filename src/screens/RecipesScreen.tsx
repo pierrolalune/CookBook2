@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Alert
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Recipe, RecipeCategory } from '../types';
@@ -30,6 +31,7 @@ interface RecipeCategoryChip {
 }
 
 export const RecipesScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'all'>('all');
   const [refreshing, setRefreshing] = useState(false);
@@ -354,7 +356,8 @@ export const RecipesScreen: React.FC = () => {
 
   return (
     <ScreenErrorBoundary>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
           {selectionMode ? (
@@ -399,14 +402,7 @@ export const RecipesScreen: React.FC = () => {
             </>
           ) : (
             <>
-              <View style={styles.titleRow}>
-                <View style={styles.titleContainer}>
-                  <Text style={styles.title}>Mes Recettes</Text>
-                  <Text style={styles.subtitle}>
-                    {recipes.length} recette{recipes.length !== 1 ? 's' : ''}
-                  </Text>
-                </View>
-                
+              <View style={[styles.titleRow, { justifyContent: 'flex-end' }]}>
                 <TouchableOpacity
                   style={styles.selectionModeButton}
                   onPress={toggleSelectionMode}
@@ -473,6 +469,7 @@ export const RecipesScreen: React.FC = () => {
           recipes={bulkSharing.selectedRecipes}
           mode={shareModalMode}
         />
+        </View>
       </View>
     </ScreenErrorBoundary>
   );
@@ -505,6 +502,7 @@ const styles = StyleSheet.create({
   searchAndFiltersSection: {
     backgroundColor: colors.backgroundLight,
     marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
     marginBottom: spacing.lg,
     borderRadius: spacing.borderRadius.lg,
     padding: spacing.md,

@@ -11,10 +11,41 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '../styles';
 import { resetDatabase, initializeDatabase } from '../database';
+import { useIngredients } from '../hooks/useIngredients';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 
 export const SettingsScreen: React.FC = () => {
   const [isResetting, setIsResetting] = useState(false);
+  const { ingredients, actions: ingredientActions } = useIngredients();
+
+  const handleLogIngredients = async () => {
+    try {
+      // Ensure ingredients are loaded
+      if (ingredients.length === 0) {
+        await ingredientActions.loadIngredients();
+      }
+      
+      console.log('📋 [Settings] Logging all ingredients:');
+      console.log('=====================================');
+      
+      ingredients.forEach((ingredient, index) => {
+        console.log(`${index + 1}. ID: ${ingredient.id} | Name: ${ingredient.name}`);
+      });
+      
+      console.log('=====================================');
+      console.log(`📊 Total ingredients: ${ingredients.length}`);
+      
+      Alert.alert(
+        'Ingrédients exportés',
+        `${ingredients.length} ingrédients ont été exportés dans la console.\n\nOuvrez les outils de développement pour voir la liste complète.`,
+        [{ text: 'OK' }]
+      );
+      
+    } catch (error) {
+      console.error('❌ [Settings] Failed to log ingredients:', error);
+      Alert.alert('Erreur', 'Impossible de charger les ingrédients');
+    }
+  };
 
   const handleDatabaseReset = () => {
     Alert.alert(
@@ -120,6 +151,13 @@ export const SettingsScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Base de données</Text>
           
           <SettingItem
+            title="Exporter les ingrédients"
+            description="Afficher tous les ingrédients avec leur ID et nom dans la console"
+            icon="list-outline"
+            onPress={handleLogIngredients}
+          />
+          
+          <SettingItem
             title="Réinitialiser la base de données"
             description="Supprimer toutes les données et recharger les données par défaut"
             icon="trash-outline"
@@ -192,7 +230,7 @@ const styles = StyleSheet.create({
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.backgroundLight,
     borderRadius: spacing.borderRadius.md,
     padding: spacing.md,
     marginBottom: spacing.sm,
@@ -246,7 +284,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.backgroundLight,
     borderRadius: spacing.borderRadius.md,
     marginBottom: spacing.sm,
     borderWidth: 1,

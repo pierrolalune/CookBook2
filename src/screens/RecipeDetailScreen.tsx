@@ -30,7 +30,6 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
   const [interactiveMode, setInteractiveMode] = useState(false);
   const [currentServings, setCurrentServings] = useState(4);
   const [fadeAnim] = useState(new Animated.Value(0));
@@ -268,16 +267,18 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
           style={[styles.content, { opacity: fadeAnim }]}
           showsVerticalScrollIndicator={false}
         >
-          {/* Recipe Photos */}
-          <View style={styles.photoSection}>
-            <PhotoCarousel
-              photos={recipe.photoUri ? [recipe.photoUri] : []}
-              height={250}
-              borderRadius={0}
-              showIndicators={true}
-              editable={false}
-            />
-          </View>
+          {/* Recipe Photos - Only show if photos exist */}
+          {recipe.photoUri && (
+            <View style={styles.photoSection}>
+              <PhotoCarousel
+                photos={[recipe.photoUri]}
+                height={250}
+                borderRadius={0}
+                showIndicators={true}
+                editable={false}
+              />
+            </View>
+          )}
 
           {/* Recipe Info */}
           <View style={styles.infoSection}>
@@ -354,36 +355,14 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
             )}
           </View>
 
-          {/* Tab Navigation */}
-          <View style={styles.tabContainer}>
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'ingredients' && styles.activeTab]}
-              onPress={() => setActiveTab('ingredients')}
-            >
-              <Text style={[
-                styles.tabText,
-                activeTab === 'ingredients' && styles.activeTabText
-              ]}>
-                Ingrédients ({recipe.ingredients.length})
+          {/* Ingredients Section */}
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>
+                🧄 Ingrédients ({recipe.ingredients.length})
               </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'instructions' && styles.activeTab]}
-              onPress={() => setActiveTab('instructions')}
-            >
-              <Text style={[
-                styles.tabText,
-                activeTab === 'instructions' && styles.activeTabText
-              ]}>
-                Instructions ({recipe.instructions.length})
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Tab Content */}
-          <View style={styles.tabContent}>
-            {activeTab === 'ingredients' ? (
+            </View>
+            <View style={styles.sectionContent}>
               <RecipeIngredientsSection
                 ingredients={recipe.ingredients}
                 servings={recipe.servings || 4}
@@ -391,13 +370,23 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
                 showUsageStats={true}
                 interactive={interactiveMode}
               />
-            ) : (
+            </View>
+          </View>
+
+          {/* Instructions Section */}
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>
+                👨‍🍳 Instructions ({recipe.instructions.length})
+              </Text>
+            </View>
+            <View style={styles.sectionContent}>
               <RecipeInstructionsList
                 instructions={recipe.instructions}
                 showTimer={true}
                 interactive={interactiveMode}
               />
-            )}
+            </View>
           </View>
 
           <View style={styles.bottomSpacer} />
@@ -625,37 +614,25 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
 
-  tabContainer: {
-    flexDirection: 'row',
+  sectionContainer: {
+    marginBottom: spacing.lg,
+  },
+
+  sectionHeader: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     backgroundColor: colors.backgroundLight,
-    marginHorizontal: spacing.lg,
-    borderRadius: spacing.borderRadius.lg,
-    padding: spacing.xs,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
   },
 
-  tab: {
-    flex: 1,
-    paddingVertical: spacing.sm,
-    alignItems: 'center',
-    borderRadius: spacing.borderRadius.md,
-  },
-
-  activeTab: {
-    backgroundColor: colors.background,
-  },
-
-  tabText: {
-    ...typography.styles.body,
-    color: colors.textSecondary,
-    fontWeight: typography.weights.medium,
-  },
-
-  activeTabText: {
-    color: colors.textPrimary,
+  sectionTitle: {
+    ...typography.styles.h3,
     fontWeight: typography.weights.semibold,
+    color: colors.textPrimary,
   },
 
-  tabContent: {
+  sectionContent: {
     padding: spacing.lg,
   },
 

@@ -8,6 +8,9 @@ interface ErrorContext {
   action?: string;
   resource?: string;
   timestamp?: string;
+  recipeId?: string;
+  ingredientId?: string;
+  photoId?: string;
 }
 
 interface SanitizedError {

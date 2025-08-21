@@ -11,7 +11,8 @@ import { colors, spacing, typography, commonStyles } from '../../styles';
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch: (query: string) => void;
+  onSearch?: (query: string) => void;
+  onChangeText?: (query: string) => void;
   onClear?: () => void;
   debounceMs?: number;
   value?: string;
@@ -21,6 +22,7 @@ interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = 'Rechercher un ingrédient...',
   onSearch,
+  onChangeText,
   onClear,
   debounceMs = 300,
   value = '',
@@ -32,11 +34,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      onSearch(searchQuery);
+      onSearch?.(searchQuery);
+      onChangeText?.(searchQuery);
     }, debounceMs);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, debounceMs, onSearch]);
+  }, [searchQuery, debounceMs, onSearch, onChangeText]);
 
   useEffect(() => {
     Animated.timing(focusAnim, {

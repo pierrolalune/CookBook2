@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { IngredientRepository } from '../repositories/IngredientRepository';
-import { Ingredient, IngredientFilters, CreateIngredientInput, UpdateIngredientInput, IngredientCategory } from '../types';
+import { RecipeRepository } from '../repositories/RecipeRepository';
+import { Ingredient, IngredientFilters, CreateIngredientInput, UpdateIngredientInput, IngredientCategory, IngredientUsageStats } from '../types';
 import { useIngredientsContext } from '../contexts/IngredientsContext';
 
 export const useIngredients = (initialFilters?: IngredientFilters) => {
@@ -75,7 +76,11 @@ export const useIngredients = (initialFilters?: IngredientFilters) => {
         clearFilters: () => {
           setFilters({});
         },
-        setFilters
+        setFilters,
+        getIngredientUsageStats: async (ingredientId: string) => {
+          const recipeRepository = new RecipeRepository();
+          return await recipeRepository.getIngredientUsageStats(ingredientId);
+        }
       }
     };
   } catch (error) {
@@ -88,8 +93,10 @@ export const useIngredients = (initialFilters?: IngredientFilters) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<IngredientFilters>(initialFilters || {});
+  const [usageStats, setUsageStats] = useState<{ [ingredientId: string]: IngredientUsageStats }>({});
 
   const repository = new IngredientRepository();
+  const recipeRepository = new RecipeRepository();
 
   const loadIngredients = useCallback(async (searchFilters?: IngredientFilters) => {
     try {
@@ -213,6 +220,57 @@ export const useIngredients = (initialFilters?: IngredientFilters) => {
     loadIngredients({});
   }, [loadIngredients]);
 
+  // Get ingredient usage statistics
+  const getIngredientUsageStats = useCallback(async (ingredientId: string): Promise<IngredientUsageStats | null> => {
+    try {
+      // Check cache first
+      if (usageStats[ingredientId]) {
+        return usageStats[ingredientId];
+      }
+
+      // Fetch from repository
+      const stats = await recipeRepository.getIngredientUsageStats(ingredientId);
+      
+      // Cache the result
+      if (stats) {
+        setUsageStats(prev => ({ ...prev, [ingredientId]: stats }));
+      }
+      
+      return stats;
+    } catch (err) {
+      console.error('Error getting ingredient usage stats:', err);
+      return null;
+    }
+  }, [usageStats, recipeRepository]);
+
+  // Load usage statistics for multiple ingredients
+  const loadUsageStatsForIngredients = useCallback(async (ingredientIds: string[]): Promise<void> => {
+    try {
+      const statsPromises = ingredientIds.map(async (id) => {
+        const stats = await recipeRepository.getIngredientUsageStats(id);
+        return { id, stats };
+      });
+
+      const results = await Promise.all(statsPromises);
+      
+      const newStats: { [ingredientId: string]: IngredientUsageStats } = {};
+      results.forEach(({ id, stats }) => {
+        if (stats) {
+          newStats[id] = stats;
+        }
+      });
+
+      setUsageStats(prev => ({ ...prev, ...newStats }));
+    } catch (err) {
+      console.error('Error loading usage stats for ingredients:', err);
+    }
+  }, [recipeRepository]);
+
+  // Clear usage stats cache
+  const clearUsageStatsCache = useCallback(() => {
+    setUsageStats({});
+  }, []);
+
   // Load ingredients on mount and when filters change
   useEffect(() => {
     loadIngredients();
@@ -223,6 +281,7 @@ export const useIngredients = (initialFilters?: IngredientFilters) => {
     loading,
     error,
     filters,
+    usageStats,
     actions: {
       loadIngredients,
       searchIngredients,
@@ -233,7 +292,10 @@ export const useIngredients = (initialFilters?: IngredientFilters) => {
       getIngredientById,
       refreshIngredients,
       clearFilters,
-      setFilters
+      setFilters,
+      getIngredientUsageStats,
+      loadUsageStatsForIngredients,
+      clearUsageStatsCache
     }
   };
 };

@@ -52,6 +52,166 @@ export interface UpdateIngredientInput extends Partial<CreateIngredientInput> {
   id: string;
 }
 
+// Recipe types
+export interface Recipe {
+  id: string;
+  name: string;
+  description?: string;
+  prepTime?: number; // in minutes
+  cookTime?: number; // in minutes
+  servings?: number;
+  difficulty?: RecipeDifficulty;
+  category: RecipeCategory;
+  photoUri?: string;
+  ingredients: RecipeIngredient[];
+  instructions: RecipeInstruction[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RecipeIngredient {
+  id: string;
+  recipeId: string;
+  ingredientId: string;
+  ingredient: Ingredient;
+  quantity: number;
+  unit: string;
+  optional: boolean;
+  orderIndex: number;
+  createdAt: Date;
+}
+
+export interface RecipeInstruction {
+  id: string;
+  recipeId: string;
+  stepNumber: number;
+  instruction: string;
+  duration?: number; // in minutes
+  estimatedTime?: number; // in minutes
+  temperature?: number; // in celsius
+  notes?: string;
+  createdAt: Date;
+}
+
+export interface RecipeUsage {
+  id: string;
+  recipeId: string;
+  usedAt: Date;
+}
+
+export type RecipeCategory = 'entree' | 'plats' | 'dessert';
+
+export type RecipeDifficulty = 'facile' | 'moyen' | 'difficile';
+
+export interface RecipeFilters {
+  category?: RecipeCategory;
+  difficulty?: RecipeDifficulty;
+  searchQuery?: string;
+  maxPrepTime?: number;
+  maxCookTime?: number;
+  ingredientIds?: string[]; // Filter by specific ingredients
+}
+
+export interface CreateRecipeInput {
+  name: string;
+  description?: string;
+  prepTime?: number;
+  cookTime?: number;
+  servings?: number;
+  difficulty?: RecipeDifficulty;
+  category: RecipeCategory;
+  photoUri?: string;
+  ingredients: CreateRecipeIngredientInput[];
+  instructions: CreateRecipeInstructionInput[];
+}
+
+export interface UpdateRecipeInput extends Partial<CreateRecipeInput> {
+  id: string;
+}
+
+export interface CreateRecipeIngredientInput {
+  ingredientId: string;
+  quantity: number;
+  unit: string;
+  optional?: boolean;
+  orderIndex?: number;
+}
+
+export interface UpdateRecipeIngredientInput extends Partial<CreateRecipeIngredientInput> {
+  id: string;
+}
+
+export interface CreateRecipeInstructionInput {
+  stepNumber: number;
+  instruction: string;
+  duration?: number;
+  estimatedTime?: number;
+  temperature?: number;
+  notes?: string;
+}
+
+export interface UpdateRecipeInstructionInput extends Partial<CreateRecipeInstructionInput> {
+  id: string;
+}
+
+export interface RecipeUsageStats {
+  recipeId: string;
+  totalUses: number;
+  lastUsed?: Date;
+  averageUsesPerMonth: number;
+}
+
+export interface IngredientUsageStats {
+  ingredientId: string;
+  totalUsesInRecipes: number;
+  recipeCount: number;
+  lastUsedInRecipe?: Date;
+}
+
+// Database row interfaces for SQLite results
+export interface RecipeRow {
+  id: string;
+  name: string;
+  description: string | null;
+  prep_time: number | null;
+  cook_time: number | null;
+  servings: number | null;
+  difficulty: string | null;
+  category: string;
+  photo_uri: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RecipeIngredientRow {
+  id: string;
+  recipe_id: string;
+  ingredient_id: string;
+  quantity: number;
+  unit: string;
+  optional: number; // SQLite boolean as integer
+  order_index: number;
+  created_at: string;
+}
+
+export interface RecipeInstructionRow {
+  id: string;
+  recipe_id: string;
+  step_number: number;
+  instruction: string;
+  duration: number | null;
+  estimated_time: number | null;
+  temperature: number | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface RecipeUsageRow {
+  id: string;
+  recipe_id: string;
+  used_at: string;
+}
+
 export interface DatabaseSchema {
   ingredients: {
     id: string;
@@ -73,6 +233,45 @@ export interface DatabaseSchema {
     id: string;
     ingredient_id: string;
     created_at: string;
+  };
+  recipes: {
+    id: string;
+    name: string;
+    description: string | null;
+    prep_time: number | null;
+    cook_time: number | null;
+    servings: number | null;
+    difficulty: string | null;
+    category: string;
+    photo_uri: string | null;
+    created_at: string;
+    updated_at: string;
+  };
+  recipe_ingredients: {
+    id: string;
+    recipe_id: string;
+    ingredient_id: string;
+    quantity: number;
+    unit: string;
+    optional: number;
+    order_index: number;
+    created_at: string;
+  };
+  recipe_instructions: {
+    id: string;
+    recipe_id: string;
+    step_number: number;
+    instruction: string;
+    duration: number | null;
+    estimated_time: number | null;
+    temperature: number | null;
+    notes: string | null;
+    created_at: string;
+  };
+  recipe_usage: {
+    id: string;
+    recipe_id: string;
+    used_at: string;
   };
 }
 

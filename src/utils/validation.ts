@@ -1,4 +1,4 @@
-import { IngredientCategory } from '../types';
+import { IngredientCategory, RecipeCategory, RecipeDifficulty, CreateRecipeInput, CreateRecipeIngredientInput, CreateRecipeInstructionInput } from '../types';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -175,6 +175,21 @@ export class ValidationUtils {
     });
   }
 
+  // String sanitization
+  static sanitizeString(value: string): string {
+    if (!value || typeof value !== 'string') {
+      return '';
+    }
+
+    // Remove potentially dangerous characters but keep accented characters
+    const sanitized = value
+      .trim()
+      .replace(/[<>"/\\&'`;(){}[\]]/g, '') // Remove dangerous characters
+      .substring(0, 1000); // Limit length for general strings
+
+    return sanitized;
+  }
+
   // Search query sanitization
   static sanitizeSearchQuery(query: string): string {
     if (!query || typeof query !== 'string') {
@@ -303,6 +318,300 @@ export class ValidationUtils {
       const tagsValidation = this.validateTags(input.tags);
       if (!tagsValidation.isValid) {
         errors.push(...tagsValidation.errors);
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  // Recipe-specific validations
+  static validateRecipeName(name: string): ValidationResult {
+    return this.validateString(name, {
+      required: true,
+      minLength: 1,
+      maxLength: 200,
+      pattern: /^[a-zA-ZÀ-ÿ0-9\s\-'.,()!&]+$/,
+    });
+  }
+
+  static validateRecipeCategory(category: string): ValidationResult {
+    const validCategories: RecipeCategory[] = ['entree', 'plats', 'dessert'];
+    
+    const errors: string[] = [];
+    if (!category) {
+      errors.push('La catégorie est requise');
+    } else if (!validCategories.includes(category as RecipeCategory)) {
+      errors.push('Catégorie invalide (entree, plats, dessert)');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateRecipeDifficulty(difficulty: string): ValidationResult {
+    const validDifficulties: RecipeDifficulty[] = ['facile', 'moyen', 'difficile'];
+    
+    const errors: string[] = [];
+    if (difficulty && !validDifficulties.includes(difficulty as RecipeDifficulty)) {
+      errors.push('Difficulté invalide (facile, moyen, difficile)');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateRecipeTime(time: number, fieldName: string): ValidationResult {
+    return this.validateNumber(time, {
+      required: false,
+      min: 1,
+      max: 1440, // 24 hours max
+      integer: true
+    });
+  }
+
+  static validateRecipeServings(servings: number): ValidationResult {
+    return this.validateNumber(servings, {
+      required: false,
+      min: 1,
+      max: 100,
+      integer: true
+    });
+  }
+
+  static validatePhotoUri(uri: string): ValidationResult {
+    if (!uri) {
+      return { isValid: true, errors: [] }; // Optional field
+    }
+
+    const errors: string[] = [];
+    
+    // Basic URI validation
+    const uriValidation = this.validateString(uri, {
+      maxLength: 2000
+    });
+    
+    if (!uriValidation.isValid) {
+      errors.push(...uriValidation.errors);
+    }
+
+    // Check for basic URI format (file://, http://, https://, or asset relative paths)
+    const uriPattern = /^(file:\/\/|https?:\/\/|[a-zA-Z0-9._/-]+\.(jpg|jpeg|png|gif|webp))$/i;
+    if (uri && !uriPattern.test(uri)) {
+      errors.push('Format d\'image invalide');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateRecipeIngredient(ingredient: CreateRecipeIngredientInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate ingredient ID
+    if (!ingredient.ingredientId || !this.isValidUUID(ingredient.ingredientId)) {
+      errors.push('ID d\'ingrédient invalide');
+    }
+
+    // Validate quantity
+    const quantityValidation = this.validateNumber(ingredient.quantity, {
+      required: true,
+      min: 0.001, // Allow very small quantities
+      max: 10000
+    });
+    if (!quantityValidation.isValid) {
+      errors.push(`Quantité: ${quantityValidation.errors.join(', ')}`);
+    }
+
+    // Validate unit
+    const unitValidation = this.validateString(ingredient.unit, {
+      required: true,
+      minLength: 1,
+      maxLength: 50,
+      pattern: /^[a-zA-ZÀ-ÿ0-9\s\-.,()]+$/
+    });
+    if (!unitValidation.isValid) {
+      errors.push(`Unité: ${unitValidation.errors.join(', ')}`);
+    }
+
+    // Validate order index if provided
+    if (ingredient.orderIndex !== undefined) {
+      const orderValidation = this.validateNumber(ingredient.orderIndex, {
+        min: 0,
+        max: 1000,
+        integer: true
+      });
+      if (!orderValidation.isValid) {
+        errors.push(`Ordre: ${orderValidation.errors.join(', ')}`);
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateRecipeInstruction(instruction: CreateRecipeInstructionInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate step number
+    const stepValidation = this.validateNumber(instruction.stepNumber, {
+      required: true,
+      min: 1,
+      max: 1000,
+      integer: true
+    });
+    if (!stepValidation.isValid) {
+      errors.push(`Numéro d'étape: ${stepValidation.errors.join(', ')}`);
+    }
+
+    // Validate instruction text
+    const textValidation = this.validateString(instruction.instruction, {
+      required: true,
+      minLength: 3,
+      maxLength: 2000
+    });
+    if (!textValidation.isValid) {
+      errors.push(`Instructions: ${textValidation.errors.join(', ')}`);
+    }
+
+    // Validate duration if provided
+    if (instruction.duration !== undefined) {
+      const durationValidation = this.validateRecipeTime(instruction.duration, 'durée');
+      if (!durationValidation.isValid) {
+        errors.push(`Durée: ${durationValidation.errors.join(', ')}`);
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  // Combined recipe validation
+  static validateCreateRecipeInput(input: CreateRecipeInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate name
+    const nameValidation = this.validateRecipeName(input.name);
+    if (!nameValidation.isValid) {
+      errors.push(...nameValidation.errors.map(err => `Nom: ${err}`));
+    }
+
+    // Validate category
+    const categoryValidation = this.validateRecipeCategory(input.category);
+    if (!categoryValidation.isValid) {
+      errors.push(...categoryValidation.errors);
+    }
+
+    // Validate optional fields
+    if (input.description) {
+      const descValidation = this.validateString(input.description, { maxLength: 1000 });
+      if (!descValidation.isValid) {
+        errors.push(...descValidation.errors.map(err => `Description: ${err}`));
+      }
+    }
+
+    if (input.difficulty) {
+      const difficultyValidation = this.validateRecipeDifficulty(input.difficulty);
+      if (!difficultyValidation.isValid) {
+        errors.push(...difficultyValidation.errors);
+      }
+    }
+
+    if (input.prepTime !== undefined) {
+      const prepTimeValidation = this.validateRecipeTime(input.prepTime, 'temps de préparation');
+      if (!prepTimeValidation.isValid) {
+        errors.push(...prepTimeValidation.errors.map(err => `Temps de préparation: ${err}`));
+      }
+    }
+
+    if (input.cookTime !== undefined) {
+      const cookTimeValidation = this.validateRecipeTime(input.cookTime, 'temps de cuisson');
+      if (!cookTimeValidation.isValid) {
+        errors.push(...cookTimeValidation.errors.map(err => `Temps de cuisson: ${err}`));
+      }
+    }
+
+    if (input.servings !== undefined) {
+      const servingsValidation = this.validateRecipeServings(input.servings);
+      if (!servingsValidation.isValid) {
+        errors.push(...servingsValidation.errors.map(err => `Portions: ${err}`));
+      }
+    }
+
+    if (input.photoUri) {
+      const photoValidation = this.validatePhotoUri(input.photoUri);
+      if (!photoValidation.isValid) {
+        errors.push(...photoValidation.errors.map(err => `Photo: ${err}`));
+      }
+    }
+
+    // Validate ingredients
+    const ingredientsValidation = this.validateArray(input.ingredients, {
+      required: true,
+      minLength: 1,
+      maxLength: 100
+    });
+    if (!ingredientsValidation.isValid) {
+      errors.push(...ingredientsValidation.errors.map(err => `Ingrédients: ${err}`));
+    } else {
+      // Validate each ingredient
+      input.ingredients.forEach((ingredient, index) => {
+        const ingredientValidation = this.validateRecipeIngredient(ingredient);
+        if (!ingredientValidation.isValid) {
+          errors.push(`Ingrédient ${index + 1}: ${ingredientValidation.errors.join(', ')}`);
+        }
+      });
+
+      // Check for duplicate ingredients
+      const ingredientIds = input.ingredients.map(ing => ing.ingredientId);
+      const duplicates = ingredientIds.filter((id, index) => ingredientIds.indexOf(id) !== index);
+      if (duplicates.length > 0) {
+        errors.push('Ingrédients dupliqués détectés');
+      }
+    }
+
+    // Validate instructions
+    const instructionsValidation = this.validateArray(input.instructions, {
+      required: true,
+      minLength: 1,
+      maxLength: 100
+    });
+    if (!instructionsValidation.isValid) {
+      errors.push(...instructionsValidation.errors.map(err => `Instructions: ${err}`));
+    } else {
+      // Validate each instruction
+      input.instructions.forEach((instruction, index) => {
+        const instructionValidation = this.validateRecipeInstruction(instruction);
+        if (!instructionValidation.isValid) {
+          errors.push(`Étape ${index + 1}: ${instructionValidation.errors.join(', ')}`);
+        }
+      });
+
+      // Check for duplicate step numbers
+      const stepNumbers = input.instructions.map(inst => inst.stepNumber);
+      const duplicateSteps = stepNumbers.filter((step, index) => stepNumbers.indexOf(step) !== index);
+      if (duplicateSteps.length > 0) {
+        errors.push('Numéros d\'étapes dupliqués détectés');
+      }
+
+      // Check step number sequence
+      const sortedSteps = [...stepNumbers].sort((a, b) => a - b);
+      const expectedSteps = Array.from({ length: stepNumbers.length }, (_, i) => i + 1);
+      const isSequential = JSON.stringify(sortedSteps) === JSON.stringify(expectedSteps);
+      if (!isSequential) {
+        errors.push('Les numéros d\'étapes doivent être séquentiels (1, 2, 3, ...)');
       }
     }
 

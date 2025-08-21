@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { FavoritesRepository } from '../repositories/FavoritesRepository';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
 
@@ -36,7 +36,8 @@ export const useFavorites = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const repository = new FavoritesRepository();
+  // Create repository once and memoize
+  const repository = useMemo(() => new FavoritesRepository(), []);
 
   const loadFavorites = useCallback(async () => {
     try {
@@ -51,7 +52,7 @@ export const useFavorites = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [repository]);
 
   const toggleFavorite = useCallback(async (ingredientId: string): Promise<boolean> => {
     try {
@@ -70,7 +71,7 @@ export const useFavorites = () => {
       console.error('Error toggling favorite:', err);
       return false;
     }
-  }, []);
+  }, [repository]);
 
   const addFavorite = useCallback(async (ingredientId: string): Promise<boolean> => {
     try {
@@ -87,7 +88,7 @@ export const useFavorites = () => {
       console.error('Error adding favorite:', err);
       return false;
     }
-  }, []);
+  }, [repository]);
 
   const removeFavorite = useCallback(async (ingredientId: string): Promise<boolean> => {
     try {
@@ -102,7 +103,7 @@ export const useFavorites = () => {
       console.error('Error removing favorite:', err);
       return false;
     }
-  }, []);
+  }, [repository]);
 
   const isFavorite = useCallback((ingredientId: string): boolean => {
     return favoriteIds.includes(ingredientId);
@@ -115,7 +116,7 @@ export const useFavorites = () => {
       console.error('Error getting favorite count:', err);
       return 0;
     }
-  }, []);
+  }, [repository]);
 
   const clearAllFavorites = useCallback(async (): Promise<boolean> => {
     try {
@@ -130,7 +131,7 @@ export const useFavorites = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [repository]);
 
   // Load favorites on mount
   useEffect(() => {

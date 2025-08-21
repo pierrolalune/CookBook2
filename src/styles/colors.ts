@@ -12,7 +12,7 @@ export const colors = {
   // Background colors
   background: '#f8f9fa',
   backgroundLight: '#ffffff',
-  backgroundDark: '#e0e0e0',
+  backgroundDark: '#000000',
   
   // Text colors
   textPrimary: '#333333',
@@ -38,7 +38,9 @@ export const colors = {
   success: '#4caf50',
   warning: '#ff9800',
   error: '#f44336',
+  errorLight: 'rgba(244, 67, 54, 0.1)',
   info: '#2196f3',
+  accent: '#ff6b6b',
   
   // Seasonal colors
   inSeason: '#4caf50',

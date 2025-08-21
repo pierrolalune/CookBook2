@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { initializeDatabase, resetDatabase } from '../src/database';
+import { initializeDatabase } from '../src/database';
 import { ScreenErrorBoundary } from '../src/components/common/ErrorBoundary';
 import { IngredientsProvider } from '../src/contexts/IngredientsContext';
 import { FavoritesProvider } from '../src/contexts/FavoritesContext';
@@ -14,13 +14,11 @@ export default function RootLayout() {
     // Initialize database on app startup
     const setupDatabase = async () => {
       try {
-        // First initialize the database
+        // Initialize database normally
         await initializeDatabase();
-        console.log('Database initialized, now resetting for development...');
-
-        // Reset database for fresh start (development only)
-        //await resetDatabase();
-        //console.log('🚀 App ready - Database reset and reseeded complete');
+        console.log('Database initialized successfully');
+        
+        // Database is now ready
         setIsDbReady(true);
       } catch (error) {
         console.error('Failed to setup database:', error);
@@ -43,7 +41,7 @@ export default function RootLayout() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#667eea" />
-        <Text style={styles.loadingText}>Setting up fresh database...</Text>
+        <Text style={styles.loadingText}>Initializing database...</Text>
       </View>
     );
   }
@@ -72,9 +70,36 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false
+              }}
+            />
+            <Stack.Screen
               name="add-ingredient"
               options={{
                 title: 'Nouvel Ingrédient',
+                presentation: 'modal'
+              }}
+            />
+            <Stack.Screen
+              name="add-recipe"
+              options={{
+                title: 'Nouvelle Recette',
+                presentation: 'modal'
+              }}
+            />
+            <Stack.Screen
+              name="recipe/[id]"
+              options={{
+                title: 'Détails de la recette',
+                headerShown: true
+              }}
+            />
+            <Stack.Screen
+              name="recipe/[id]/edit"
+              options={{
+                title: 'Modifier la recette',
                 presentation: 'modal'
               }}
             />

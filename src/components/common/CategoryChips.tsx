@@ -10,31 +10,35 @@ import { colors, spacing, typography } from '../../styles';
 
 export type FilterCategory = IngredientCategory | 'all' | 'favoris' | 'myproduct' | 'saison';
 
-interface CategoryChip {
-  id: FilterCategory;
+interface CategoryChip<T = FilterCategory> {
+  id: T;
   label: string;
   icon: string;
   color?: string;
 }
 
-interface CategoryChipsProps {
-  selectedCategory: FilterCategory;
-  onCategorySelect: (category: FilterCategory) => void;
+interface CategoryChipsProps<T = FilterCategory> {
+  selectedCategory?: T;
+  onCategorySelect?: (category: T) => void;
   favoriteCount?: number;
   userIngredientCount?: number;
   seasonalCount?: number;
   style?: any;
+  categories?: CategoryChip<T>[];
+  loading?: boolean;
 }
 
-export const CategoryChips: React.FC<CategoryChipsProps> = ({
+export const CategoryChips = <T = FilterCategory,>({
   selectedCategory,
   onCategorySelect,
   favoriteCount = 0,
   userIngredientCount = 0,
   seasonalCount = 0,
-  style
-}) => {
-  const categories: CategoryChip[] = [
+  style,
+  categories: externalCategories,
+  loading = false
+}: CategoryChipsProps<T>) => {
+  const defaultCategories: CategoryChip[] = [
     { id: 'all', label: 'Tous', icon: '📋' },
     { id: 'favoris', label: `Favoris${favoriteCount > 0 ? ` (${favoriteCount})` : ''}`, icon: '❤️', color: colors.favorite },
     { id: 'fruits', label: 'Fruits', icon: '🍎' },
@@ -46,10 +50,13 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
     { id: 'myproduct', label: `Mes produits${userIngredientCount > 0 ? ` (${userIngredientCount})` : ''}`, icon: '⭐' },
   ];
 
-  const getChipStyle = (category: CategoryChip) => {
+  const categories = externalCategories || defaultCategories as CategoryChip<T>[];
+
+  const getChipStyle = (category: CategoryChip<T>) => {
     const isSelected = selectedCategory === category.id;
-    const isSpecial = ['favoris', 'myproduct'].includes(category.id);
-    const isWide = ['all', 'favoris'].includes(category.id);
+    const categoryIdStr = String(category.id);
+    const isSpecial = ['favoris', 'myproduct'].includes(categoryIdStr);
+    const isWide = ['all', 'favoris'].includes(categoryIdStr);
     
     const baseStyles: any[] = [styles.chip];
     
@@ -59,12 +66,12 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
     
     if (isSelected) {
       baseStyles.push(styles.chipSelected);
-      if (category.id === 'favoris') {
+      if (categoryIdStr === 'favoris') {
         baseStyles.push(styles.favoritesChipSelected);
       }
-    } else if (category.id === 'all') {
+    } else if (categoryIdStr === 'all') {
       baseStyles.push(styles.allChip);
-    } else if (category.id === 'favoris') {
+    } else if (categoryIdStr === 'favoris') {
       baseStyles.push(styles.favoritesChip);
     } else if (isSpecial) {
       baseStyles.push(styles.specialChip);
@@ -73,7 +80,7 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
     return baseStyles;
   };
 
-  const getTextStyle = (category: CategoryChip) => {
+  const getTextStyle = (category: CategoryChip<T>) => {
     const isSelected = selectedCategory === category.id;
     
     if (isSelected) {
@@ -88,9 +95,9 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
       <View style={styles.gridContainer}>
         {categories.map((category) => (
           <TouchableOpacity
-            key={category.id}
+            key={String(category.id)}
             style={getChipStyle(category)}
-            onPress={() => onCategorySelect(category.id)}
+            onPress={() => onCategorySelect?.(category.id)}
             activeOpacity={0.7}
           >
             <Text style={styles.chipIcon}>{category.icon}</Text>

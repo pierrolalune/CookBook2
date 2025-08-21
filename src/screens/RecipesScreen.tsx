@@ -1,0 +1,705 @@
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+  Alert
+} from 'react-native';
+import { router } from 'expo-router';
+import { Recipe, RecipeCategory, RecipeDifficulty } from '../types';
+import { colors, spacing, typography } from '../styles';
+import { useRecipes, useRecipeCategories } from '../hooks/useRecipes';
+import { useRecipeBulkSharing } from '../hooks/useRecipeSharing';
+import { SearchBar } from '../components/common/SearchBar';
+import { CategoryChips } from '../components/common/CategoryChips';
+import { FloatingAddButton } from '../components/common/FloatingAddButton';
+import { RecipeCard } from '../components/recipe/RecipeCard';
+import { ShareModal } from '../components/recipe/ShareModal';
+import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
+
+interface RecipeCategoryChip {
+  id: string;
+  label: string;
+  icon: string;
+  count?: number;
+  value: RecipeCategory | 'all';
+}
+
+export const RecipesScreen: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'all'>('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<RecipeDifficulty | 'all'>('all');
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [shareModalMode, setShareModalMode] = useState<'multiple' | 'shopping-list'>('multiple');
+
+  const { recipes, loading, error, actions } = useRecipes();
+  const { categories, loading: categoriesLoading } = useRecipeCategories();
+  const bulkSharing = useRecipeBulkSharing();
+
+  // Create category chips
+  const categoryChips: RecipeCategoryChip[] = useMemo(() => {
+    const categoryIcons = {
+      entree: '🥗',
+      plats: '🍽️', 
+      dessert: '🍰',
+      all: '📋'
+    };
+    
+    const chips: RecipeCategoryChip[] = [
+      { id: 'all', label: 'Toutes', icon: categoryIcons.all, value: 'all' }
+    ];
+
+    categories.forEach(cat => {
+      chips.push({
+        id: cat.category,
+        label: cat.label,
+        icon: categoryIcons[cat.category as keyof typeof categoryIcons] || '📝',
+        count: cat.count,
+        value: cat.category
+      });
+    });
+
+    return chips;
+  }, [categories]);
+
+  // Filter recipes based on search and filters
+  const filteredRecipes = useMemo(() => {
+    let filtered = recipes;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(recipe =>
+        recipe.name.toLowerCase().includes(query) ||
+        recipe.description?.toLowerCase().includes(query) ||
+        recipe.ingredients.some(ing => 
+          ing.ingredient.name.toLowerCase().includes(query)
+        )
+      );
+    }
+
+    // Apply category filter
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(recipe => recipe.category === selectedCategory);
+    }
+
+    // Apply difficulty filter
+    if (selectedDifficulty !== 'all') {
+      filtered = filtered.filter(recipe => recipe.difficulty === selectedDifficulty);
+    }
+
+    return filtered;
+  }, [recipes, searchQuery, selectedCategory, selectedDifficulty]);
+
+  // Group recipes by category for display
+  const groupedRecipes = useMemo(() => {
+    if (selectedCategory !== 'all') {
+      return [{ category: selectedCategory, recipes: filteredRecipes }];
+    }
+
+    const groups: { category: RecipeCategory | 'all', recipes: Recipe[] }[] = [];
+    const categoryOrder: (RecipeCategory | 'all')[] = ['entree', 'plats', 'dessert'];
+
+    categoryOrder.forEach(category => {
+      const categoryRecipes = filteredRecipes.filter(recipe => recipe.category === category);
+      if (categoryRecipes.length > 0) {
+        groups.push({ category, recipes: categoryRecipes });
+      }
+    });
+
+    return groups;
+  }, [filteredRecipes, selectedCategory]);
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await actions.refreshRecipes();
+    } catch (error) {
+      console.error('Error refreshing recipes:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [actions]);
+
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  const handleCategorySelect = useCallback((categoryId: string) => {
+    setSelectedCategory(categoryId as RecipeCategory | 'all');
+  }, []);
+
+  const handleRecipePress = useCallback((recipe: Recipe) => {
+    if (selectionMode) {
+      bulkSharing.actions.toggleRecipe(recipe);
+    } else {
+      router.push({
+        pathname: '/recipe/[id]',
+        params: { id: recipe.id }
+      });
+    }
+  }, [selectionMode, bulkSharing.actions]);
+
+  const handleRecipeLongPress = useCallback((recipe: Recipe) => {
+    if (selectionMode) {
+      return; // No long press in selection mode
+    }
+    
+    Alert.alert(
+      recipe.name,
+      'Que souhaitez-vous faire ?',
+      [
+        {
+          text: 'Voir',
+          onPress: () => handleRecipePress(recipe)
+        },
+        {
+          text: 'Modifier',
+          onPress: () => router.push({
+            pathname: '/recipe/[id]/edit',
+            params: { id: recipe.id }
+          })
+        },
+        {
+          text: 'Dupliquer',
+          onPress: () => handleDuplicateRecipe(recipe)
+        },
+        {
+          text: 'Supprimer',
+          style: 'destructive',
+          onPress: () => handleDeleteRecipe(recipe)
+        },
+        {
+          text: 'Annuler',
+          style: 'cancel'
+        }
+      ]
+    );
+  }, [handleRecipePress]);
+
+  const handleDuplicateRecipe = useCallback(async (recipe: Recipe) => {
+    try {
+      await actions.duplicateRecipe(recipe.id, `${recipe.name} (Copie)`);
+      Alert.alert('Succès', 'Recette dupliquée avec succès');
+    } catch (error) {
+      Alert.alert('Erreur', 'Impossible de dupliquer la recette');
+    }
+  }, [actions]);
+
+  const handleDeleteRecipe = useCallback(async (recipe: Recipe) => {
+    Alert.alert(
+      'Supprimer la recette',
+      `Êtes-vous sûr de vouloir supprimer "${recipe.name}" ? Cette action est irréversible.`,
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel'
+        },
+        {
+          text: 'Supprimer',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await actions.deleteRecipe(recipe.id);
+              Alert.alert('Succès', 'Recette supprimée');
+            } catch (error) {
+              Alert.alert('Erreur', 'Impossible de supprimer la recette');
+            }
+          }
+        }
+      ]
+    );
+  }, [actions]);
+
+  const handleAddRecipe = useCallback(() => {
+    router.push('/add-recipe');
+  }, []);
+
+  // Selection mode handlers
+  const toggleSelectionMode = useCallback(() => {
+    setSelectionMode(prev => {
+      if (prev) {
+        // Exiting selection mode, clear selection
+        bulkSharing.actions.clearSelection();
+      }
+      return !prev;
+    });
+  }, [bulkSharing.actions]);
+
+  const handleSelectAll = useCallback(() => {
+    filteredRecipes.forEach(recipe => {
+      if (!bulkSharing.selectedRecipes.find(r => r.id === recipe.id)) {
+        bulkSharing.actions.addRecipe(recipe);
+      }
+    });
+  }, [filteredRecipes, bulkSharing.selectedRecipes, bulkSharing.actions]);
+
+  const handleBulkShare = useCallback(() => {
+    if (bulkSharing.selectedCount === 0) {
+      Alert.alert('Aucune sélection', 'Veuillez sélectionner au moins une recette');
+      return;
+    }
+    setShareModalMode('multiple');
+    setShareModalVisible(true);
+  }, [bulkSharing.selectedCount]);
+
+  const handleBulkShoppingList = useCallback(() => {
+    if (bulkSharing.selectedCount === 0) {
+      Alert.alert('Aucune sélection', 'Veuillez sélectionner au moins une recette');
+      return;
+    }
+    setShareModalMode('shopping-list');
+    setShareModalVisible(true);
+  }, [bulkSharing.selectedCount]);
+
+  const getDifficultyChips = () => {
+    const difficulties: { id: string, label: string, icon: string, value: RecipeDifficulty | 'all' }[] = [
+      { id: 'all', label: 'Toutes', icon: '📋', value: 'all' },
+      { id: 'facile', label: 'Facile', icon: '⭐', value: 'facile' },
+      { id: 'moyen', label: 'Moyen', icon: '⭐⭐', value: 'moyen' },
+      { id: 'difficile', label: 'Difficile', icon: '⭐⭐⭐', value: 'difficile' }
+    ];
+
+    return difficulties;
+  };
+
+  const renderCategorySection = ({ item }: { item: { category: RecipeCategory | 'all', recipes: Recipe[] } }) => {
+    const categoryLabels = {
+      entree: 'Entrées',
+      plats: 'Plats',
+      dessert: 'Desserts',
+      all: 'Toutes les recettes'
+    };
+
+    return (
+      <View style={styles.categorySection}>
+        {selectedCategory === 'all' && (
+          <Text style={styles.categoryTitle}>
+            {categoryLabels[item.category]} ({item.recipes.length})
+          </Text>
+        )}
+        
+        <FlatList
+          data={item.recipes}
+          renderItem={({ item: recipe }) => (
+            <RecipeCard
+              recipe={recipe}
+              onPress={handleRecipePress}
+              onLongPress={handleRecipeLongPress}
+              showUsageStats={true}
+              selectionMode={selectionMode}
+              selected={bulkSharing.selectedRecipes.some(r => r.id === recipe.id)}
+            />
+          )}
+          keyExtractor={(recipe) => recipe.id}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+        />
+      </View>
+    );
+  };
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyIcon}>🍽️</Text>
+      <Text style={styles.emptyTitle}>
+        {searchQuery ? 'Aucune recette trouvée' : 'Aucune recette'}
+      </Text>
+      <Text style={styles.emptySubtitle}>
+        {searchQuery 
+          ? 'Essayez avec d\'autres mots-clés'
+          : 'Commencez par créer votre première recette'
+        }
+      </Text>
+      {!searchQuery && (
+        <TouchableOpacity style={styles.emptyButton} onPress={handleAddRecipe}>
+          <Text style={styles.emptyButtonText}>Créer une recette</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorIcon}>⚠️</Text>
+      <Text style={styles.errorTitle}>Erreur de chargement</Text>
+      <Text style={styles.errorSubtitle}>{error}</Text>
+      <TouchableOpacity style={styles.retryButton} onPress={handleRefresh}>
+        <Text style={styles.retryButtonText}>Réessayer</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (error && !recipes.length) {
+    return (
+      <ScreenErrorBoundary>
+        <View style={styles.container}>
+          {renderErrorState()}
+        </View>
+      </ScreenErrorBoundary>
+    );
+  }
+
+  return (
+    <ScreenErrorBoundary>
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          {selectionMode ? (
+            <>
+              <View style={styles.selectionHeader}>
+                <TouchableOpacity
+                  style={styles.cancelSelectionButton}
+                  onPress={toggleSelectionMode}
+                >
+                  <Text style={styles.cancelSelectionText}>Annuler</Text>
+                </TouchableOpacity>
+                
+                <Text style={styles.selectionTitle}>
+                  {bulkSharing.selectedCount} sélectionnée{bulkSharing.selectedCount > 1 ? 's' : ''}
+                </Text>
+                
+                <TouchableOpacity
+                  style={styles.selectAllButton}
+                  onPress={handleSelectAll}
+                >
+                  <Text style={styles.selectAllText}>Tout</Text>
+                </TouchableOpacity>
+              </View>
+              
+              {bulkSharing.selectedCount > 0 && (
+                <View style={styles.selectionActions}>
+                  <TouchableOpacity
+                    style={styles.selectionActionButton}
+                    onPress={handleBulkShare}
+                  >
+                    <Text style={styles.selectionActionText}>📤 Partager</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={styles.selectionActionButton}
+                    onPress={handleBulkShoppingList}
+                  >
+                    <Text style={styles.selectionActionText}>🛒 Liste courses</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </>
+          ) : (
+            <>
+              <View style={styles.titleRow}>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title}>Mes Recettes</Text>
+                  <Text style={styles.subtitle}>
+                    {recipes.length} recette{recipes.length !== 1 ? 's' : ''}
+                  </Text>
+                </View>
+                
+                <TouchableOpacity
+                  style={styles.selectionModeButton}
+                  onPress={toggleSelectionMode}
+                >
+                  <Text style={styles.selectionModeText}>Sélectionner</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+        </View>
+
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <SearchBar
+            value={searchQuery}
+            onChangeText={handleSearch}
+            placeholder="Rechercher une recette..."
+          />
+        </View>
+
+        {/* Category Chips */}
+        <View style={styles.filtersContainer}>
+          <CategoryChips
+            categories={categoryChips}
+            selectedCategory={selectedCategory}
+            onCategorySelect={handleCategorySelect}
+            loading={categoriesLoading}
+          />
+          
+          {/* Difficulty Filter */}
+          <CategoryChips
+            categories={getDifficultyChips()}
+            selectedCategory={selectedDifficulty}
+            onCategorySelect={(id) => setSelectedDifficulty(id as RecipeDifficulty | 'all')}
+            loading={loading}
+            style={styles.difficultyChips}
+          />
+        </View>
+
+        {/* Recipes List */}
+        <View style={styles.content}>
+          {groupedRecipes.length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <FlatList
+              data={groupedRecipes}
+              renderItem={renderCategorySection}
+              keyExtractor={(item, index) => `${item.category}_${index}`}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
+                  colors={[colors.primary]}
+                  tintColor={colors.primary}
+                />
+              }
+              contentContainerStyle={styles.listContent}
+            />
+          )}
+        </View>
+
+        {/* Floating Add Button */}
+        {!selectionMode && (
+          <FloatingAddButton onPress={handleAddRecipe} />
+        )}
+
+        {/* Share Modal */}
+        <ShareModal
+          visible={shareModalVisible}
+          onClose={() => setShareModalVisible(false)}
+          recipes={bulkSharing.selectedRecipes}
+          mode={shareModalMode}
+        />
+      </View>
+    </ScreenErrorBoundary>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  header: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+
+  title: {
+    ...typography.styles.h1,
+    fontWeight: typography.weights.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+
+  subtitle: {
+    ...typography.styles.body,
+    color: colors.textSecondary,
+  },
+
+  searchContainer: {
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+  },
+
+  filtersContainer: {
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+  },
+
+  difficultyChips: {
+    marginTop: spacing.sm,
+  },
+
+  content: {
+    flex: 1,
+  },
+
+  listContent: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: 100, // Space for floating button
+  },
+
+  categorySection: {
+    marginBottom: spacing.lg,
+  },
+
+  categoryTitle: {
+    ...typography.styles.h3,
+    fontWeight: typography.weights.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
+    paddingLeft: spacing.sm,
+  },
+
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.xl,
+  },
+
+  emptyIcon: {
+    fontSize: 64,
+    marginBottom: spacing.lg,
+    opacity: 0.5,
+  },
+
+  emptyTitle: {
+    ...typography.styles.h2,
+    fontWeight: typography.weights.semibold,
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
+
+  emptySubtitle: {
+    ...typography.styles.body,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+    lineHeight: 22,
+  },
+
+  emptyButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    borderRadius: spacing.borderRadius.lg,
+  },
+
+  emptyButtonText: {
+    ...typography.styles.body,
+    color: colors.textWhite,
+    fontWeight: typography.weights.semibold,
+  },
+
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.xl,
+  },
+
+  errorIcon: {
+    fontSize: 64,
+    marginBottom: spacing.lg,
+  },
+
+  errorTitle: {
+    ...typography.styles.h2,
+    fontWeight: typography.weights.semibold,
+    color: colors.error,
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
+
+  errorSubtitle: {
+    ...typography.styles.body,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+    lineHeight: 22,
+  },
+
+  retryButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    borderRadius: spacing.borderRadius.lg,
+  },
+
+  retryButtonText: {
+    ...typography.styles.body,
+    color: colors.textWhite,
+    fontWeight: typography.weights.semibold,
+  },
+
+  // Selection mode styles
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  titleContainer: {
+    flex: 1,
+  },
+
+  selectionModeButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: spacing.borderRadius.md,
+  },
+
+  selectionModeText: {
+    ...typography.styles.small,
+    color: colors.textWhite,
+    fontWeight: typography.weights.semibold,
+  },
+
+  selectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+  },
+
+  cancelSelectionButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+
+  cancelSelectionText: {
+    ...typography.styles.body,
+    color: colors.primary,
+    fontWeight: typography.weights.medium,
+  },
+
+  selectionTitle: {
+    ...typography.styles.body,
+    color: colors.textPrimary,
+    fontWeight: typography.weights.semibold,
+    flex: 1,
+    textAlign: 'center',
+  },
+
+  selectAllButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+
+  selectAllText: {
+    ...typography.styles.body,
+    color: colors.primary,
+    fontWeight: typography.weights.medium,
+  },
+
+  selectionActions: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    justifyContent: 'center',
+  },
+
+  selectionActionButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: spacing.borderRadius.md,
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  selectionActionText: {
+    ...typography.styles.small,
+    color: colors.textWhite,
+    fontWeight: typography.weights.semibold,
+  },
+});

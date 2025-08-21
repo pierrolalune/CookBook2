@@ -8,8 +8,9 @@ import {
   RefreshControl,
   Alert
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Recipe, RecipeCategory, RecipeDifficulty } from '../types';
+import { Recipe, RecipeCategory } from '../types';
 import { colors, spacing, typography } from '../styles';
 import { useRecipes, useRecipeCategories } from '../hooks/useRecipes';
 import { useRecipeBulkSharing } from '../hooks/useRecipeSharing';
@@ -31,11 +32,11 @@ interface RecipeCategoryChip {
 export const RecipesScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'all'>('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<RecipeDifficulty | 'all'>('all');
   const [refreshing, setRefreshing] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [shareModalMode, setShareModalMode] = useState<'multiple' | 'shopping-list'>('multiple');
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
 
   const { recipes, loading, error, actions } = useRecipes();
   const { categories, loading: categoriesLoading } = useRecipeCategories();
@@ -88,13 +89,8 @@ export const RecipesScreen: React.FC = () => {
       filtered = filtered.filter(recipe => recipe.category === selectedCategory);
     }
 
-    // Apply difficulty filter
-    if (selectedDifficulty !== 'all') {
-      filtered = filtered.filter(recipe => recipe.difficulty === selectedDifficulty);
-    }
-
     return filtered;
-  }, [recipes, searchQuery, selectedCategory, selectedDifficulty]);
+  }, [recipes, searchQuery, selectedCategory]);
 
   // Group recipes by category for display
   const groupedRecipes = useMemo(() => {
@@ -257,16 +253,18 @@ export const RecipesScreen: React.FC = () => {
     setShareModalVisible(true);
   }, [bulkSharing.selectedCount]);
 
-  const getDifficultyChips = () => {
-    const difficulties: { id: string, label: string, icon: string, value: RecipeDifficulty | 'all' }[] = [
-      { id: 'all', label: 'Toutes', icon: '📋', value: 'all' },
-      { id: 'facile', label: 'Facile', icon: '⭐', value: 'facile' },
-      { id: 'moyen', label: 'Moyen', icon: '⭐⭐', value: 'moyen' },
-      { id: 'difficile', label: 'Difficile', icon: '⭐⭐⭐', value: 'difficile' }
-    ];
-
-    return difficulties;
-  };
+  // Toggle category collapse
+  const toggleCategoryCollapse = useCallback((category: string) => {
+    setCollapsedCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(category)) {
+        newSet.delete(category);
+      } else {
+        newSet.add(category);
+      }
+      return newSet;
+    });
+  }, []);
 
   const renderCategorySection = ({ item }: { item: { category: RecipeCategory | 'all', recipes: Recipe[] } }) => {
     const categoryLabels = {
@@ -276,30 +274,39 @@ export const RecipesScreen: React.FC = () => {
       all: 'Toutes les recettes'
     };
 
+    const categoryKey = item.category;
+    const isCollapsed = collapsedCategories.has(categoryKey);
+
     return (
       <View style={styles.categorySection}>
         {selectedCategory === 'all' && (
-          <Text style={styles.categoryTitle}>
-            {categoryLabels[item.category]} ({item.recipes.length})
-          </Text>
+          <TouchableOpacity 
+            style={styles.categoryHeader}
+            onPress={() => toggleCategoryCollapse(categoryKey)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.categoryTitle}>
+              {categoryLabels[item.category]} ({item.recipes.length})
+            </Text>
+            <Ionicons 
+              name={isCollapsed ? 'chevron-down' : 'chevron-up'} 
+              size={20} 
+              color={colors.textSecondary} 
+            />
+          </TouchableOpacity>
         )}
         
-        <FlatList
-          data={item.recipes}
-          renderItem={({ item: recipe }) => (
-            <RecipeCard
-              recipe={recipe}
-              onPress={handleRecipePress}
-              onLongPress={handleRecipeLongPress}
-              showUsageStats={true}
-              selectionMode={selectionMode}
-              selected={bulkSharing.selectedRecipes.some(r => r.id === recipe.id)}
-            />
-          )}
-          keyExtractor={(recipe) => recipe.id}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={false}
-        />
+        {!isCollapsed && item.recipes.map((recipe) => (
+          <RecipeCard
+            key={recipe.id}
+            recipe={recipe}
+            onPress={handleRecipePress}
+            onLongPress={handleRecipeLongPress}
+            showUsageStats={true}
+            selectionMode={selectionMode}
+            selected={bulkSharing.selectedRecipes.some(r => r.id === recipe.id)}
+          />
+        ))}
       </View>
     );
   };
@@ -420,22 +427,13 @@ export const RecipesScreen: React.FC = () => {
           />
         </View>
 
-        {/* Category Chips */}
+        {/* Category Filters */}
         <View style={styles.filtersContainer}>
           <CategoryChips
             categories={categoryChips}
             selectedCategory={selectedCategory}
             onCategorySelect={handleCategorySelect}
             loading={categoriesLoading}
-          />
-          
-          {/* Difficulty Filter */}
-          <CategoryChips
-            categories={getDifficultyChips()}
-            selectedCategory={selectedDifficulty}
-            onCategorySelect={(id) => setSelectedDifficulty(id as RecipeDifficulty | 'all')}
-            loading={loading}
-            style={styles.difficultyChips}
           />
         </View>
 
@@ -513,9 +511,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
 
-  difficultyChips: {
-    marginTop: spacing.sm,
-  },
 
   content: {
     flex: 1,
@@ -530,12 +525,20 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
 
+  categoryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    marginBottom: spacing.md,
+  },
+
   categoryTitle: {
     ...typography.styles.h3,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
-    marginBottom: spacing.md,
-    paddingLeft: spacing.sm,
+    flex: 1,
   },
 
   emptyContainer: {

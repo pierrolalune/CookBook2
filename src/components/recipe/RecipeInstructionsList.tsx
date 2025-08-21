@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   Animated,
   Dimensions
 } from 'react-native';
@@ -201,14 +200,14 @@ export const RecipeInstructionsList: React.FC<RecipeInstructionsListProps> = ({
       )}
 
       {/* Instructions List */}
-      <FlatList
-        data={sortedInstructions}
-        renderItem={renderInstruction}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContainer}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+      <View style={styles.listContainer}>
+        {sortedInstructions.map((item, index) => (
+          <View key={item.id}>
+            {renderInstruction({ item, index })}
+            {index < sortedInstructions.length - 1 && <View style={styles.separator} />}
+          </View>
+        ))}
+      </View>
 
       {/* Summary Footer (for interactive mode) */}
       {interactive && completedSteps.size === instructions.length && instructions.length > 0 && (

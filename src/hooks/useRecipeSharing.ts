@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Alert } from 'react-native';
 import { Recipe } from '../types';
 import { RecipeExporter, ExportOptions } from '../utils/recipeExporter';
@@ -275,7 +275,7 @@ export const useRecipeSharing = (): UseRecipeSharingReturn => {
     }
   }, [updateState]);
 
-  const actions: UseRecipeSharingActions = {
+  const actions: UseRecipeSharingActions = useMemo(() => ({
     shareRecipe,
     shareMultipleRecipes,
     shareShoppingList,
@@ -284,7 +284,16 @@ export const useRecipeSharing = (): UseRecipeSharingReturn => {
     generateShoppingList,
     cleanupOldExports,
     initializeExportSystem
-  };
+  }), [
+    shareRecipe,
+    shareMultipleRecipes,
+    shareShoppingList,
+    exportRecipe,
+    exportMultipleRecipes,
+    generateShoppingList,
+    cleanupOldExports,
+    initializeExportSystem
+  ]);
 
   return {
     loading: state.loading,
@@ -354,20 +363,31 @@ export const useRecipeBulkSharing = () => {
     return sharing.actions.generateShoppingList(selectedRecipes);
   }, [selectedRecipes, sharing.actions]);
 
+  const actions = useMemo(() => ({
+    addRecipe,
+    removeRecipe,
+    toggleRecipe,
+    clearSelection,
+    shareSelected,
+    exportSelected,
+    generateShoppingListForSelected,
+    ...sharing.actions
+  }), [
+    addRecipe,
+    removeRecipe,
+    toggleRecipe,
+    clearSelection,
+    shareSelected,
+    exportSelected,
+    generateShoppingListForSelected,
+    sharing.actions
+  ]);
+
   return {
     selectedRecipes,
     selectedCount: selectedRecipes.length,
     loading: sharing.loading,
     error: sharing.error,
-    actions: {
-      addRecipe,
-      removeRecipe,
-      toggleRecipe,
-      clearSelection,
-      shareSelected,
-      exportSelected,
-      generateShoppingListForSelected,
-      ...sharing.actions
-    }
+    actions
   };
 };

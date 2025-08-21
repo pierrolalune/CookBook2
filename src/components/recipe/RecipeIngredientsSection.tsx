@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   Alert
 } from 'react-native';
 import { RecipeIngredient } from '../../types';
@@ -243,14 +242,14 @@ export const RecipeIngredientsSection: React.FC<RecipeIngredientsSectionProps> =
       )}
 
       {/* Ingredients List */}
-      <FlatList
-        data={sortedIngredients}
-        renderItem={renderIngredient}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContainer}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+      <View style={styles.listContainer}>
+        {sortedIngredients.map((item, index) => (
+          <View key={item.id}>
+            {renderIngredient({ item, index })}
+            {index < sortedIngredients.length - 1 && <View style={styles.separator} />}
+          </View>
+        ))}
+      </View>
 
       {/* Shopping List Export (placeholder) */}
       {interactive && (

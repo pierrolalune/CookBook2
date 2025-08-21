@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { 
   Recipe, 
   RecipeFilters, 
@@ -48,7 +48,7 @@ export const useRecipes = (): UseRecipesReturn => {
     error: null
   });
 
-  const [currentFilters, setCurrentFilters] = useState<RecipeFilters | undefined>(undefined);
+  const currentFiltersRef = useRef<RecipeFilters | undefined>(undefined);
   
   // Create repository once and memoize
   const repository = useMemo(() => new RecipeRepository(), []);
@@ -62,7 +62,7 @@ export const useRecipes = (): UseRecipesReturn => {
   const loadRecipes = useCallback(async (filters?: RecipeFilters): Promise<void> => {
     try {
       updateState({ loading: true, error: null });
-      setCurrentFilters(filters);
+      currentFiltersRef.current = filters;
       
       const recipes = await repository.findAll(filters);
       updateState({ recipes, loading: false });
@@ -178,8 +178,8 @@ export const useRecipes = (): UseRecipesReturn => {
 
   // Refresh recipes (reload with current filters)
   const refreshRecipes = useCallback(async (): Promise<void> => {
-    await loadRecipes(currentFilters);
-  }, [loadRecipes, currentFilters]);
+    await loadRecipes(currentFiltersRef.current);
+  }, [loadRecipes]);
 
   // Record recipe usage
   const recordUsage = useCallback(async (recipeId: string): Promise<void> => {
@@ -203,27 +203,27 @@ export const useRecipes = (): UseRecipesReturn => {
 
   // Search recipes
   const searchRecipes = useCallback(async (query: string): Promise<void> => {
-    const filters: RecipeFilters = { ...currentFilters, searchQuery: query };
+    const filters: RecipeFilters = { ...currentFiltersRef.current, searchQuery: query };
     await loadRecipes(filters);
-  }, [loadRecipes, currentFilters]);
+  }, [loadRecipes]);
 
   // Filter by category
   const filterByCategory = useCallback(async (category: RecipeCategory): Promise<void> => {
-    const filters: RecipeFilters = { ...currentFilters, category };
+    const filters: RecipeFilters = { ...currentFiltersRef.current, category };
     await loadRecipes(filters);
-  }, [loadRecipes, currentFilters]);
+  }, [loadRecipes]);
 
   // Filter by difficulty
   const filterByDifficulty = useCallback(async (difficulty: RecipeDifficulty): Promise<void> => {
-    const filters: RecipeFilters = { ...currentFilters, difficulty };
+    const filters: RecipeFilters = { ...currentFiltersRef.current, difficulty };
     await loadRecipes(filters);
-  }, [loadRecipes, currentFilters]);
+  }, [loadRecipes]);
 
   // Filter by ingredients
   const filterByIngredients = useCallback(async (ingredientIds: string[]): Promise<void> => {
-    const filters: RecipeFilters = { ...currentFilters, ingredientIds };
+    const filters: RecipeFilters = { ...currentFiltersRef.current, ingredientIds };
     await loadRecipes(filters);
-  }, [loadRecipes, currentFilters]);
+  }, [loadRecipes]);
 
   // Clear all filters
   const clearFilters = useCallback(async (): Promise<void> => {
@@ -235,7 +235,7 @@ export const useRecipes = (): UseRecipesReturn => {
     loadRecipes();
   }, [loadRecipes]);
 
-  const actions: UseRecipesActions = {
+  const actions: UseRecipesActions = useMemo(() => ({
     loadRecipes,
     createRecipe,
     updateRecipe,
@@ -250,7 +250,22 @@ export const useRecipes = (): UseRecipesReturn => {
     filterByDifficulty,
     filterByIngredients,
     clearFilters
-  };
+  }), [
+    loadRecipes,
+    createRecipe,
+    updateRecipe,
+    deleteRecipe,
+    duplicateRecipe,
+    getRecipeById,
+    refreshRecipes,
+    recordUsage,
+    getUsageStats,
+    searchRecipes,
+    filterByCategory,
+    filterByDifficulty,
+    filterByIngredients,
+    clearFilters
+  ]);
 
   return {
     recipes: state.recipes,

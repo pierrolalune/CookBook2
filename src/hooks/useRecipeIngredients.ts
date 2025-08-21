@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { 
   Ingredient,
   RecipeIngredient,
@@ -278,7 +278,7 @@ export const useRecipeIngredients = (initialIngredients?: RecipeIngredientItem[]
   const hasUnsavedChanges = state.selectedIngredients.length > 0 && 
     state.selectedIngredients.some(ingredient => ingredient.tempId);
 
-  const actions: UseRecipeIngredientsActions = {
+  const actions: UseRecipeIngredientsActions = useMemo(() => ({
     loadAvailableIngredients,
     searchIngredients,
     filterByCategory,
@@ -290,7 +290,19 @@ export const useRecipeIngredients = (initialIngredients?: RecipeIngredientItem[]
     getIngredientUsageStats,
     reorderIngredients,
     duplicateIngredient
-  };
+  }), [
+    loadAvailableIngredients,
+    searchIngredients,
+    filterByCategory,
+    addIngredientToRecipe,
+    updateRecipeIngredient,
+    removeRecipeIngredient,
+    clearSelectedIngredients,
+    setSelectedIngredients,
+    getIngredientUsageStats,
+    reorderIngredients,
+    duplicateIngredient
+  ]);
 
   return {
     availableIngredients: state.availableIngredients,

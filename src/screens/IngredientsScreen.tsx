@@ -13,6 +13,7 @@ import { useSeasonalIngredients } from '../hooks/useSeasonalIngredients';
 import { SearchBar } from '../components/common/SearchBar';
 import { CategoryChips, FilterCategory } from '../components/common/CategoryChips';
 import { CategorySection } from '../components/ingredient/CategorySection';
+import { SubCategorySection } from '../components/ingredient/SubCategorySection';
 import { IngredientCard } from '../components/ingredient/IngredientCard';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
@@ -183,6 +184,29 @@ export const IngredientsScreen: React.FC = () => {
     setRefreshing(false);
   };
 
+  // Group ingredients by subcategory for main food categories
+  const groupIngredientsBySubcategory = (ingredients: Ingredient[]): { [key: string]: Ingredient[] } => {
+    const groups: { [key: string]: Ingredient[] } = {};
+    
+    ingredients.forEach(ingredient => {
+      const subcategory = ingredient.subcategory;
+      if (!groups[subcategory]) {
+        groups[subcategory] = [];
+      }
+      groups[subcategory].push(ingredient);
+    });
+
+    // Sort subcategories alphabetically
+    const sortedGroups: { [key: string]: Ingredient[] } = {};
+    Object.keys(groups)
+      .sort()
+      .forEach(key => {
+        sortedGroups[key] = groups[key].sort((a, b) => a.name.localeCompare(b.name));
+      });
+
+    return sortedGroups;
+  };
+
   const getCategoryInfo = (categoryKey: string) => {
     const categoryMap: { [key: string]: { title: string; icon: string; headerStyle?: any } } = {
       favoris: { 
@@ -293,41 +317,82 @@ export const IngredientsScreen: React.FC = () => {
               );
             })
           ) : (
-            /* Specific category view or search results - flat list */
+            /* Specific category view or search results */
             <>
-              {selectedCategory !== 'all' && selectedCategory !== 'favoris' && selectedCategory !== 'myproduct' && selectedCategory !== 'saison' && (
-                <View style={styles.categoryHeader}>
-                  <Text style={styles.categoryHeaderIcon}>
-                    {getCategoryInfo(selectedCategory).icon}
-                  </Text>
-                  <Text style={styles.categoryHeaderTitle}>
-                    {getCategoryInfo(selectedCategory).title}
-                  </Text>
-                </View>
-              )}
-              <View style={styles.flatListContainer}>
-                {filteredIngredients.map((ingredient) => (
-                  <IngredientCard
-                    key={ingredient.id}
-                    ingredient={ingredient}
-                    onPress={handleIngredientPress}
-                    showSeasonalBadge={true}
-                  />
-                ))}
-              </View>
-              {filteredIngredients.length === 0 && (
-                <View style={styles.emptyState}>
-                  <Text style={styles.emptyStateText}>
-                    {searchQuery.trim() 
-                      ? `Aucun ingrédient trouvé pour "${searchQuery}"`
-                      : selectedCategory === 'favoris'
-                      ? 'Aucun favori. Appuyez sur ❤️ pour ajouter des ingrédients favoris.'
-                      : selectedCategory === 'myproduct'
-                      ? 'Aucun produit personnel. Utilisez le bouton + pour en créer.'
-                      : 'Aucun ingrédient dans cette catégorie.'
+              {/* Main food categories with subcategory grouping */}
+              {!searchQuery.trim() && ['fruits', 'legumes', 'peche', 'viande', 'produits_laitiers', 'epicerie'].includes(selectedCategory) ? (
+                <>
+                  <View style={styles.categoryHeader}>
+                    <Text style={styles.categoryHeaderIcon}>
+                      {getCategoryInfo(selectedCategory).icon}
+                    </Text>
+                    <Text style={styles.categoryHeaderTitle}>
+                      {getCategoryInfo(selectedCategory).title}
+                    </Text>
+                  </View>
+                  
+                  {(() => {
+                    const subcategoryGroups = groupIngredientsBySubcategory(filteredIngredients);
+                    
+                    if (Object.keys(subcategoryGroups).length === 0) {
+                      return (
+                        <View style={styles.emptyState}>
+                          <Text style={styles.emptyStateText}>
+                            Aucun ingrédient dans cette catégorie.
+                          </Text>
+                        </View>
+                      );
                     }
-                  </Text>
-                </View>
+
+                    return Object.entries(subcategoryGroups).map(([subcategory, ingredients]) => (
+                      <SubCategorySection
+                        key={subcategory}
+                        title={subcategory}
+                        ingredients={ingredients}
+                        onIngredientPress={handleIngredientPress}
+                        initiallyExpanded={false}
+                      />
+                    ));
+                  })()}
+                </>
+              ) : (
+                /* Flat list for search results or special categories */
+                <>
+                  {selectedCategory !== 'all' && selectedCategory !== 'favoris' && selectedCategory !== 'myproduct' && selectedCategory !== 'saison' && (
+                    <View style={styles.categoryHeader}>
+                      <Text style={styles.categoryHeaderIcon}>
+                        {getCategoryInfo(selectedCategory).icon}
+                      </Text>
+                      <Text style={styles.categoryHeaderTitle}>
+                        {getCategoryInfo(selectedCategory).title}
+                      </Text>
+                    </View>
+                  )}
+                  <View style={styles.flatListContainer}>
+                    {filteredIngredients.map((ingredient) => (
+                      <IngredientCard
+                        key={ingredient.id}
+                        ingredient={ingredient}
+                        onPress={handleIngredientPress}
+                        showSeasonalBadge={true}
+                      />
+                    ))}
+                  </View>
+                  {filteredIngredients.length === 0 && (
+                    <View style={styles.emptyState}>
+                      <Text style={styles.emptyStateText}>
+                        {searchQuery.trim() 
+                          ? `Aucun ingrédient trouvé pour "${searchQuery}"`
+                          : selectedCategory === 'favoris'
+                          ? 'Aucun favori. Appuyez sur ❤️ pour ajouter des ingrédients favoris.'
+                          : selectedCategory === 'myproduct'
+                          ? 'Aucun produit personnel. Utilisez le bouton + pour en créer.'
+                          : 'Aucun ingrédient dans cette catégorie.'
+                        }
+                      </Text>
+                    </View>
+                  )}
+                </>
               )}
             </>
           )}

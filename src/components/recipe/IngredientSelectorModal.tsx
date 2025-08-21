@@ -172,13 +172,13 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
   const groupedIngredients = useMemo(() => {
     const groups: { [key: string]: Ingredient[] } = {
       favoris: [],
+      myproduct: [],
       fruits: [],
       legumes: [],
       viande: [],
       peche: [],
       epicerie: [],
       produits_laitiers: [],
-      myproduct: [],
       autres: []
     };
 

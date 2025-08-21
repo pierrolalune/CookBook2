@@ -230,7 +230,6 @@ export const AddRecipeScreen: React.FC = () => {
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Basic Info Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Informations générales</Text>
             
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Nom de la recette *</Text>
@@ -281,29 +280,6 @@ export const AddRecipeScreen: React.FC = () => {
               </View>
             </View>
 
-            {/* Difficulty Selection */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Difficulté</Text>
-              <View style={styles.optionsRow}>
-                {difficulties.map((diff) => (
-                  <TouchableOpacity
-                    key={diff.value}
-                    style={[
-                      styles.optionButton,
-                      difficulty === diff.value && styles.selectedOption
-                    ]}
-                    onPress={() => setDifficulty(difficulty === diff.value ? '' : diff.value)}
-                  >
-                    <Text style={[
-                      styles.optionText,
-                      difficulty === diff.value && styles.selectedOptionText
-                    ]}>
-                      {diff.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
 
             {/* Time and Servings */}
             <View style={styles.timeRow}>
@@ -343,18 +319,6 @@ export const AddRecipeScreen: React.FC = () => {
                 />
               </View>
             </View>
-          </View>
-
-          {/* Photos Section */}
-          <View style={styles.section}>
-            <RecipePhotoManager
-              recipeId={tempRecipeId}
-              editable={true}
-              height={180}
-              maxPhotos={5}
-              showTitle={true}
-              onPhotosChange={setPhotos}
-            />
           </View>
 
           {/* Ingredients Section */}
@@ -445,6 +409,42 @@ export const AddRecipeScreen: React.FC = () => {
                 />
               </View>
             ))}
+          </View>
+
+          {/* Photos and Difficulty Section */}
+          <View style={styles.section}>
+            <RecipePhotoManager
+              recipeId={tempRecipeId}
+              editable={true}
+              height={180}
+              maxPhotos={5}
+              showTitle={true}
+              onPhotosChange={setPhotos}
+            />
+            
+            {/* Difficulty Selection */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Difficulté</Text>
+              <View style={styles.optionsRow}>
+                {difficulties.map((diff) => (
+                  <TouchableOpacity
+                    key={diff.value}
+                    style={[
+                      styles.optionButton,
+                      difficulty === diff.value && styles.selectedOption
+                    ]}
+                    onPress={() => setDifficulty(difficulty === diff.value ? '' : diff.value)}
+                  >
+                    <Text style={[
+                      styles.optionText,
+                      difficulty === diff.value && styles.selectedOptionText
+                    ]}>
+                      {diff.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
           </View>
 
           <View style={styles.bottomSpacer} />

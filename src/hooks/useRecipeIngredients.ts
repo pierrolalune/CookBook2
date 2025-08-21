@@ -427,10 +427,9 @@ export const useIngredientUnits = () => {
   ];
 
   const getUnitsForIngredient = useCallback((ingredient: Ingredient): string[] => {
-    // Combine ingredient-specific units with common units, removing duplicates
-    const allUnits = [...new Set([...ingredient.units, ...commonUnits])];
-    return allUnits.sort();
-  }, [commonUnits]);
+    // Return only the ingredient's specific units
+    return ingredient.units.length > 0 ? ingredient.units : ['pièce(s)'];
+  }, []);
 
   const getDefaultUnit = useCallback((ingredient: Ingredient): string => {
     return ingredient.units[0] || 'pièce(s)';

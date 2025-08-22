@@ -148,15 +148,6 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
     setShareModalVisible(true);
   }, [recipe]);
 
-  const handleShoppingListShare = useCallback(async () => {
-    if (!recipe) return;
-    
-    try {
-      await sharing.actions.shareShoppingList([recipe]);
-    } catch (error) {
-      Alert.alert('Erreur', 'Impossible de générer la liste de courses');
-    }
-  }, [recipe, sharing.actions]);
 
   const handleServingsChange = useCallback((newServings: number) => {
     setCurrentServings(newServings);
@@ -252,7 +243,6 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
                 [
                   { text: 'Modifier', onPress: handleEdit },
                   { text: 'Dupliquer', onPress: handleDuplicate },
-                  { text: '🛒 Liste de courses', onPress: handleShoppingListShare },
                   { text: 'Supprimer', style: 'destructive', onPress: handleDelete },
                   { text: 'Annuler', style: 'cancel' }
                 ]

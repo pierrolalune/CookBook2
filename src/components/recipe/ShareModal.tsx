@@ -20,7 +20,7 @@ interface ShareModalProps {
   onClose: () => void;
   recipe?: Recipe;
   recipes?: Recipe[];
-  mode?: 'single' | 'multiple' | 'shopping-list';
+  mode?: 'single' | 'multiple';
   title?: string;
 }
 
@@ -51,8 +51,6 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     switch (mode) {
       case 'multiple':
         return `Partager ${recipes.length} recette${recipes.length > 1 ? 's' : ''}`;
-      case 'shopping-list':
-        return 'Partager la liste de courses';
       default:
         return `Partager "${recipe?.name}"`;
     }
@@ -70,9 +68,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
       if (mode === 'single' && recipe) {
         await RecipeExporter.shareRecipe(recipe, format);
-      } else if (mode === 'shopping-list') {
-        const targetRecipes = recipes.length > 0 ? recipes : (recipe ? [recipe] : []);
-        await RecipeExporter.shareShoppingList(targetRecipes);
+      } else if (mode === 'multiple' && recipes.length > 0) {
+        // For multiple recipes, create concatenated content (only text and PDF supported)
+        const multiFormat = format === 'json' ? 'text' : format as 'text' | 'pdf';
+        await RecipeExporter.shareMultipleRecipes(recipes, multiFormat);
       }
 
       onClose();
@@ -107,9 +106,20 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           default:
             filePath = await RecipeExporter.exportToText(recipe);
         }
-      } else if (mode === 'shopping-list') {
-        const targetRecipes = recipes.length > 0 ? recipes : (recipe ? [recipe] : []);
-        filePath = await RecipeExporter.generateShoppingList(targetRecipes);
+      } else if (mode === 'multiple' && recipes.length > 0) {
+        // For multiple recipes, export them individually for now
+        const exportPromises = recipes.map(async (recipeToExport) => {
+          switch (format) {
+            case 'pdf':
+              return await RecipeExporter.exportToPDF(recipeToExport);
+            case 'json':
+              return await RecipeExporter.exportToJSON(recipeToExport);
+            default:
+              return await RecipeExporter.exportToText(recipeToExport);
+          }
+        });
+        await Promise.all(exportPromises);
+        filePath = 'Multiple files exported';
       } else {
         throw new Error('Mode non supporté pour l\'export');
       }
@@ -130,26 +140,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   };
 
   const getShareOptions = (): ShareOption[] => {
-    if (mode === 'shopping-list') {
-      return [
-        {
-          id: 'share-shopping-text',
-          title: 'Partager la liste',
-          subtitle: 'WhatsApp, SMS, Email...',
-          icon: 'share',
-          action: () => handleShare('text', 'Partage de la liste de courses...')
-        },
-        {
-          id: 'export-shopping-text',
-          title: 'Sauvegarder la liste',
-          subtitle: 'Fichier texte dans Documents',
-          icon: 'download',
-          action: () => handleExportOnly('text', 'Sauvegarde de la liste de courses...')
-        }
-      ];
-    }
-
-    // Single or multiple recipe options
+    // Single or multiple recipe options - only sharing options
     return [
       {
         id: 'share-text',
@@ -165,33 +156,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         subtitle: 'Format imprimable',
         icon: 'document',
         format: 'pdf',
-        action: () => handleShare('pdf', 'Création du PDF...'),
-        disabled: mode === 'multiple' // PDF not supported for multiple recipes yet
-      },
-      {
-        id: 'export-text',
-        title: 'Exporter en texte',
-        subtitle: 'Fichier .txt dans Documents',
-        icon: 'download',
-        format: 'text',
-        action: () => handleExportOnly('text', 'Export en texte...')
-      },
-      {
-        id: 'export-pdf',
-        title: 'Exporter en PDF',
-        subtitle: 'Fichier .pdf dans Documents',
-        icon: 'document-attach',
-        format: 'pdf',
-        action: () => handleExportOnly('pdf', 'Création du PDF...'),
-        disabled: mode === 'multiple'
-      },
-      {
-        id: 'export-json',
-        title: 'Exporter données',
-        subtitle: 'Fichier .json (backup)',
-        icon: 'code-working',
-        format: 'json',
-        action: () => handleExportOnly('json', 'Export des données...')
+        action: () => handleShare('pdf', 'Création du PDF...')
       }
     ];
   };
@@ -247,7 +212,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     <Modal
       visible={visible}
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
     >
       <ErrorBoundary>
@@ -290,33 +255,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 contentContainerStyle={styles.optionsContent}
                 showsVerticalScrollIndicator={false}
               >
-                {shareOptions.map(renderShareOption)}
-                
-                {/* Info Section */}
-                <View style={styles.infoContainer}>
-                  <Text style={styles.infoTitle}>ℹ️ À propos des exports</Text>
-                  
-                  <View style={styles.infoItem}>
-                    <Text style={styles.infoLabel}>📱 Partager :</Text>
-                    <Text style={styles.infoText}>
-                      Ouvre le menu de partage natif de votre appareil
-                    </Text>
-                  </View>
-                  
-                  <View style={styles.infoItem}>
-                    <Text style={styles.infoLabel}>💾 Exporter :</Text>
-                    <Text style={styles.infoText}>
-                      Sauvegarde le fichier dans le dossier Documents
-                    </Text>
-                  </View>
-                  
-                  <View style={styles.infoItem}>
-                    <Text style={styles.infoLabel}>🗂️ Formats :</Text>
-                    <Text style={styles.infoText}>
-                      Texte (simple), PDF (imprimable), JSON (données)
-                    </Text>
-                  </View>
-                </View>
+                {shareOptions.length === 0 ? (
+                  <Text style={styles.noOptionsText}>Aucune option disponible</Text>
+                ) : (
+                  shareOptions.map(renderShareOption)
+                )}
               </ScrollView>
             )}
 
@@ -340,14 +283,17 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
   },
 
   container: {
     backgroundColor: colors.background,
-    borderTopLeftRadius: spacing.borderRadius.xl,
-    borderTopRightRadius: spacing.borderRadius.xl,
-    maxHeight: '90%',
+    borderRadius: spacing.borderRadius.xl,
+    maxHeight: '80%',
+    width: '100%',
+    maxWidth: 400,
   },
 
   header: {
@@ -396,7 +342,7 @@ const styles = StyleSheet.create({
   },
 
   optionsContainer: {
-    flex: 1,
+    maxHeight: 400,
   },
 
   optionsContent: {
@@ -455,35 +401,11 @@ const styles = StyleSheet.create({
     color: colors.textLight,
   },
 
-  infoContainer: {
-    backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.md,
-    padding: spacing.md,
-    marginTop: spacing.md,
-  },
-
-  infoTitle: {
+  noOptionsText: {
     ...typography.styles.body,
-    fontWeight: typography.weights.semibold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-
-  infoItem: {
-    marginBottom: spacing.sm,
-  },
-
-  infoLabel: {
-    ...typography.styles.small,
-    fontWeight: typography.weights.medium,
-    color: colors.textPrimary,
-    marginBottom: 2,
-  },
-
-  infoText: {
-    ...typography.styles.small,
     color: colors.textSecondary,
-    lineHeight: 16,
+    textAlign: 'center',
+    padding: spacing.xl,
   },
 
   cancelButton: {

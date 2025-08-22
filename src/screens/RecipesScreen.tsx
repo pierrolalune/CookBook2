@@ -38,7 +38,6 @@ export const RecipesScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
-  const [shareModalMode, setShareModalMode] = useState<'multiple' | 'shopping-list'>('multiple');
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
 
   const { recipes, loading, error, actions } = useRecipes();
@@ -247,18 +246,9 @@ export const RecipesScreen: React.FC = () => {
       Alert.alert('Aucune sélection', 'Veuillez sélectionner au moins une recette');
       return;
     }
-    setShareModalMode('multiple');
     setShareModalVisible(true);
   }, [bulkSharing.selectedCount]);
 
-  const handleBulkShoppingList = useCallback(() => {
-    if (bulkSharing.selectedCount === 0) {
-      Alert.alert('Aucune sélection', 'Veuillez sélectionner au moins une recette');
-      return;
-    }
-    setShareModalMode('shopping-list');
-    setShareModalVisible(true);
-  }, [bulkSharing.selectedCount]);
 
   // Toggle category collapse
   const toggleCategoryCollapse = useCallback((category: string) => {
@@ -394,17 +384,10 @@ export const RecipesScreen: React.FC = () => {
               {bulkSharing.selectedCount > 0 && (
                 <View style={styles.selectionActions}>
                   <TouchableOpacity
-                    style={styles.selectionActionButton}
+                    style={[styles.selectionActionButton, styles.singleActionButton]}
                     onPress={handleBulkShare}
                   >
                     <Text style={styles.selectionActionText}>📤 Partager</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity
-                    style={styles.selectionActionButton}
-                    onPress={handleBulkShoppingList}
-                  >
-                    <Text style={styles.selectionActionText}>🛒 Liste courses</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -476,7 +459,7 @@ export const RecipesScreen: React.FC = () => {
           visible={shareModalVisible}
           onClose={() => setShareModalVisible(false)}
           recipes={bulkSharing.selectedRecipes}
-          mode={shareModalMode}
+          mode="multiple"
         />
         </View>
       </View>
@@ -723,5 +706,10 @@ const styles = StyleSheet.create({
     ...typography.styles.small,
     color: colors.textWhite,
     fontWeight: typography.weights.semibold,
+  },
+
+  singleActionButton: {
+    flex: 0,
+    minWidth: 120,
   },
 });

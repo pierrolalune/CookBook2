@@ -13,10 +13,8 @@ interface UseRecipeSharingState {
 interface UseRecipeSharingActions {
   shareRecipe: (recipe: Recipe, format?: 'text' | 'pdf' | 'json') => Promise<void>;
   shareMultipleRecipes: (recipes: Recipe[], format?: 'text' | 'json') => Promise<void>;
-  shareShoppingList: (recipes: Recipe[]) => Promise<void>;
   exportRecipe: (recipe: Recipe, format?: 'text' | 'pdf' | 'json', options?: ExportOptions) => Promise<string>;
   exportMultipleRecipes: (recipes: Recipe[], format?: 'text' | 'json') => Promise<string[]>;
-  generateShoppingList: (recipes: Recipe[]) => Promise<string>;
   cleanupOldExports: (maxAgeInDays?: number) => Promise<void>;
   initializeExportSystem: () => Promise<void>;
 }
@@ -83,30 +81,6 @@ export const useRecipeSharing = (): UseRecipeSharingReturn => {
     }
   }, [updateState]);
 
-  // Share shopping list
-  const shareShoppingList = useCallback(async (recipes: Recipe[]): Promise<void> => {
-    if (recipes.length === 0) {
-      Alert.alert('Erreur', 'Aucune recette sélectionnée pour la liste de courses');
-      return;
-    }
-
-    try {
-      updateState({ loading: true, error: null });
-      
-      await RecipeExporter.shareShoppingList(recipes);
-      
-      updateState({ loading: false });
-    } catch (error) {
-      const errorMessage = SecureErrorHandler.getUserFriendlyMessage(error as Error);
-      updateState({ loading: false, error: errorMessage });
-      
-      Alert.alert(
-        'Erreur de partage',
-        `Impossible de partager la liste de courses. ${errorMessage}`,
-        [{ text: 'OK' }]
-      );
-    }
-  }, [updateState]);
 
   // Export a single recipe
   const exportRecipe = useCallback(async (
@@ -213,34 +187,6 @@ export const useRecipeSharing = (): UseRecipeSharingReturn => {
     }
   }, [updateState]);
 
-  // Generate shopping list
-  const generateShoppingList = useCallback(async (recipes: Recipe[]): Promise<string> => {
-    if (recipes.length === 0) {
-      Alert.alert('Erreur', 'Aucune recette sélectionnée pour la liste de courses');
-      throw new Error('No recipes selected');
-    }
-
-    try {
-      updateState({ loading: true, error: null });
-      
-      const filePath = await RecipeExporter.generateShoppingList(recipes);
-      
-      updateState({ loading: false, lastExportPath: filePath });
-      
-      return filePath;
-    } catch (error) {
-      const errorMessage = SecureErrorHandler.getUserFriendlyMessage(error as Error);
-      updateState({ loading: false, error: errorMessage });
-      
-      Alert.alert(
-        'Erreur de génération',
-        `Impossible de générer la liste de courses. ${errorMessage}`,
-        [{ text: 'OK' }]
-      );
-      
-      throw error;
-    }
-  }, [updateState]);
 
   // Clean up old export files
   const cleanupOldExports = useCallback(async (maxAgeInDays: number = 7): Promise<void> => {
@@ -278,19 +224,15 @@ export const useRecipeSharing = (): UseRecipeSharingReturn => {
   const actions: UseRecipeSharingActions = useMemo(() => ({
     shareRecipe,
     shareMultipleRecipes,
-    shareShoppingList,
     exportRecipe,
     exportMultipleRecipes,
-    generateShoppingList,
     cleanupOldExports,
     initializeExportSystem
   }), [
     shareRecipe,
     shareMultipleRecipes,
-    shareShoppingList,
     exportRecipe,
     exportMultipleRecipes,
-    generateShoppingList,
     cleanupOldExports,
     initializeExportSystem
   ]);
@@ -354,14 +296,6 @@ export const useRecipeBulkSharing = () => {
     return sharing.actions.exportMultipleRecipes(selectedRecipes, format);
   }, [selectedRecipes, sharing.actions]);
 
-  const generateShoppingListForSelected = useCallback(async () => {
-    if (selectedRecipes.length === 0) {
-      Alert.alert('Aucune sélection', 'Veuillez sélectionner au moins une recette');
-      return '';
-    }
-
-    return sharing.actions.generateShoppingList(selectedRecipes);
-  }, [selectedRecipes, sharing.actions]);
 
   const actions = useMemo(() => ({
     addRecipe,
@@ -370,7 +304,6 @@ export const useRecipeBulkSharing = () => {
     clearSelection,
     shareSelected,
     exportSelected,
-    generateShoppingListForSelected,
     ...sharing.actions
   }), [
     addRecipe,
@@ -379,7 +312,6 @@ export const useRecipeBulkSharing = () => {
     clearSelection,
     shareSelected,
     exportSelected,
-    generateShoppingListForSelected,
     sharing.actions
   ]);
 

@@ -151,6 +151,17 @@ const createTablesIfNeeded = async (db: SQLiteDatabase): Promise<void> => {
       );
     `);
     
+    // Create recipe_favorites table
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS recipe_favorites (
+        id TEXT PRIMARY KEY,
+        recipe_id TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE,
+        UNIQUE(recipe_id)
+      );
+    `);
+    
     // Create indexes
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_ingredients_category ON ingredients(category);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_ingredients_name ON ingredients(name);');
@@ -162,6 +173,7 @@ const createTablesIfNeeded = async (db: SQLiteDatabase): Promise<void> => {
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_instructions_recipe_id ON recipe_instructions(recipe_id);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_usage_recipe_id ON recipe_usage(recipe_id);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_photos_recipe_id ON recipe_photos(recipe_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_favorites_recipe_id ON recipe_favorites(recipe_id);');
     
     console.log('✅ [DB] Tables created/verified');
   } catch (error) {
@@ -456,6 +468,7 @@ export const resetDatabase = async (): Promise<void> => {
   
   try {
     // Drop tables in correct order (due to foreign key constraints)
+    await db.execAsync('DROP TABLE IF EXISTS recipe_favorites;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_photos;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_usage;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_instructions;');

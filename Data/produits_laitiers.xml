@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category category="Produits Laitiers">
-    <ingredient name="Lait">
+    <ingredient name="Lait" uuid="8109a748-f334-46a5-bba1-ec64ce7a0501">
         <subcategory>Laits</subcategory>
         <units>
             <unit>litre</unit>
@@ -8,7 +8,7 @@
             <unit>brique</unit>
         </units>
     </ingredient>
-    <ingredient name="Beurre">
+    <ingredient name="Beurre" uuid="34165a8a-a171-4e28-8916-aba10441843a">
         <subcategory>Beurres et matières grasses</subcategory>
         <units>
             <unit>g</unit>
@@ -16,7 +16,7 @@
             <unit>motte</unit>
         </units>
     </ingredient>
-    <ingredient name="Crème fraîche">
+    <ingredient name="Crème fraîche" uuid="958038a7-4161-4247-91c4-606a85f3cc2b">
         <subcategory>Crèmes</subcategory>
         <units>
             <unit>ml</unit>
@@ -24,7 +24,7 @@
             <unit>pot</unit>
         </units>
     </ingredient>
-    <ingredient name="Crème liquide">
+    <ingredient name="Crème liquide" uuid="6b8293cf-de44-4bc2-984f-44caf7519dbe">
         <subcategory>Crèmes</subcategory>
         <units>
             <unit>ml</unit>
@@ -32,7 +32,7 @@
             <unit>brique</unit>
         </units>
     </ingredient>
-    <ingredient name="Fromage blanc">
+    <ingredient name="Fromage blanc" uuid="5e13795f-ead2-49ae-ace5-ce4bc8363722">
         <subcategory>Fromages frais</subcategory>
         <units>
             <unit>g</unit>
@@ -40,42 +40,42 @@
             <unit>kg</unit>
         </units>
     </ingredient>
-    <ingredient name="Yaourt">
+    <ingredient name="Yaourt" uuid="0a89bff1-0e3c-4a70-9131-27661cf623dd">
         <subcategory>Yaourts et desserts lactés</subcategory>
         <units>
             <unit>pot</unit>
             <unit>pack</unit>
         </units>
     </ingredient>
-    <ingredient name="Yaourt grec">
+    <ingredient name="Yaourt grec" uuid="68c1232b-069e-4005-8d05-cd2c48125c9d">
         <subcategory>Yaourts et desserts lactés</subcategory>
         <units>
             <unit>pot</unit>
             <unit>g</unit>
         </units>
     </ingredient>
-    <ingredient name="Petit-suisse">
+    <ingredient name="Petit-suisse" uuid="323bf9a6-1170-425a-96f3-b5c72ab40d75">
         <subcategory>Fromages frais</subcategory>
         <units>
             <unit>pot</unit>
             <unit>pack</unit>
         </units>
     </ingredient>
-    <ingredient name="Mascarpone">
+    <ingredient name="Mascarpone" uuid="a1ceb201-b9a4-4b67-b246-d91ae85151b0">
         <subcategory>Fromages frais</subcategory>
         <units>
             <unit>g</unit>
             <unit>pot</unit>
         </units>
     </ingredient>
-    <ingredient name="Ricotta">
+    <ingredient name="Ricotta" uuid="a2a39354-b2d4-4495-af0c-89f1e5908e7d">
         <subcategory>Fromages frais</subcategory>
         <units>
             <unit>g</unit>
             <unit>pot</unit>
         </units>
     </ingredient>
-    <ingredient name="Mozzarella">
+    <ingredient name="Mozzarella" uuid="5b87564d-6d14-4832-88c9-1c8c2fdd3427">
         <subcategory>Fromages à pâte filée</subcategory>
         <units>
             <unit>g</unit>
@@ -83,14 +83,14 @@
             <unit>sachet</unit>
         </units>
     </ingredient>
-    <ingredient name="Fromage râpé">
+    <ingredient name="Fromage râpé" uuid="4c0c609a-d5f5-4a32-8131-46ec87a14f71">
         <subcategory>Fromages râpés</subcategory>
         <units>
             <unit>g</unit>
             <unit>sachet</unit>
         </units>
     </ingredient>
-    <ingredient name="Parmesan">
+    <ingredient name="Parmesan" uuid="1dba4b8e-1769-4979-a467-c7af2ddbf533">
         <subcategory>Fromages à pâte dure</subcategory>
         <units>
             <unit>g</unit>
@@ -98,7 +98,7 @@
             <unit>sachet râpé</unit>
         </units>
     </ingredient>
-    <ingredient name="Emmental">
+    <ingredient name="Emmental" uuid="d152b3e0-1c05-4f3c-b732-ea2154007a5e">
         <subcategory>Fromages à pâte dure</subcategory>
         <units>
             <unit>g</unit>
@@ -106,14 +106,14 @@
             <unit>morceau</unit>
         </units>
     </ingredient>
-    <ingredient name="Comté">
+    <ingredient name="Comté" uuid="08e63ec6-57eb-475b-a1cd-a83686ac11de">
         <subcategory>Fromages à pâte dure</subcategory>
         <units>
             <unit>g</unit>
             <unit>morceau</unit>
         </units>
     </ingredient>
-    <ingredient name="Gruyère">
+    <ingredient name="Gruyère" uuid="878026dc-3f91-4aaa-89a7-b7516623273d">
         <subcategory>Fromages à pâte dure</subcategory>
         <units>
             <unit>g</unit>
@@ -121,14 +121,14 @@
             <unit>sachet râpé</unit>
         </units>
     </ingredient>
-    <ingredient name="Camembert">
+    <ingredient name="Camembert" uuid="088d619f-fa1d-4dab-a73a-225760b68ece">
         <subcategory>Fromages à pâte molle</subcategory>
         <units>
             <unit>pièce</unit>
             <unit>portion</unit>
         </units>
     </ingredient>
-    <ingredient name="Brie">
+    <ingredient name="Brie" uuid="9199e2ad-d3a0-41e0-b143-a14fd353f3c8">
         <subcategory>Fromages à pâte molle</subcategory>
         <units>
             <unit>g</unit>
@@ -136,14 +136,14 @@
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="Roquefort">
+    <ingredient name="Roquefort" uuid="2627dc11-05e7-4263-a4ff-29228aa2a383">
         <subcategory>Fromages à pâte persillée</subcategory>
         <units>
             <unit>g</unit>
             <unit>portion</unit>
         </units>
     </ingredient>
-    <ingredient name="Chèvre">
+    <ingredient name="Chèvre" uuid="8fac03a1-6287-445c-89f2-6371bcbe1c17">
         <subcategory>Fromages de chèvre</subcategory>
         <units>
             <unit>g</unit>
@@ -152,7 +152,7 @@
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="Feta">
+    <ingredient name="Feta" uuid="7012ed1d-bc23-46fc-8144-2c743b730766">
         <subcategory>Fromages de brebis</subcategory>
         <units>
             <unit>g</unit>
@@ -160,7 +160,7 @@
             <unit>dés</unit>
         </units>
     </ingredient>
-    <ingredient name="Œufs">
+    <ingredient name="Œufs" uuid="691892b1-8c7a-4fcf-86b7-1cc25880a162">
         <subcategory>Œufs</subcategory>
         <units>
             <unit>pièce</unit>
@@ -168,7 +168,7 @@
             <unit>boîte de 12</unit>
         </units>
     </ingredient>
-    <ingredient name="Lait concentré">
+    <ingredient name="Lait concentré" uuid="140f9b56-b0e1-426c-a488-f3588bafb3de">
         <subcategory>Laits spéciaux</subcategory>
         <units>
             <unit>boîte</unit>
@@ -176,7 +176,7 @@
             <unit>g</unit>
         </units>
     </ingredient>
-    <ingredient name="Lait de coco">
+    <ingredient name="Lait de coco" uuid="af17dc06-ed5c-45b8-99cf-19524fe61c12">
         <subcategory>Laits végétaux</subcategory>
         <units>
             <unit>ml</unit>
@@ -184,35 +184,35 @@
             <unit>brique</unit>
         </units>
     </ingredient>
-    <ingredient name="beurre demi sel">
+    <ingredient name="beurre demi sel" uuid="9aed6f9a-3c6b-41b4-a421-e002c52d176f">
         <units>
             <unit>g</unit>
             <unit>ml</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="chevre frais">
+    <ingredient name="chevre frais" uuid="417b0a2f-1d76-492d-ae14-3df04f1ded76">
         <units>
             <unit>g</unit>
             <unit>ml</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="fromage frais">
+    <ingredient name="fromage frais" uuid="a27f4ba6-6f8a-4031-931a-cf499937a481">
         <units>
             <unit>g</unit>
             <unit>ml</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="gruyere rape">
+    <ingredient name="gruyere rape" uuid="4a39f98b-5ccd-4c65-839a-0834ce6d7b05">
         <units>
             <unit>g</unit>
             <unit>ml</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="reblochon">
+    <ingredient name="reblochon" uuid="771958ba-5716-4f42-9619-2231cb1978d1">
         <units>
             <unit>g</unit>
             <unit>ml</unit>

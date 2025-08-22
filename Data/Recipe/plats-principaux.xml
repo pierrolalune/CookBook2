@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <recipes category="Plats Principaux">
-  
+
   <recipe>
     <id>21</id>
-    <n>Boeuf Bourguignon</n>
+    <name>Boeuf Bourguignon</name>
     <description>Ragoût de bœuf mijoté au vin rouge avec lardons et champignons</description>
     <preparation_time>30</preparation_time>
     <cooking_time>180</cooking_time>
@@ -60,10 +60,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>22</id>
-    <n>Coq au vin</n>
+    <name>Coq au vin</name>
     <description>Volaille mijotée dans le vin rouge avec petits légumes</description>
     <preparation_time>45</preparation_time>
     <cooking_time>120</cooking_time>
@@ -120,10 +120,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>23</id>
-    <n>Blanquette de veau</n>
+    <name>Blanquette de veau</name>
     <description>Ragoût de veau à la crème avec carottes et champignons</description>
     <preparation_time>30</preparation_time>
     <cooking_time>90</cooking_time>
@@ -185,10 +185,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>24</id>
-    <n>Poulet rôti aux herbes</n>
+    <name>Poulet rôti aux herbes</name>
     <description>Poulet fermier rôti au four avec thym, romarin et citron</description>
     <preparation_time>15</preparation_time>
     <cooking_time>75</cooking_time>
@@ -245,10 +245,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>25</id>
-    <n>Cassoulet toulousain</n>
+    <name>Cassoulet toulousain</name>
     <description>Plat traditionnel du Sud-Ouest avec haricots, confit de canard et saucisse</description>
     <preparation_time>60</preparation_time>
     <cooking_time>240</cooking_time>
@@ -300,10 +300,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>26</id>
-    <n>Ratatouille niçoise</n>
+    <name>Ratatouille niçoise</name>
     <description>Mélange de légumes du soleil mijotés à la provençale</description>
     <preparation_time>30</preparation_time>
     <cooking_time>60</cooking_time>
@@ -360,10 +360,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>27</id>
-    <n>Gigot d'agneau aux flageolets</n>
+    <name>Gigot d'agneau aux flageolets</name>
     <description>Gigot d'agneau rôti au four avec ail et flageolets</description>
     <preparation_time>20</preparation_time>
     <cooking_time>60</cooking_time>
@@ -415,10 +415,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>28</id>
-    <n>Paella valencienne</n>
+    <name>Paella valencienne</name>
     <description>Plat espagnol traditionnel au riz safranné avec fruits de mer et poulet</description>
     <preparation_time>40</preparation_time>
     <cooking_time>45</cooking_time>
@@ -475,10 +475,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>29</id>
-    <n>Bouillabaisse marseillaise</n>
+    <name>Bouillabaisse marseillaise</name>
     <description>Soupe de poissons traditionnelle de Marseille avec rouille et croûtons</description>
     <preparation_time>45</preparation_time>
     <cooking_time>60</cooking_time>
@@ -535,10 +535,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>30</id>
-    <n>Osso buco à la milanaise</n>
+    <name>Osso buco à la milanaise</name>
     <description>Jarrets de veau braisés à l'italienne avec gremolata</description>
     <preparation_time>25</preparation_time>
     <cooking_time>120</cooking_time>
@@ -595,10 +595,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>31</id>
-    <n>Choucroute garnie alsacienne</n>
+    <name>Choucroute garnie alsacienne</name>
     <description>Choucroute traditionnelle avec saucisses, lard et pommes de terre</description>
     <preparation_time>30</preparation_time>
     <cooking_time>150</cooking_time>
@@ -655,10 +655,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>32</id>
-    <n>Lasagnes bolognaise</n>
+    <name>Lasagnes bolognaise</name>
     <description>Lasagnes maison avec sauce bolognaise et béchamel</description>
     <preparation_time>45</preparation_time>
     <cooking_time>45</cooking_time>
@@ -715,10 +715,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>33</id>
-    <n>Magret de canard aux cerises</n>
+    <name>Magret de canard aux cerises</name>
     <description>Magret de canard rosé avec sauce aux cerises et vinaigre balsamique</description>
     <preparation_time>15</preparation_time>
     <cooking_time>20</cooking_time>
@@ -770,10 +770,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>34</id>
-    <n>Pot-au-feu traditionnel</n>
+    <name>Pot-au-feu traditionnel</name>
     <description>Plat familial avec bœuf et légumes mijotés dans un bouillon</description>
     <preparation_time>30</preparation_time>
     <cooking_time>180</cooking_time>
@@ -830,10 +830,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>35</id>
-    <n>Risotto aux champignons</n>
+    <name>Risotto aux champignons</name>
     <description>Risotto crémeux aux cèpes et parmesan</description>
     <preparation_time>15</preparation_time>
     <cooking_time>25</cooking_time>
@@ -890,10 +890,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>36</id>
-    <n>Confit de canard sarladais</n>
+    <name>Confit de canard sarladais</name>
     <description>Cuisses de canard confites avec pommes sarladaises</description>
     <preparation_time>30</preparation_time>
     <cooking_time>150</cooking_time>
@@ -945,10 +945,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>37</id>
-    <n>Moussaka grecque</n>
+    <name>Moussaka grecque</name>
     <description>Gratin d'aubergines et viande hachée à la grecque</description>
     <preparation_time>40</preparation_time>
     <cooking_time>50</cooking_time>
@@ -1005,10 +1005,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>38</id>
-    <n>Navarin d'agneau printanier</n>
+    <name>Navarin d'agneau printanier</name>
     <description>Ragoût d'agneau aux légumes primeurs</description>
     <preparation_time>30</preparation_time>
     <cooking_time>90</cooking_time>
@@ -1060,10 +1060,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>39</id>
-    <n>Tartiflette savoyarde</n>
+    <name>Tartiflette savoyarde</name>
     <description>Gratin de pommes de terre au reblochon et lardons</description>
     <preparation_time>20</preparation_time>
     <cooking_time>40</cooking_time>
@@ -1115,10 +1115,10 @@
     </instructions>
   </recipe>
 
-  
+
   <recipe>
     <id>40</id>
-    <n>Sole meunière</n>
+    <name>Sole meunière</name>
     <description>Sole dorée au beurre avec citron et persil</description>
     <preparation_time>10</preparation_time>
     <cooking_time>10</cooking_time>

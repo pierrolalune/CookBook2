@@ -63,6 +63,7 @@ export interface Recipe {
   difficulty?: RecipeDifficulty;
   category: RecipeCategory;
   photoUri?: string;
+  isFavorite: boolean;
   ingredients: RecipeIngredient[];
   instructions: RecipeInstruction[];
   createdAt: Date;
@@ -104,12 +105,13 @@ export type RecipeCategory = 'entree' | 'plats' | 'dessert';
 export type RecipeDifficulty = 'facile' | 'moyen' | 'difficile';
 
 export interface RecipeFilters {
-  category?: RecipeCategory;
+  category?: RecipeCategory | 'favoris';
   difficulty?: RecipeDifficulty;
   searchQuery?: string;
   maxPrepTime?: number;
   maxCookTime?: number;
   ingredientIds?: string[]; // Filter by specific ingredients
+  favoritesOnly?: boolean;
 }
 
 export interface CreateRecipeInput {
@@ -272,6 +274,11 @@ export interface DatabaseSchema {
     id: string;
     recipe_id: string;
     used_at: string;
+  };
+  recipe_favorites: {
+    id: string;
+    recipe_id: string;
+    created_at: string;
   };
 }
 

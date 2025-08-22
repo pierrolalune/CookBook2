@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category category="Pêche">
-    <ingredient name="Moules">
+    <ingredient name="Moules" uuid="2e166d17-ea8c-4d53-b80a-ee4dfb3c2c35">
         <subcategory>Coquillages</subcategory>
         <units>
             <unit>kg</unit>
@@ -13,7 +13,7 @@
             <season>automne-hiver</season>
         </seasonal>
     </ingredient>
-    <ingredient name="Huîtres">
+    <ingredient name="Huîtres" uuid="16d04f03-ae11-4e9d-a252-82f192de69f4">
         <subcategory>Coquillages</subcategory>
         <units>
             <unit>douzaine</unit>
@@ -26,7 +26,7 @@
             <season>automne-hiver</season>
         </seasonal>
     </ingredient>
-    <ingredient name="Coquilles Saint-Jacques">
+    <ingredient name="Coquilles Saint-Jacques" uuid="528e059b-b13a-4eed-9f7e-8471b1ce96da">
         <subcategory>Coquillages</subcategory>
         <units>
             <unit>kg</unit>
@@ -39,7 +39,7 @@
             <season>automne-hiver</season>
         </seasonal>
     </ingredient>
-    <ingredient name="Saumon">
+    <ingredient name="Saumon" uuid="a964eefe-ca62-413c-8821-642ce39d4493">
         <subcategory>Poissons gras</subcategory>
         <units>
             <unit>kg</unit>
@@ -49,7 +49,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="Thon">
+    <ingredient name="Thon" uuid="39235556-7482-4d80-a49c-c675ee85fe30">
         <subcategory>Poissons gras</subcategory>
         <units>
             <unit>kg</unit>
@@ -58,7 +58,7 @@
             <unit>boîte</unit>
         </units>
     </ingredient>
-    <ingredient name="Cabillaud">
+    <ingredient name="Cabillaud" uuid="8665d43d-e919-4b65-b112-75b61a818f4c">
         <subcategory>Poissons blancs</subcategory>
         <units>
             <unit>kg</unit>
@@ -67,7 +67,7 @@
             <unit>dos</unit>
         </units>
     </ingredient>
-    <ingredient name="Sole">
+    <ingredient name="Sole" uuid="4507e667-1668-44ff-8864-f79c70611b9a">
         <subcategory>Poissons blancs</subcategory>
         <units>
             <unit>kg</unit>
@@ -75,7 +75,7 @@
             <unit>filet</unit>
         </units>
     </ingredient>
-    <ingredient name="Dorade">
+    <ingredient name="Dorade" uuid="ae0ef5fd-4148-49ba-941f-f75addfcd7d4">
         <subcategory>Poissons blancs</subcategory>
         <units>
             <unit>kg</unit>
@@ -83,7 +83,7 @@
             <unit>filet</unit>
         </units>
     </ingredient>
-    <ingredient name="Bar">
+    <ingredient name="Bar" uuid="7519c022-69d4-4048-a586-c4e10ae522e0">
         <subcategory>Poissons blancs</subcategory>
         <units>
             <unit>kg</unit>
@@ -91,7 +91,7 @@
             <unit>filet</unit>
         </units>
     </ingredient>
-    <ingredient name="Truite">
+    <ingredient name="Truite" uuid="771ae754-d2f7-44db-b4de-78f36ded0b54">
         <subcategory>Poissons d'eau douce</subcategory>
         <units>
             <unit>kg</unit>
@@ -99,7 +99,7 @@
             <unit>filet</unit>
         </units>
     </ingredient>
-    <ingredient name="Maquereau">
+    <ingredient name="Maquereau" uuid="724c9400-dad7-4b5f-a1da-c264891f2157">
         <subcategory>Poissons gras</subcategory>
         <units>
             <unit>kg</unit>
@@ -108,7 +108,7 @@
             <unit>boîte</unit>
         </units>
     </ingredient>
-    <ingredient name="Sardines">
+    <ingredient name="Sardines" uuid="317686ed-2e9a-4faf-9194-b3b7b7d7f513">
         <subcategory>Poissons gras</subcategory>
         <units>
             <unit>kg</unit>
@@ -116,7 +116,7 @@
             <unit>boîte</unit>
         </units>
     </ingredient>
-    <ingredient name="Anchois">
+    <ingredient name="Anchois" uuid="ef7a0820-a3b9-44b4-8061-02b402db5de9">
         <subcategory>Poissons gras</subcategory>
         <units>
             <unit>g</unit>
@@ -124,7 +124,7 @@
             <unit>bocal</unit>
         </units>
     </ingredient>
-    <ingredient name="Crevettes">
+    <ingredient name="Crevettes" uuid="2be584ae-66a0-4f70-83d0-b07044f0429c">
         <subcategory>Crustacés</subcategory>
         <units>
             <unit>kg</unit>
@@ -132,14 +132,14 @@
             <unit>sachet</unit>
         </units>
     </ingredient>
-    <ingredient name="Langoustines">
+    <ingredient name="Langoustines" uuid="09852e58-4892-4d68-8f45-598cfb9b6f48">
         <subcategory>Crustacés</subcategory>
         <units>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="Crabe">
+    <ingredient name="Crabe" uuid="08cb4186-caf0-4c9c-b87c-4c1a4e2f5663">
         <subcategory>Crustacés</subcategory>
         <units>
             <unit>kg</unit>
@@ -147,14 +147,14 @@
             <unit>boîte miettes</unit>
         </units>
     </ingredient>
-    <ingredient name="Homard">
+    <ingredient name="Homard" uuid="a60fc735-a1da-4910-9858-f0586197e5b6">
         <subcategory>Crustacés</subcategory>
         <units>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="Calamar">
+    <ingredient name="Calamar" uuid="7fb1def3-20c4-4f94-9568-46a509761a31">
         <subcategory>Céphalopodes</subcategory>
         <units>
             <unit>kg</unit>
@@ -163,7 +163,7 @@
             <unit>tube</unit>
         </units>
     </ingredient>
-    <ingredient name="Seiche">
+    <ingredient name="Seiche" uuid="ad1a49c1-faf2-4858-9763-bafaf04843c5">
         <subcategory>Céphalopodes</subcategory>
         <units>
             <unit>kg</unit>
@@ -171,7 +171,7 @@
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="Surimi">
+    <ingredient name="Surimi" uuid="fcdc79f6-3070-4b9e-8a48-fae64f102e51">
         <subcategory>Produits transformés</subcategory>
         <units>
             <unit>g</unit>
@@ -179,42 +179,42 @@
             <unit>paquet</unit>
         </units>
     </ingredient>
-    <ingredient name="crevettes cuites">
+    <ingredient name="crevettes cuites" uuid="9533f300-482f-4dd9-b1e0-933a558596d0">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="escargots bourgogne">
+    <ingredient name="escargots bourgogne" uuid="cc4438d1-830d-47ec-92f9-7f24f2af427c">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="lotte">
+    <ingredient name="lotte" uuid="c2733dde-5444-4b2f-b055-bcd81bb45d73">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="rascasse">
+    <ingredient name="rascasse" uuid="ec4a88b2-639f-47e2-b8b1-f90be3118301">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="saint pierre">
+    <ingredient name="saint pierre" uuid="5561c4ae-93b7-49b8-92e8-9d88d6db5339">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
             <unit>pièce</unit>
         </units>
     </ingredient>
-    <ingredient name="thon naturel">
+    <ingredient name="thon naturel" uuid="c5d8d2ae-9daa-4abe-94d5-221a980347e4">
         <units>
             <unit>g</unit>
             <unit>kg</unit>

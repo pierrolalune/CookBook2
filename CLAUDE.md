@@ -40,7 +40,8 @@ CookBookP follows a **clean architecture pattern** with clear separation of conc
 │       └── ShareModal.tsx       # Export/sharing options
 ├── 📁 hooks/              # Custom React Hooks
 │   ├── useIngredients.ts       # Ingredient state management
-│   ├── useFavorites.ts         # Favorites state management
+│   ├── useFavorites.ts         # Ingredient favorites state management
+│   ├── useRecipeFavorites.ts   # Recipe favorites state management
 │   ├── useSeasonalIngredients.ts # Seasonal logic
 │   ├── useRecipes.ts           # Recipe state management
 │   ├── useRecipeIngredients.ts # Recipe-ingredient linking
@@ -48,7 +49,8 @@ CookBookP follows a **clean architecture pattern** with clear separation of conc
 │   └── useRecipeSharing.ts     # Export/sharing logic
 ├── 📁 repositories/       # Data Access Layer
 │   ├── IngredientRepository.ts # Ingredient CRUD operations
-│   ├── FavoritesRepository.ts  # Favorites CRUD operations
+│   ├── FavoritesRepository.ts  # Ingredient favorites CRUD operations
+│   ├── RecipeFavoritesRepository.ts # Recipe favorites CRUD operations
 │   └── RecipeRepository.ts     # Recipe CRUD operations
 ├── 📁 database/           # Database Layer
 │   ├── index.ts          # Database initialization
@@ -310,6 +312,23 @@ CREATE TABLE recipe_photos (
 - `RecipeDetailScreen` for viewing recipes
 - `EditRecipeScreen` for recipe updates
 
+#### ❤️ **Recipe Favorites System** (NEW)
+- **Recipe Favorites**: Heart toggle for marking favorite recipes
+- **Favorites Filter**: Dedicated "Favoris" category with live count
+- **Separate from Ingredient Favorites**: Independent favorites system
+- **Optimistic Updates**: Immediate UI response with database sync
+- **Performance Optimized**: Fast in-memory updates for instant UI feedback
+- **Real-time Updates**: Hearts and filters update without delays
+- **Persistent Storage**: SQLite storage with foreign key constraints
+
+**Implementation:**
+- `RecipeFavoritesRepository` for data operations
+- `useRecipeFavorites` hook with callback system for real-time updates
+- `updateRecipeFavoriteStatus` method for fast in-memory updates
+- Updated `RecipeCard` with functional heart (❤️/🤍) and callback prop
+- Enhanced `RecipesScreen` with favorites filter and optimized refresh strategy
+- Updated `Recipe` interface with `isFavorite` field
+
 #### 📸 **Photo Management**
 - **Multiple Photos per Recipe**: Up to 10 photos per recipe
 - **Camera Integration**: Take photos directly
@@ -457,7 +476,7 @@ CREATE TABLE recipe_photos (
    } = useIngredients();
    ```
 
-2. **`useFavorites`** - Favorites state management
+2. **`useFavorites`** - Ingredient favorites state management
    ```typescript
    const { 
      favoriteIds, 
@@ -471,7 +490,29 @@ CREATE TABLE recipe_photos (
    } = useFavorites();
    ```
 
-3. **`useSeasonalIngredients`** - Seasonal logic
+3. **`useRecipeFavorites`** - Recipe favorites state management
+   ```typescript
+   const { 
+     favoriteIds, 
+     loading, 
+     error,
+     actions: {
+       toggleFavorite,
+       addFavorite,
+       removeFavorite,
+       isFavorite,
+       getFavoriteCount,
+       clearFavorites
+     }
+   } = useRecipeFavorites({ 
+     onFavoriteChange: (recipeId, isFavorite) => {
+       // Optional callback for real-time UI updates
+       console.log(`Recipe ${recipeId} favorite status: ${isFavorite}`);
+     }
+   });
+   ```
+
+4. **`useSeasonalIngredients`** - Seasonal logic
    ```typescript
    const { 
      seasonalData: {
@@ -488,7 +529,7 @@ CREATE TABLE recipe_photos (
    } = useSeasonalIngredients();
    ```
 
-4. **`useRecipes`** - Recipe state management
+5. **`useRecipes`** - Recipe state management
    ```typescript
    const { 
      recipes, 
@@ -501,12 +542,13 @@ CREATE TABLE recipe_photos (
        deleteRecipe,
        duplicateRecipe,
        searchRecipes,
-       filterByCategory
+       filterByCategory,
+       updateRecipeFavoriteStatus // Fast in-memory favorite updates
      }
    } = useRecipes();
    ```
 
-5. **`useRecipeIngredients`** - Recipe-ingredient linking
+6. **`useRecipeIngredients`** - Recipe-ingredient linking
    ```typescript
    const { 
      selectedIngredients,
@@ -522,7 +564,7 @@ CREATE TABLE recipe_photos (
    } = useRecipeIngredients();
    ```
 
-6. **`useRecipePhotos`** - Photo management
+7. **`useRecipePhotos`** - Photo management
    ```typescript
    const { 
      photos,
@@ -536,7 +578,7 @@ CREATE TABLE recipe_photos (
    } = useRecipePhotos();
    ```
 
-7. **`useRecipeSharing`** - Export and sharing
+8. **`useRecipeSharing`** - Export and sharing
    ```typescript
    const { 
      sharing,
@@ -563,11 +605,18 @@ CREATE TABLE recipe_photos (
    - Bulk operations support
 
 2. **`FavoritesRepository`**
-   - Favorite management operations
+   - Ingredient favorite management operations
    - Relationship handling with ingredients
    - Efficient favorite checking
 
-3. **`RecipeRepository`**
+3. **`RecipeFavoritesRepository`**
+   - Recipe favorite management operations
+   - Separate from ingredient favorites
+   - Parameterized SQL queries for security
+   - Optimistic update support
+   - Recipe-specific favorite checking
+
+4. **`RecipeRepository`**
    - Complete recipe CRUD operations
    - Transaction-based creation/updates
    - Complex joins for recipe loading

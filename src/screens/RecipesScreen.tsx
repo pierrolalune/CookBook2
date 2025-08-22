@@ -15,6 +15,7 @@ import { Recipe, RecipeCategory } from '../types';
 import { colors, spacing, typography } from '../styles';
 import { useRecipes, useRecipeCategories } from '../hooks/useRecipes';
 import { useRecipeBulkSharing } from '../hooks/useRecipeSharing';
+import { useRecipeFavorites } from '../hooks/useRecipeFavorites';
 import { SearchBar } from '../components/common/SearchBar';
 import { CategoryChips } from '../components/common/CategoryChips';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
@@ -27,13 +28,13 @@ interface RecipeCategoryChip {
   label: string;
   icon: string;
   count?: number;
-  value: RecipeCategory | 'all';
+  value: RecipeCategory | 'favoris' | 'all';
 }
 
 export const RecipesScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'all'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'favoris' | 'all'>('all');
   const [refreshing, setRefreshing] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
@@ -41,12 +42,21 @@ export const RecipesScreen: React.FC = () => {
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
 
   const { recipes, loading, error, actions } = useRecipes();
-  const { categories, loading: categoriesLoading } = useRecipeCategories();
+  const { categories, loading: categoriesLoading, refresh: refreshCategories } = useRecipeCategories();
   const bulkSharing = useRecipeBulkSharing();
+  
+  // Create fast update callback for favorites
+  const handleFavoriteChange = useCallback((recipeId: string, isFavorite: boolean) => {
+    // Fast update: Update recipe in memory immediately
+    actions.updateRecipeFavoriteStatus(recipeId, isFavorite);
+    // Refresh categories to update favorite count (this is lightweight)
+    refreshCategories();
+  }, [actions, refreshCategories]);
 
   // Create category chips
   const categoryChips: RecipeCategoryChip[] = useMemo(() => {
     const categoryIcons = {
+      favoris: '❤️',
       entree: '🥗',
       plats: '🍽️', 
       dessert: '🍰',
@@ -88,7 +98,11 @@ export const RecipesScreen: React.FC = () => {
 
     // Apply category filter
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(recipe => recipe.category === selectedCategory);
+      if (selectedCategory === 'favoris') {
+        filtered = filtered.filter(recipe => recipe.isFavorite);
+      } else {
+        filtered = filtered.filter(recipe => recipe.category === selectedCategory);
+      }
     }
 
     return filtered;
@@ -100,8 +114,8 @@ export const RecipesScreen: React.FC = () => {
       return [{ category: selectedCategory, recipes: filteredRecipes }];
     }
 
-    const groups: { category: RecipeCategory | 'all', recipes: Recipe[] }[] = [];
-    const categoryOrder: (RecipeCategory | 'all')[] = ['entree', 'plats', 'dessert'];
+    const groups: { category: RecipeCategory | 'favoris' | 'all', recipes: Recipe[] }[] = [];
+    const categoryOrder: (RecipeCategory | 'favoris' | 'all')[] = ['entree', 'plats', 'dessert'];
 
     categoryOrder.forEach(category => {
       const categoryRecipes = filteredRecipes.filter(recipe => recipe.category === category);
@@ -129,7 +143,7 @@ export const RecipesScreen: React.FC = () => {
   }, []);
 
   const handleCategorySelect = useCallback((categoryId: string) => {
-    setSelectedCategory(categoryId as RecipeCategory | 'all');
+    setSelectedCategory(categoryId as RecipeCategory | 'favoris' | 'all');
   }, []);
 
   const handleRecipePress = useCallback((recipe: Recipe) => {
@@ -268,8 +282,9 @@ export const RecipesScreen: React.FC = () => {
     });
   }, []);
 
-  const renderCategorySection = ({ item }: { item: { category: RecipeCategory | 'all', recipes: Recipe[] } }) => {
+  const renderCategorySection = ({ item }: { item: { category: RecipeCategory | 'favoris' | 'all', recipes: Recipe[] } }) => {
     const categoryLabels = {
+      favoris: 'Favoris',
       entree: 'Entrées',
       plats: 'Plats',
       dessert: 'Desserts',
@@ -307,6 +322,7 @@ export const RecipesScreen: React.FC = () => {
             showUsageStats={true}
             selectionMode={selectionMode}
             selected={bulkSharing.selectedRecipes.some(r => r.id === recipe.id)}
+            onFavoriteChange={handleFavoriteChange}
           />
         ))}
       </View>

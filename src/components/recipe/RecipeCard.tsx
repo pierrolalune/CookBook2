@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Recipe, RecipeCategory, RecipeDifficulty } from '../../types';
 import { colors, spacing, typography, commonStyles } from '../../styles';
-import { useFavorites } from '../../hooks/useFavorites';
+import { useRecipeFavorites } from '../../hooks/useRecipeFavorites';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -21,6 +21,7 @@ interface RecipeCardProps {
   compact?: boolean;
   selectionMode?: boolean;
   selected?: boolean;
+  onFavoriteChange?: () => void;
 }
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({
@@ -30,9 +31,10 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
   showUsageStats = true,
   compact = false,
   selectionMode = false,
-  selected = false
+  selected = false,
+  onFavoriteChange
 }) => {
-  const { actions: favoriteActions } = useFavorites();
+  const { actions: favoriteActions } = useRecipeFavorites({ onFavoriteChange });
   const [heartScale] = React.useState(new Animated.Value(1));
 
   const handlePress = () => {
@@ -59,9 +61,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     ]).start();
 
     try {
-      // Note: We'll need to implement recipe favorites
-      // For now, we'll use a placeholder
-      Alert.alert('Favoris', 'Fonctionnalité des favoris de recettes bientôt disponible');
+      await favoriteActions.toggleFavorite(recipe.id);
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de modifier les favoris');
     }
@@ -187,7 +187,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
                 { transform: [{ scale: heartScale }] }
               ]}
             >
-              🤍
+              {recipe.isFavorite ? '❤️' : '🤍'}
             </Animated.Text>
           </TouchableOpacity>
         </View>

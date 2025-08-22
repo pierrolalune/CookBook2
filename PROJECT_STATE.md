@@ -1,9 +1,24 @@
 # 📱 CookBook2 - Complete Project State Documentation
 
-**Last Updated:** 2025-08-21  
+**Last Updated:** 2025-08-22  
 **Project Status:** ✅ **Fully Functional** - All features working, TypeScript compilation passes
 
 ---
+
+## ✅ RECENT ADDITIONS (2025-08-22)
+
+### **NEW: Recipe Favorites System** ✅
+- Added complete favorites functionality for recipes (separate from ingredient favorites)
+- Created `recipe_favorites` table with proper foreign key constraints
+- Implemented `RecipeFavoritesRepository` with full CRUD operations
+- Added `useRecipeFavorites` hook with optimistic updates and callback system
+- Updated `Recipe` interface to include `isFavorite` boolean field
+- Enhanced `RecipeCard` with functional heart toggle (❤️/🤍)
+- Added "Favoris" category filter in `RecipesScreen` with live count
+- Updated `RecipeRepository` to load favorite status for all recipes
+- **Performance Optimized**: Fast in-memory updates instead of full database refreshes
+- **Real-time UI Updates**: Hearts and filters update instantly without delays
+- Follows same security patterns as ingredient favorites (parameterized queries, input validation)
 
 ## ✅ RECENT FIXES (2025-08-21)
 
@@ -519,9 +534,10 @@ interface UseRecipeSharingReturn {
 | Feature | Implemented | Functional | Status |
 |---------|------------|------------|---------|
 | Ingredient CRUD | ✅ | ✅ | Working |
-| Favorites | ✅ | ✅ | Working |
+| Ingredient Favorites | ✅ | ✅ | Working |
 | Seasonal Logic | ✅ | ✅ | Working |
 | Recipe CRUD | ✅ | ✅ | Working |
+| Recipe Favorites | ✅ | ✅ | Working |
 | Photo Management | ✅ | ✅ | Working |
 | Export/Sharing | ✅ | ✅ | Working |
 | Search/Filter | ✅ | ✅ | Working |
@@ -536,6 +552,7 @@ interface UseRecipeSharingReturn {
 | recipe_instructions | ✅ | ✅ | ✅ |
 | recipe_usage | ✅ | ✅ | ✅ |
 | recipe_photos | ✅ | ✅ | ✅ |
+| recipe_favorites | ✅ | ✅ | ✅ |
 
 ---
 

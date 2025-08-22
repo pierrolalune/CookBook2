@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category category="Viande">
     <ingredient name="Poulet"/>
-    <ingredient name="poulet">
+    <ingredient name="poulet" uuid="45c79380-3996-4081-95dc-212d7016b1df">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -24,7 +24,7 @@
     <ingredient name="Chorizo"/>
     <ingredient name="Steak haché"/>
     <ingredient name="Escalope"/>
-    <ingredient name="agneau hache">
+    <ingredient name="agneau hache" uuid="8670a92c-7816-4b89-a3f0-a0e935d61bc1">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -32,7 +32,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="boeuf bourguignon">
+    <ingredient name="boeuf bourguignon" uuid="350ee865-60d9-4ed1-a83b-2ad8dd596d63">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -40,7 +40,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="boeuf hache">
+    <ingredient name="boeuf hache" uuid="bd539009-a403-4aac-8057-553029c7b6bf">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -48,7 +48,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="bouillon boeuf">
+    <ingredient name="bouillon boeuf" uuid="cf840479-c779-428d-ba57-23b1f9a29e0f">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -56,7 +56,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="confit canard">
+    <ingredient name="confit canard" uuid="2ace90ae-cbc9-4d2a-af0c-9f7edce0115d">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -64,7 +64,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="coq">
+    <ingredient name="coq" uuid="789639b6-9d28-42d6-934f-7fe75a5e9c4e">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -72,7 +72,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="cuisses canard">
+    <ingredient name="cuisses canard" uuid="bce1958e-bd4d-435c-a50a-5bbb3419eed8">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -80,7 +80,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="epaule agneau">
+    <ingredient name="epaule agneau" uuid="ece8d5e3-222a-4841-8104-c40e40cbfe1a">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -88,7 +88,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="epaule porc">
+    <ingredient name="epaule porc" uuid="fdc6dc41-8b1a-4715-bfd4-8c89bef2346c">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -96,7 +96,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="epaule veau">
+    <ingredient name="epaule veau" uuid="41385410-6a0e-4619-9a13-04f876152594">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -104,7 +104,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="filet boeuf">
+    <ingredient name="filet boeuf" uuid="4d62eb66-6c32-43b7-9095-1432fc52acd4">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -112,7 +112,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="gigot agneau">
+    <ingredient name="gigot agneau" uuid="aa21559d-b736-4325-88b7-33e486797adc">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -120,7 +120,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="graisse canard">
+    <ingredient name="graisse canard" uuid="3705d1b9-a3c2-4819-8cf1-4aa02b096cde">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -128,7 +128,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="jambon blanc">
+    <ingredient name="jambon blanc" uuid="35468e71-9710-4c4b-975f-74321f656178">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -136,7 +136,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="jambon cru">
+    <ingredient name="jambon cru" uuid="5b7ea67c-1d09-41b8-bce6-2761ae19a622">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -144,7 +144,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="jarrets veau">
+    <ingredient name="jarrets veau" uuid="e71d10c5-b075-41fd-919d-f2813f74e883">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -152,7 +152,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="lard fume">
+    <ingredient name="lard fume" uuid="95d49725-4c79-4ea2-b569-9c675a38ea22">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -160,7 +160,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="lardons">
+    <ingredient name="lardons" uuid="f7d8074a-d456-489c-bced-46dcefe04db6">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -168,7 +168,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="lardons fumes">
+    <ingredient name="lardons fumes" uuid="81a34db6-af51-46fc-bcd9-818b1638bdf1">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -176,7 +176,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="magrets canard">
+    <ingredient name="magrets canard" uuid="6ea9b193-c1eb-4745-8792-154122f85e9f">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -184,7 +184,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="navets nouveaux">
+    <ingredient name="navets nouveaux" uuid="e5279349-f25c-4fd1-8830-4aba9e47132a">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -192,7 +192,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="paleron boeuf">
+    <ingredient name="paleron boeuf" uuid="20e5a430-a180-4497-a7f9-1bb0c1b9c2c0">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -200,7 +200,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="palette porc">
+    <ingredient name="palette porc" uuid="6074ded7-6c98-4834-a1d8-fe1374c3b3e3">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -208,7 +208,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="poulet fermier">
+    <ingredient name="poulet fermier" uuid="c6bd6c32-68c2-4153-ab2b-a4f628c9a60a">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -216,7 +216,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="queue boeuf">
+    <ingredient name="queue boeuf" uuid="51501821-4544-4bdd-b129-dc9688bddec6">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -224,7 +224,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="rillettes porc">
+    <ingredient name="rillettes porc" uuid="bb89ea93-9bcc-4842-aa07-8d5311c80b74">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -232,7 +232,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="saucisse montbeliard">
+    <ingredient name="saucisse montbeliard" uuid="a2608268-ea09-4ccf-a0b4-c0b128aa501b">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -240,7 +240,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="saucisse toulouse">
+    <ingredient name="saucisse toulouse" uuid="704c9d12-6e4a-440c-817a-ed4d1318541e">
         <units>
             <unit>g</unit>
             <unit>kg</unit>
@@ -248,7 +248,7 @@
             <unit>tranche</unit>
         </units>
     </ingredient>
-    <ingredient name="saucisses strasbourg">
+    <ingredient name="saucisses strasbourg" uuid="823cbc3f-6f1a-46f6-aae2-a8a6f907a502">
         <units>
             <unit>g</unit>
             <unit>kg</unit>

@@ -23,14 +23,17 @@ import { ValidationUtils } from '../utils/validation';
 import { SecureErrorHandler } from '../utils/errorHandler';
 import uuid from 'react-native-uuid';
 import { IngredientRepository } from './IngredientRepository';
+import { RecipeFavoritesRepository } from './RecipeFavoritesRepository';
 
 export class RecipeRepository {
   private db: SQLiteDatabase;
   private ingredientRepository: IngredientRepository;
+  private favoritesRepository: RecipeFavoritesRepository;
 
   constructor() {
     this.db = getDatabase();
     this.ingredientRepository = new IngredientRepository();
+    this.favoritesRepository = new RecipeFavoritesRepository();
   }
 
   async findAll(filters?: RecipeFilters): Promise<Recipe[]> {
@@ -81,6 +84,17 @@ export class RecipeRepository {
         const placeholders = sanitizedFilters.ingredientIds.map(() => '?').join(',');
         conditions.push(`ri.ingredient_id IN (${placeholders})`);
         params.push(...sanitizedFilters.ingredientIds);
+      }
+
+      // Handle favorites filter
+      if (sanitizedFilters?.favoritesOnly) {
+        query = `
+          SELECT DISTINCT r.*
+          FROM recipes r
+          INNER JOIN recipe_favorites rf ON r.id = rf.recipe_id
+          LEFT JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+          LEFT JOIN ingredients i ON ri.ingredient_id = i.id
+        `;
       }
 
       if (conditions.length > 0) {
@@ -684,13 +698,17 @@ export class RecipeRepository {
     const instructionRows = await this.db.getAllAsync(instructionsQuery, [recipeRow.id]) as RecipeInstructionRow[];
     const recipeInstructions = instructionRows.map(row => this.mapRowToRecipeInstruction(row));
 
-    return this.mapRowToRecipe(recipeRow, recipeIngredients, recipeInstructions);
+    // Check if recipe is favorite
+    const isFavorite = await this.favoritesRepository.isFavorite(recipeRow.id);
+
+    return this.mapRowToRecipe(recipeRow, recipeIngredients, recipeInstructions, isFavorite);
   }
 
   private mapRowToRecipe(
     row: RecipeRow, 
     ingredients: RecipeIngredient[], 
-    instructions: RecipeInstruction[]
+    instructions: RecipeInstruction[],
+    isFavorite: boolean
   ): Recipe {
     return {
       id: row.id,
@@ -702,6 +720,7 @@ export class RecipeRepository {
       difficulty: row.difficulty as RecipeDifficulty || undefined,
       category: row.category as RecipeCategory,
       photoUri: row.photo_uri || undefined,
+      isFavorite,
       ingredients,
       instructions,
       createdAt: new Date(row.created_at),

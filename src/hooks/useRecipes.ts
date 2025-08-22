@@ -9,6 +9,7 @@ import {
   RecipeUsageStats
 } from '../types';
 import { RecipeRepository } from '../repositories/RecipeRepository';
+import { RecipeFavoritesRepository } from '../repositories/RecipeFavoritesRepository';
 import { SecureErrorHandler } from '../utils/errorHandler';
 
 interface RecipesState {
@@ -28,10 +29,12 @@ interface UseRecipesActions {
   recordUsage: (recipeId: string) => Promise<void>;
   getUsageStats: (recipeId: string) => Promise<RecipeUsageStats | null>;
   searchRecipes: (query: string) => Promise<void>;
-  filterByCategory: (category: RecipeCategory) => Promise<void>;
+  filterByCategory: (category: RecipeCategory | 'favoris') => Promise<void>;
   filterByDifficulty: (difficulty: RecipeDifficulty) => Promise<void>;
   filterByIngredients: (ingredientIds: string[]) => Promise<void>;
+  filterByFavorites: () => Promise<void>;
   clearFilters: () => Promise<void>;
+  updateRecipeFavoriteStatus: (recipeId: string, isFavorite: boolean) => void;
 }
 
 interface UseRecipesReturn {
@@ -208,8 +211,12 @@ export const useRecipes = (): UseRecipesReturn => {
   }, [loadRecipes]);
 
   // Filter by category
-  const filterByCategory = useCallback(async (category: RecipeCategory): Promise<void> => {
-    const filters: RecipeFilters = { ...currentFiltersRef.current, category };
+  const filterByCategory = useCallback(async (category: RecipeCategory | 'favoris'): Promise<void> => {
+    const filters: RecipeFilters = { 
+      ...currentFiltersRef.current, 
+      category: category === 'favoris' ? category : category,
+      favoritesOnly: category === 'favoris' 
+    };
     await loadRecipes(filters);
   }, [loadRecipes]);
 
@@ -225,10 +232,28 @@ export const useRecipes = (): UseRecipesReturn => {
     await loadRecipes(filters);
   }, [loadRecipes]);
 
+  // Filter by favorites
+  const filterByFavorites = useCallback(async (): Promise<void> => {
+    const filters: RecipeFilters = { ...currentFiltersRef.current, favoritesOnly: true, category: 'favoris' };
+    await loadRecipes(filters);
+  }, [loadRecipes]);
+
   // Clear all filters
   const clearFilters = useCallback(async (): Promise<void> => {
     await loadRecipes();
   }, [loadRecipes]);
+
+  // Update recipe favorite status in memory (fast update)
+  const updateRecipeFavoriteStatus = useCallback((recipeId: string, isFavorite: boolean): void => {
+    setState(prev => ({
+      ...prev,
+      recipes: prev.recipes.map(recipe => 
+        recipe.id === recipeId 
+          ? { ...recipe, isFavorite }
+          : recipe
+      )
+    }));
+  }, []);
 
   // Auto-load recipes on mount
   useEffect(() => {
@@ -249,7 +274,9 @@ export const useRecipes = (): UseRecipesReturn => {
     filterByCategory,
     filterByDifficulty,
     filterByIngredients,
-    clearFilters
+    filterByFavorites,
+    clearFilters,
+    updateRecipeFavoriteStatus
   }), [
     loadRecipes,
     createRecipe,
@@ -264,7 +291,9 @@ export const useRecipes = (): UseRecipesReturn => {
     filterByCategory,
     filterByDifficulty,
     filterByIngredients,
-    clearFilters
+    filterByFavorites,
+    clearFilters,
+    updateRecipeFavoriteStatus
   ]);
 
   return {
@@ -280,27 +309,34 @@ export const useRecipes = (): UseRecipesReturn => {
 // Hook for recipe categories with counts
 export const useRecipeCategories = () => {
   const [categories, setCategories] = useState<{
-    category: RecipeCategory;
+    category: RecipeCategory | 'favoris';
     count: number;
     label: string;
   }[]>([]);
   const [loading, setLoading] = useState(false);
   
-  // Create repository once and memoize
+  // Create repositories once and memoize
   const repository = useMemo(() => new RecipeRepository(), []);
+  const favoritesRepository = useMemo(() => new RecipeFavoritesRepository(), []);
 
   const loadCategoryCounts = useCallback(async () => {
     try {
       setLoading(true);
       
-      const categoryLabels: { [key in RecipeCategory]: string } = {
+      const categoryLabels: { [key in RecipeCategory | 'favoris']: string } = {
+        favoris: 'Favoris',
         entree: 'Entrées',
         plats: 'Plats',
         dessert: 'Desserts'
       };
 
-      const counts = await Promise.all(
-        (Object.keys(categoryLabels) as RecipeCategory[]).map(async (category) => {
+      // Get favorites count
+      const favoritesCount = await favoritesRepository.getFavoriteCount();
+
+      // Get regular category counts
+      const regularCategories = ['entree', 'plats', 'dessert'] as RecipeCategory[];
+      const regularCounts = await Promise.all(
+        regularCategories.map(async (category) => {
           const recipes = await repository.findByCategory(category);
           return {
             category,
@@ -310,13 +346,23 @@ export const useRecipeCategories = () => {
         })
       );
 
-      setCategories(counts);
+      // Combine favorites with regular categories
+      const allCounts = [
+        {
+          category: 'favoris' as const,
+          count: favoritesCount,
+          label: categoryLabels.favoris
+        },
+        ...regularCounts
+      ];
+
+      setCategories(allCounts);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       SecureErrorHandler.logError(error as Error, { action: 'loadCategoryCounts' });
     }
-  }, [repository]);
+  }, [repository, favoritesRepository]);
 
   useEffect(() => {
     loadCategoryCounts();

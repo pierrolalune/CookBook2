@@ -1,0 +1,327 @@
+ID: acbcd1f7-ecfb-46de-a450-5f497d444b49 | Name: Abricot
+ID: f6090831-7b04-469b-8621-b3c8f4f7c036 | Name: Ail
+ID: d8bb5896-7b99-4df9-9450-2c261023ea97 | Name: Airelle
+ID: 731b01a5-7583-4cbf-aa48-2f51de5d84e6 | Name: Amande fraîche
+ID: 656a4822-b9ad-42e7-90aa-dfa3bda2fb61 | Name: Ananas
+ID: ef7a0820-a3b9-44b4-8061-02b402db5de9 | Name: Anchois
+ID: a84f6db2-f98e-44e6-9634-7278947c78c3 | Name: Arbouse
+ID: 5eb66f6f-8dda-4eb7-875f-6ba55cdaf1b3 | Name: Artichaut
+ID: 249027b4-648c-4968-9555-68b1136ee8d1 | Name: Asperge
+ID: 87686494-87bb-4f83-8996-6cb7d14f5f32 | Name: Aubergine
+ID: beca4c16-92a8-48cf-83e8-05bd8c6b1f10 | Name: Avocat
+ID: 64d05bad-513f-4f69-9e78-792f15b18af0 | Name: Avoine
+ID: 0def0ec6-857d-4bfa-9f73-2d5cdafa441d | Name: Banane
+ID: 7519c022-69d4-4048-a586-c4e10ae522e0 | Name: Bar
+ID: 886d97be-d632-4f6d-bbb3-2cff36f56814 | Name: Basilic
+ID: 05146579-b4a1-4dc7-ae73-55f92f285887 | Name: Bergamote
+ID: b2b61f06-69c3-4fa1-bcc5-fb2215fb5d6e | Name: Betterave rouge
+ID: 34165a8a-a171-4e28-8916-aba10441843a | Name: Beurre
+ID: 5b09f0fb-8615-457a-9e61-48b89b52db29 | Name: Beurre de cacahuète
+ID: 11b725a3-ec50-46c8-ad19-718fb9ec1d21 | Name: Bicarbonate
+ID: 979c1732-b4ab-4b21-8c3f-85b9788b489e | Name: Biscottes
+ID: 521bac9f-bfef-425c-9bf7-28af3aa8fd53 | Name: Bouillon cube
+ID: 5fb7052b-4190-4889-9cb5-30a164e3c245 | Name: Boulgour
+ID: 9199e2ad-d3a0-41e0-b143-a14fd353f3c8 | Name: Brie
+ID: 30250219-7d38-438c-8611-eb0d09a1d25f | Name: Brocoli
+ID: 1c5f76ff-0e29-429b-a7d1-d68efb7af592 | Name: Brugnon
+ID: 8665d43d-e919-4b65-b112-75b61a818f4c | Name: Cabillaud
+ID: 7fb1def3-20c4-4f94-9568-46a509761a31 | Name: Calamar
+ID: 088d619f-fa1d-4dab-a73a-225760b68ece | Name: Camembert
+ID: 0c8b4e73-928b-4a7c-8801-5253237a9898 | Name: Cannelle
+ID: a20c24f1-14cd-40e9-8cad-a0f547077eaa | Name: Carambole
+ID: 59086ed8-8083-43ec-bf46-77c14bbca6b1 | Name: Carotte
+ID: 9e85d8a6-33c8-4a8d-ac65-5e1d9195183b | Name: Cassis
+ID: 4affbd15-b3fb-42d7-839f-3321f10a9e6e | Name: Cerise
+ID: ada0ac7a-47fe-4c30-a836-a3de5d8f57b9 | Name: Champignon de Paris
+ID: bbf7aa43-9d1d-4ceb-9b3e-442e95865b98 | Name: Chapelure
+ID: b617c78e-cc91-4978-a7e9-d28340413963 | Name: Chou
+ID: b3cf0270-cc15-40ab-84ed-28c5fcaa80f8 | Name: Chou de Bruxelles
+ID: 983081ef-6bde-4f98-b3bd-d31a9f740705 | Name: Chou-fleur
+ID: a9ff9ded-ff25-4c7b-b190-2501b33ee0b9 | Name: Châtaigne
+ID: 8fac03a1-6287-445c-89f2-6371bcbe1c17 | Name: Chèvre
+ID: 9ed74e55-33ec-4463-8fdd-2e9b3b347fec | Name: Citron
+ID: 2e83275c-0434-46f1-b9f9-066819489075 | Name: Citron vert
+ID: 59ff04d2-6497-4694-8f45-eac6bc787afb | Name: Clémentine
+ID: c2e1899c-b2cd-4d69-8856-51cbb44f2660 | Name: Coing
+ID: 08e63ec6-57eb-475b-a1cd-a83686ac11de | Name: Comté
+ID: 660257ee-15cd-436d-a8c7-212116163892 | Name: Concentré de tomate
+ID: b1e4eaf8-9b3d-43b5-a0b9-d39020d834e2 | Name: Concombre
+ID: c5104a0d-5049-41e8-8f14-c1cf54a82f43 | Name: Confiture
+ID: d6360c48-a733-4337-86df-ce34767226f0 | Name: Confiture d'abricot
+ID: 9ecb968f-87fd-4e3f-8041-05c19eaa9469 | Name: Confiture de fraise
+ID: 528e059b-b13a-4eed-9f7e-8471b1ce96da | Name: Coquilles Saint-Jacques
+ID: 4ee3b3d2-5c70-45c1-9b4c-02308851015f | Name: Coriandre
+ID: 4ff9be9a-017f-419c-8be2-2f39d7704aaa | Name: Cornichons
+ID: 3e00e998-fc47-417e-bb94-288c063a0f6b | Name: Cornouille
+ID: 1721fd32-afe7-491c-90fa-d84ae6873fb9 | Name: Coulis de tomate
+ID: c8ef20ae-8d50-4422-b4d0-b01f52fccfc6 | Name: Courge
+ID: 44dab5ef-121a-4e4e-8cf2-504adf2b2975 | Name: Courgette
+ID: 08cb4186-caf0-4c9c-b87c-4c1a4e2f5663 | Name: Crabe
+ID: a39a73a6-fe39-409c-b302-f7df5017773a | Name: Crackers
+ID: 2be584ae-66a0-4f70-83d0-b07044f0429c | Name: Crevettes
+ID: 958038a7-4161-4247-91c4-606a85f3cc2b | Name: Crème fraîche
+ID: 6b8293cf-de44-4bc2-984f-44caf7519dbe | Name: Crème liquide
+ID: e866718f-57ea-4867-883c-c41adf37f061 | Name: Cumin
+ID: 3e9e759a-e2de-4c4b-a458-8ea4457c5e33 | Name: Curry
+ID: 080997e8-89ea-47f9-9652-cb9561e7aa0c | Name: Cynorrhodon
+ID: 7a368c46-24de-44e6-820b-9b79ee4a8912 | Name: Câpres
+ID: 64b28e94-a779-4634-8501-c6085a42f63f | Name: Cèpe
+ID: c1006366-a1b9-4ff8-9551-085f5a0fffde | Name: Cédrat
+ID: d4b41e31-44b9-4c1c-86fe-83a94d52c099 | Name: Céleri-branche
+ID: 5b27fd4e-e3d5-4590-b833-b9b499a31275 | Name: Céréales
+ID: f90d0cc1-bcbe-4109-9a5b-ccd80bf36e33 | Name: Datte fraîche
+ID: ae0ef5fd-4148-49ba-941f-f75addfcd7d4 | Name: Dorade
+ID: d152b3e0-1c05-4f3c-b732-ea2154007a5e | Name: Emmental
+ID: f980f813-3e3a-4d79-a566-7bb6899f7c41 | Name: Endive
+ID: b09001cc-6725-47e0-bc09-2976dcd3354b | Name: Farine
+ID: 9bd587e4-b469-49dd-b6f6-9095f09fc2ab | Name: Farine complète
+ID: 2bd3e324-6c22-4827-9d0f-178c9985ef5e | Name: Fenouil
+ID: 7012ed1d-bc23-46fc-8144-2c743b730766 | Name: Feta
+ID: 610f300e-5687-4d3d-a550-360df6ba2512 | Name: Figue
+ID: c59df14b-200a-4519-9a5f-2fc7f4eafc0d | Name: Figue de Barbarie
+ID: 42d921b7-9728-4a1b-b0d0-8fdf7f135931 | Name: Flageolets
+ID: 88b34ac1-0e6c-4cef-8632-8f461cc16937 | Name: Flocons d'avoine
+ID: 85a4194a-6e40-4fd8-a349-1089b35903bd | Name: Fond de volaille
+ID: 0e721c4b-afee-4461-b427-cf89d5a75298 | Name: Fraise
+ID: a8e6a1a2-73d5-48f9-963c-744a918b22e2 | Name: Fraise des bois
+ID: 02721fe3-1807-4403-a1b7-448a64dcb13d | Name: Framboise
+ID: 5e13795f-ead2-49ae-ace5-ce4bc8363722 | Name: Fromage blanc
+ID: 4c0c609a-d5f5-4a32-8131-46ec87a14f71 | Name: Fromage râpé
+ID: f8f15e84-f70e-415f-9de8-485097b6e1ff | Name: Fruit de la passion
+ID: d6f0d393-ac8e-436e-9405-9d8505c03245 | Name: Gingembre
+ID: 5de08421-23e9-4488-8132-fed678a646da | Name: Gingembre moulu
+ID: 60475d5f-6434-478e-a5f2-e744191c6439 | Name: Goyave
+ID: 160dee7e-0c33-4dfe-85fe-ef1e67ef9cac | Name: Grenade
+ID: 8ecc1c24-a1e6-4335-a528-6ecafb39c27c | Name: Griotte
+ID: d96d11e6-7ef7-4566-bba4-a32ca9148f1a | Name: Groseille
+ID: 36d08184-bd6d-4bf1-a31c-98897301a51a | Name: Groseille à maquereau
+ID: 878026dc-3f91-4aaa-89a7-b7516623273d | Name: Gruyère
+ID: 8db0bf6e-0506-4995-9236-debccfa1e74a | Name: Haricot vert
+ID: 1a777a31-f6a1-4bc8-a7a3-c37d1a94d5da | Name: Haricots blancs
+ID: 8cb4e299-7140-4015-88be-03a1f73dd829 | Name: Haricots rouges
+ID: a60fc735-a1da-4910-9858-f0586197e5b6 | Name: Homard
+ID: b5b7aedb-ff53-4ff3-8f3d-68924a617424 | Name: Huile d'olive
+ID: 0da6c880-827d-4505-893a-7f2f784ffa43 | Name: Huile de colza
+ID: 0ba2a579-c03d-40f5-b199-cb4cce10ba1d | Name: Huile de tournesol
+ID: 16d04f03-ae11-4e9d-a252-82f192de69f4 | Name: Huîtres
+ID: a137c418-baef-4995-8576-e675a3bf05b3 | Name: Kaki
+ID: 0afb28f6-c440-4598-bc2f-3121884d4b69 | Name: Ketchup
+ID: f00259f3-a291-42fa-99ab-cfd57699b6e1 | Name: Kiwi
+ID: 991b1f19-4bf4-452c-9997-d2ec066983ea | Name: Kumquat
+ID: 8109a748-f334-46a5-bba1-ec64ce7a0501 | Name: Lait
+ID: 140f9b56-b0e1-426c-a488-f3588bafb3de | Name: Lait concentré
+ID: af17dc06-ed5c-45b8-99cf-19524fe61c12 | Name: Lait de coco
+ID: 3854cabe-b6b9-4546-b4b2-ee3da11984d5 | Name: Laitue
+ID: 09852e58-4892-4d68-8f45-598cfb9b6f48 | Name: Langoustines
+ID: ecabc6d6-bc9b-4a56-a3f7-35ade3586e23 | Name: Laurier
+ID: 32bad30a-541c-4518-8f94-a4c5ac336125 | Name: Lentilles
+ID: 54db2b8d-9260-4ee5-af8b-285c66afaf3a | Name: Lentilles corail
+ID: 40ef1502-bd3e-45ff-8137-3589a27defca | Name: Lentilles vertes
+ID: f86a1628-5b02-4ba1-8d5e-44ae07a5471d | Name: Levure
+ID: 3ca19d28-fd62-480f-ac4e-10d18fa42011 | Name: Levure chimique
+ID: 35bfacb0-ad44-4f11-b5fa-af5a788065df | Name: Litchi
+ID: 1d6647eb-7074-4faa-8576-fc65a04dabe9 | Name: Mandarine
+ID: 34c7c30a-2659-42c5-9038-655f622429ae | Name: Mangoustan
+ID: d4897f7f-932b-4479-bc39-1f28c5d36ecb | Name: Mangue
+ID: 724c9400-dad7-4b5f-a1da-c264891f2157 | Name: Maquereau
+ID: f64c8038-0ec3-498f-bb96-ae3663a0518c | Name: Marron
+ID: a1ceb201-b9a4-4b67-b246-d91ae85151b0 | Name: Mascarpone
+ID: 8bef1894-e010-42a4-b85f-b7dc971be298 | Name: Mayonnaise
+ID: c1afaece-1248-463b-aed0-bb3d11d8b5e1 | Name: Melon
+ID: 8283fd19-e4c2-4b53-84d2-a601219e8a96 | Name: Menthe
+ID: 583734d3-8e4b-4802-b9a5-94a9d3c5b21c | Name: Miel
+ID: 45cc6070-429a-42e8-9c78-1e78b958c7ba | Name: Mirabelle
+ID: 2e166d17-ea8c-4d53-b80a-ee4dfb3c2c35 | Name: Moules
+ID: fd1a54dd-8108-4f51-b005-d37a09274a87 | Name: Moutarde
+ID: 5b87564d-6d14-4832-88c9-1c8c2fdd3427 | Name: Mozzarella
+ID: 5044c94b-2ec1-4743-90d1-c2ecb483bdf8 | Name: Muesli
+ID: cdf2b5b5-1b9a-44fb-ab4e-dc688f23f141 | Name: Muscade
+ID: 60cdf778-cbf4-49dc-abcb-4981a042c773 | Name: Myrtille
+ID: 47baf6de-05c0-4474-8a57-9f925fe30003 | Name: Mûre
+ID: b065e695-e4eb-4762-96d5-d828def44e1b | Name: Navet
+ID: 27093eb4-5297-46e9-974b-5e47bd90d254 | Name: Nectarine
+ID: cb75bcac-2cec-4e8a-934f-dd2ae057c79a | Name: Noisette
+ID: 2a900bc8-07cf-4f18-ab48-5bd694c7e788 | Name: Noix
+ID: 8259b74a-38d3-40dd-b4e6-e121756287e2 | Name: Noix de coco
+ID: dd1c36be-fb49-4840-9f46-6463505d8816 | Name: Nutella
+ID: 18b57fa0-ab52-4451-991c-8c78e38c39fd | Name: Nèfle
+ID: 628dcd15-2cb5-441e-95ec-15288a16e423 | Name: Oignon
+ID: 7a6d933d-4655-4fb4-a1a2-12774cc96897 | Name: Olives
+ID: 8c77a0d0-5d25-45ab-ae1f-b83e9a113644 | Name: Orange
+ID: 86d2b968-d74f-4333-a249-f957a96fa00e | Name: Orange sanguine
+ID: 27a5bf6c-261c-4a12-a718-c57955d8c51f | Name: Pain
+ID: 42b82ca9-495f-4354-a9b5-5421a7a294f1 | Name: Pain de mie
+ID: 4f7d8783-ae18-49d7-94e1-b0f4db9ea139 | Name: Pamplemousse
+ID: 4633aa85-0322-4ab3-adb4-a94b6a1cca6d | Name: Panais
+ID: 1902a1e9-eb06-464a-a86f-0eb94e8c4004 | Name: Papaye
+ID: 33e24fd4-38ce-4f53-a587-74265fbaf339 | Name: Paprika
+ID: 1dba4b8e-1769-4979-a467-c7af2ddbf533 | Name: Parmesan
+ID: dd3fd1f8-2f3e-4e3e-90cd-35e82c554d4a | Name: Pastèque
+ID: c288199f-f999-47c9-8a3d-2753e517b51f | Name: Patate douce
+ID: 1ca2ac97-09cf-4ed3-ac7d-d131fd720a80 | Name: Penne
+ID: 75153f3f-58e6-41ec-95db-164010aee6b7 | Name: Persil
+ID: b2b92071-c07d-46c8-9af3-3aede2bf66b7 | Name: Petit pois
+ID: 323bf9a6-1170-425a-96f3-b5c72ab40d75 | Name: Petit-suisse
+ID: aae7ee2e-0b3d-4254-829e-751fbd525655 | Name: Physalis
+ID: b938d4e5-e1ff-49ce-9724-b11a03f00402 | Name: Pitaya
+ID: d06d8691-c5a4-4c26-803f-e1f026d11c0b | Name: Pleurote
+ID: cb685d55-94a6-498c-b930-a4b5844a467c | Name: Poire
+ID: 454ce810-f22a-4478-861f-b3d4656babd8 | Name: Poireau
+ID: c27588ea-a0f4-46c5-9523-63c1f96ebb79 | Name: Pois cassés
+ID: 538506f2-70ca-4bd9-9f14-8fb0f978034a | Name: Pois chiches
+ID: 9a05c638-a52c-498a-b364-6bec1eb5ef0a | Name: Poivre
+ID: 1276fbcc-1fb9-40f8-9ad1-bc437a8bef66 | Name: Poivron
+ID: 71f9fbe1-0f60-445f-b8d7-9b1a1223ca82 | Name: Pomelo
+ID: 6033206f-ae47-4875-b252-e6b2fab51bdb | Name: Pomme
+ID: 87fd13a9-0a67-4302-ad4d-e8ec28e0446a | Name: Pomme de terre
+ID: 1c98ecaa-253f-4039-bfcc-dd632fdd771c | Name: Potiron
+ID: 49fd5470-9e46-4c65-a74e-79fd7177ccd5 | Name: Prune
+ID: 522abed8-f9b8-4fe4-94fa-944cfe1b6647 | Name: Pruneau frais
+ID: b758ca73-c7d4-4745-b03f-a8f4fafad882 | Name: Pâtes
+ID: b65b32ba-9800-4c66-8245-0c0fda8ab13a | Name: Pêche
+ID: 4e35362c-2e49-4d26-ad82-14fc3a9a1598 | Name: Pêche de vigne
+ID: 9c442b92-61cc-463d-9e65-354f69dc6dd7 | Name: Quetsche
+ID: 74317a57-c2d4-45d7-9e4b-952f6afb06a1 | Name: Quinoa
+ID: d62cae15-e7ae-4149-926e-e58cadb2b009 | Name: Radis
+ID: 3754fe81-ff09-4764-9bad-0b9f5fc9c001 | Name: Raisin
+ID: f7363c1f-af95-48ae-bfaf-d8771b5e9f0e | Name: Ramboutan
+ID: 286e7baf-f745-4d80-a8df-ae52780b9344 | Name: Reine-claude
+ID: 3bb0ae02-b7d3-4ad3-8065-eb7b55608d68 | Name: Rhubarbe
+ID: a2a39354-b2d4-4495-af0c-89f1e5908e7d | Name: Ricotta
+ID: c8176504-c46f-440d-bd17-867295e7a869 | Name: Riz
+ID: f9eb2f14-34cf-4535-afe2-fa0463edcc51 | Name: Riz basmati
+ID: 423de900-a81d-4a60-845b-9a898f031ced | Name: Riz complet
+ID: c7b3e063-6157-46f9-9ece-9f0cd713b1f4 | Name: Romarin
+ID: 2627dc11-05e7-4263-a4ff-29228aa2a383 | Name: Roquefort
+ID: 317686ed-2e9a-4faf-9194-b3b7b7d7f513 | Name: Sardines
+ID: 7e901f76-31f5-482c-9158-e6725013483a | Name: Sauce soja
+ID: a964eefe-ca62-413c-8821-642ce39d4493 | Name: Saumon
+ID: ad1a49c1-faf2-4858-9763-bafaf04843c5 | Name: Seiche
+ID: ea6281ff-f2c3-4fc2-b5e3-d2772e8590d5 | Name: Sel
+ID: 960b3aaa-1e86-4016-9c99-f2b8451a9172 | Name: Sirop d'érable
+ID: 4507e667-1668-44ff-8864-f79c70611b9a | Name: Sole
+ID: 4c07390f-33f3-4375-b046-d04ee94c169a | Name: Sorbe
+ID: 09a8fb10-24d6-4aff-839b-51c71336d8f2 | Name: Spaghetti
+ID: 6db022e0-89b4-495d-88c2-42fef1182e4f | Name: Sucre
+ID: bc7f0fec-1e5d-4108-8356-caea181db6e6 | Name: Sucre glace
+ID: 48065f50-3025-4e03-92e3-f3bc1be64658 | Name: Sucre roux
+ID: fcdc79f6-3070-4b9e-8a48-fae64f102e51 | Name: Surimi
+ID: 6f9293e3-ec81-471e-b641-3a5fa2000844 | Name: Tabasco
+ID: bfccd2e7-9bfc-40b5-be40-6878c303bb17 | Name: Tagliatelles
+ID: faa894ef-3a58-46d7-90c7-36c7f81f2d7f | Name: Tamarillo
+ID: 39235556-7482-4d80-a49c-c675ee85fe30 | Name: Thon
+ID: 2867e91e-5ae0-4dbd-a023-be29d50462ae | Name: Thym
+ID: 26440908-a42f-46ee-9702-ce9dd6e24616 | Name: Tomate
+ID: a4e50db9-ec6a-4d94-88b1-98aab5a8b5b8 | Name: Tomates en conserve
+ID: 771ae754-d2f7-44db-b4de-78f36ded0b54 | Name: Truite
+ID: 25d82fe9-f499-4aec-8a46-d4013263e33a | Name: Vanille
+ID: 35d23dfb-f9f5-4d15-abea-0d18d6d329c1 | Name: Vinaigre
+ID: 6840cc1d-53c2-4881-a797-b3a62f162b98 | Name: Vinaigre balsamique
+ID: 1322d242-a661-46fd-8233-1ea17304aacf | Name: Vinaigre de cidre
+ID: 0a89bff1-0e3c-4a70-9131-27661cf623dd | Name: Yaourt
+ID: 68c1232b-069e-4005-8d05-cd2c48125c9d | Name: Yaourt grec
+ID: 8670a92c-7816-4b89-a3f0-a0e935d61bc1 | Name: agneau hache
+ID: 312f1343-a030-4196-89ed-d25afe021299 | Name: aneth
+ID: cabdb6f9-9271-403e-9b12-510f7180bb5e | Name: baguette
+ID: c8634be7-762d-4afb-a02a-723912331566 | Name: basilic frais
+ID: 9aed6f9a-3c6b-41b4-a421-e002c52d176f | Name: beurre demi sel
+ID: 350ee865-60d9-4ed1-a83b-2ad8dd596d63 | Name: boeuf bourguignon
+ID: bd539009-a403-4aac-8057-553029c7b6bf | Name: boeuf hache
+ID: cf840479-c779-428d-ba57-23b1f9a29e0f | Name: bouillon boeuf
+ID: 18fcf202-2f97-4c64-8a77-8c54fbead1bb | Name: bouillon legumes
+ID: 452b18d7-7a74-44fb-8fcd-de95a07e485e | Name: bouillon volaille
+ID: b60faee8-adaf-4e0c-8f15-2c20e83d29b2 | Name: bouquet garni
+ID: 6f06a738-3fae-4238-9763-e6b355ccaa83 | Name: carottes nouvelles
+ID: f7e87e7a-cbc2-48a0-b7fc-ae947e84f541 | Name: celeri
+ID: 38e569e9-e251-48bc-9c3f-51928e7cd047 | Name: cepes
+ID: 417b0a2f-1d76-492d-ae14-3df04f1ded76 | Name: chevre frais
+ID: 173c5844-01f8-4c8d-ae7f-23ce53b92d12 | Name: choucroute crue
+ID: 9b6a95fe-d65e-4436-a146-f7cf5d9b85b6 | Name: châtaignes cuites
+ID: e5cff47c-5d70-41c7-8e4b-06b5436609ee | Name: ciboulette
+ID: f436996c-1f20-4276-bc18-55e317fa0e00 | Name: cognac
+ID: 2ace90ae-cbc9-4d2a-af0c-9f7edce0115d | Name: confit canard
+ID: 789639b6-9d28-42d6-934f-7fe75a5e9c4e | Name: coq
+ID: 7f3b5b26-e02c-4325-abd5-1257cb741a70 | Name: coriandre fraiche
+ID: 9533f300-482f-4dd9-b1e0-933a558596d0 | Name: crevettes cuites
+ID: bce1958e-bd4d-435c-a50a-5bbb3419eed8 | Name: cuisses canard
+ID: ece8d5e3-222a-4841-8104-c40e40cbfe1a | Name: epaule agneau
+ID: fdc6dc41-8b1a-4715-bfd4-8c89bef2346c | Name: epaule porc
+ID: 41385410-6a0e-4619-9a13-04f876152594 | Name: epaule veau
+ID: cc4438d1-830d-47ec-92f9-7f24f2af427c | Name: escargots bourgogne
+ID: 4d62eb66-6c32-43b7-9095-1432fc52acd4 | Name: filet boeuf
+ID: 88de9dec-0624-40f9-a259-cc8ee36bdbf9 | Name: fleur sel
+ID: 2a7db2a9-3e55-4751-8232-dcc8ec69583c | Name: foie gras
+ID: a27f4ba6-6f8a-4031-931a-cf499937a481 | Name: fromage frais
+ID: 0277b229-7c76-43ed-b5ad-7c3546eb7c7a | Name: gelatine
+ID: aa21559d-b736-4325-88b7-33e486797adc | Name: gigot agneau
+ID: 3705d1b9-a3c2-4819-8cf1-4aa02b096cde | Name: graisse canard
+ID: c072fe7b-228c-4023-a034-9229159582db | Name: gros sel
+ID: 4a39f98b-5ccd-4c65-839a-0834ce6d7b05 | Name: gruyere rape
+ID: 524239c5-4a2f-473b-a038-2d67d7195585 | Name: herbes provence
+ID: e4e21f2b-60ec-4b41-a2ca-11853795ac3f | Name: huile
+ID: 157666ba-d6af-4a42-9f8d-39fd65d1f353 | Name: huile friture
+ID: 35468e71-9710-4c4b-975f-74321f656178 | Name: jambon blanc
+ID: 5b7ea67c-1d09-41b8-bce6-2761ae19a622 | Name: jambon cru
+ID: e71d10c5-b075-41fd-919d-f2813f74e883 | Name: jarrets veau
+ID: 826b667e-2a0c-410f-9189-39dbddd43b85 | Name: jaune oeuf
+ID: 88176394-8794-4959-b6a1-ae103de8003b | Name: laitue romaine
+ID: 95d49725-4c79-4ea2-b569-9c675a38ea22 | Name: lard fume
+ID: f7d8074a-d456-489c-bced-46dcefe04db6 | Name: lardons
+ID: 81a34db6-af51-46fc-bcd9-818b1638bdf1 | Name: lardons fumes
+ID: c2733dde-5444-4b2f-b055-bcd81bb45d73 | Name: lotte
+ID: 6ea9b193-c1eb-4745-8792-154122f85e9f | Name: magrets canard
+ID: 9575ad60-4dd0-48a0-9cf8-b94595d39d63 | Name: menthe fraiche
+ID: e5279349-f25c-4fd1-8830-4aba9e47132a | Name: navets nouveaux
+ID: b489477b-fca8-466f-945d-faf2a0904a0f | Name: oignons grelots
+ID: c7e43e9e-7315-4368-9a25-56e02d351792 | Name: olives noires
+ID: e0d750f2-1fb2-4c82-84f3-74c186e4cf63 | Name: olives noires denoyautees
+ID: e3ff7d0e-22b7-4ec2-8daf-815b4908dec6 | Name: os moelle
+ID: 8a883d6c-7412-41f0-9e09-e01bbcc68636 | Name: pain baguette
+ID: 941124ac-c83f-444b-8766-ec4703b46759 | Name: pain campagne
+ID: 5ce32082-4bb4-440c-98b0-7382f54a4c92 | Name: pain rassis
+ID: 20e5a430-a180-4497-a7f9-1bb0c1b9c2c0 | Name: paleron boeuf
+ID: 6074ded7-6c98-4834-a1d8-fe1374c3b3e3 | Name: palette porc
+ID: d9a8259f-70e4-46e0-8a18-680b293d8fe2 | Name: pastis
+ID: 72ecde90-095f-4279-8005-6cd1e28f55ea | Name: pate brisee
+ID: 611df360-8cab-4741-a06b-1078f470d0cb | Name: pate campagne
+ID: 6af1f6c6-fb20-4a02-b075-2aa5b9ba5120 | Name: pate feuilletee
+ID: 01d543c7-fcaf-4df9-91cf-ed68a98c7d8f | Name: pates lasagne
+ID: 60fd6d46-11b7-46dd-a606-366d142766ce | Name: persil plat
+ID: 23be6347-9b89-4703-9521-6cae8cdba78a | Name: petits pois
+ID: fb87f8fa-4ba9-4272-aeb3-94e2a8b75b29 | Name: pignons pin
+ID: afa3d704-1536-499b-ac20-57f9114f4524 | Name: poivre blanc
+ID: 89a55e21-3093-4a23-a628-5f0693b08b04 | Name: poivron rouge
+ID: 20054b14-7dc3-47c9-b11b-3c87aed4e406 | Name: pommes terre nouvelles
+ID: 5c649595-62b9-4525-87e7-fdee05ae46f7 | Name: porto
+ID: 45c79380-3996-4081-95dc-212d7016b1df | Name: poulet
+ID: c6bd6c32-68c2-4153-ab2b-a4f628c9a60a | Name: poulet fermier
+ID: 51501821-4544-4bdd-b129-dc9688bddec6 | Name: queue boeuf
+ID: ec4a88b2-639f-47e2-b8b1-f90be3118301 | Name: rascasse
+ID: 771958ba-5716-4f42-9619-2231cb1978d1 | Name: reblochon
+ID: d38a5b80-fa97-4954-9b92-fce541696ca5 | Name: riesling
+ID: bb89ea93-9bcc-4842-aa07-8d5311c80b74 | Name: rillettes porc
+ID: 1c5f43bd-4782-4d2d-9588-83b68ad527ee | Name: riz arborio
+ID: b11a26b3-12d0-405a-a5dd-0a39416e37ce | Name: riz bomba
+ID: cbc88c63-5024-48c0-b6fb-7d01a7677a3e | Name: roquette
+ID: 63da09df-afe3-4506-8ce9-104d07efaeb1 | Name: safran
+ID: 5561c4ae-93b7-49b8-92e8-9d88d6db5339 | Name: saint pierre
+ID: a2608268-ea09-4ccf-a0b4-c0b128aa501b | Name: saucisse montbeliard
+ID: 704c9d12-6e4a-440c-817a-ed4d1318541e | Name: saucisse toulouse
+ID: 823cbc3f-6f1a-46f6-aae2-a8a6f907a502 | Name: saucisses strasbourg
+ID: bd1c83bf-3f45-40e9-8f7d-eeea589b91f0 | Name: saucisson sec
+ID: 6e27e03a-9cc6-4d2b-b986-37751b6216e3 | Name: saumon frais
+ID: a24827b7-08a2-4c28-8038-81d8431c8a3c | Name: saumon fume
+ID: c5d8d2ae-9daa-4abe-94d5-221a980347e4 | Name: thon naturel
+ID: 5ce71c85-b01c-4a0d-9f28-60750f629392 | Name: thym frais
+ID: 80a63891-9b72-4405-9be3-1c52cbd558d2 | Name: tomate concentree
+ID: a7d06967-739f-45ac-ad6e-86aa4b895eb3 | Name: tomates concassees
+ID: 32b469eb-bb2d-4f46-a2a2-5eb69e92acc5 | Name: tomates mures
+ID: 9b0224c5-a9fa-45b7-9561-9efa960d92c5 | Name: tomates pelees
+ID: 344678a2-353e-4f74-86e0-b8285fa85c3b | Name: tomates sechees
+ID: 9e73cf1c-b1b9-4d90-b36c-002c5798b0a2 | Name: vin blanc
+ID: 9bdc91a9-e052-43c5-ab0b-9b47264e7c4b | Name: vin blanc sec
+ID: 0c418fb8-19f8-417a-8d07-a44fe485783f | Name: vin rouge
+ID: 3d6b8b13-67a1-4206-a53a-afe6d7311f45 | Name: vinaigre xeres
+ID: 795b7189-4183-423f-91ad-94738d0fc857 | Name: Échalote
+ID: ecec06a9-0325-4d97-8bcc-47c6a59300c4 | Name: Épinard
+ID: 691892b1-8c7a-4fcf-86b7-1cc25880a162 | Name: Œufs

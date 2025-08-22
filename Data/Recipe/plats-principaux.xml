@@ -1,0 +1,1172 @@
+<?xml version='1.0' encoding='utf-8'?>
+<recipes category="Plats Principaux">
+  
+  <recipe>
+    <id>21</id>
+    <n>Boeuf Bourguignon</n>
+    <description>Ragoût de bœuf mijoté au vin rouge avec lardons et champignons</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>180</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-15T10:30:00</created_at>
+    <updated_at>2024-01-15T10:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>350ee865-60d9-4ed1-a83b-2ad8dd596d63</ingredient_id>
+        <quantity>1.5</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>0c418fb8-19f8-417a-8d07-a44fe485783f</ingredient_id>
+        <quantity>750</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f7d8074a-d456-489c-bced-46dcefe04db6</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>ada0ac7a-47fe-4c30-a836-a3de5d8f57b9</ingredient_id>
+        <quantity>250</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6f06a738-3fae-4238-9763-e6b355ccaa83</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b60faee8-adaf-4e0c-8f15-2c20e83d29b2</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Faire mariner la viande dans le vin 12 heures</step>
+      <step number="2">Faire revenir les lardons</step>
+      <step number="3">Saisir les morceaux de bœuf</step>
+      <step number="4">Ajouter les légumes et faire revenir</step>
+      <step number="5">Mouiller avec le vin de la marinade</step>
+      <step number="6">Ajouter le bouquet garni</step>
+      <step number="7">Mijoter 3 heures à feu doux</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>22</id>
+    <n>Coq au vin</n>
+    <description>Volaille mijotée dans le vin rouge avec petits légumes</description>
+    <preparation_time>45</preparation_time>
+    <cooking_time>120</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>difficile</difficulty_level>
+    <created_at>2024-01-16T11:00:00</created_at>
+    <updated_at>2024-01-16T11:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>789639b6-9d28-42d6-934f-7fe75a5e9c4e</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>0c418fb8-19f8-417a-8d07-a44fe485783f</ingredient_id>
+        <quantity>1</quantity>
+        <unit>litre</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f436996c-1f20-4276-bc18-55e317fa0e00</ingredient_id>
+        <quantity>50</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f7d8074a-d456-489c-bced-46dcefe04db6</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>ada0ac7a-47fe-4c30-a836-a3de5d8f57b9</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b09001cc-6725-47e0-bc09-2976dcd3354b</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Découper le coq en morceaux</step>
+      <step number="2">Faire mariner dans le vin une nuit</step>
+      <step number="3">Faire rissoler les lardons</step>
+      <step number="4">Saisir les morceaux de coq</step>
+      <step number="5">Flamber au cognac</step>
+      <step number="6">Saupoudrer de farine et mouiller avec le vin</step>
+      <step number="7">Mijoter 2 heures avec les légumes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>23</id>
+    <n>Blanquette de veau</n>
+    <description>Ragoût de veau à la crème avec carottes et champignons</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>90</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-17T09:15:00</created_at>
+    <updated_at>2024-01-17T09:15:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>41385410-6a0e-4619-9a13-04f876152594</ingredient_id>
+        <quantity>1.2</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6f06a738-3fae-4238-9763-e6b355ccaa83</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>454ce810-f22a-4478-861f-b3d4656babd8</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>ada0ac7a-47fe-4c30-a836-a3de5d8f57b9</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>958038a7-4161-4247-91c4-606a85f3cc2b</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>826b667e-2a0c-410f-9189-39dbddd43b85</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Blanchir les morceaux de veau</step>
+      <step number="2">Faire un bouillon avec les légumes</step>
+      <step number="3">Cuire le veau dans le bouillon 1h30</step>
+      <step number="4">Faire cuire séparément les petits légumes</step>
+      <step number="5">Filtrer le bouillon et le réduire</step>
+      <step number="6">Lier avec jaunes d'œufs et crème</step>
+      <step number="7">Ajouter un filet de citron</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>24</id>
+    <n>Poulet rôti aux herbes</n>
+    <description>Poulet fermier rôti au four avec thym, romarin et citron</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>75</cooking_time>
+    <servings>4</servings>
+    <category_id>2</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-18T14:20:00</created_at>
+    <updated_at>2024-01-18T14:20:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>c6bd6c32-68c2-4153-ab2b-a4f628c9a60a</ingredient_id>
+        <quantity>1.5</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5ce71c85-b01c-4a0d-9f28-60750f629392</ingredient_id>
+        <quantity>3</quantity>
+        <unit>branches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c7b3e063-6157-46f9-9ece-9f0cd713b1f4</ingredient_id>
+        <quantity>2</quantity>
+        <unit>branches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>1</quantity>
+        <unit>tête</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>30</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Préchauffer le four à 200°C</step>
+      <step number="2">Farcir le poulet avec citron et herbes</step>
+      <step number="3">Badigeonner de beurre et huile</step>
+      <step number="4">Assaisonner généreusement</step>
+      <step number="5">Enfourner avec l'ail en chemise</step>
+      <step number="6">Arroser régulièrement</step>
+      <step number="7">Laisser reposer 10 minutes avant de découper</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>25</id>
+    <n>Cassoulet toulousain</n>
+    <description>Plat traditionnel du Sud-Ouest avec haricots, confit de canard et saucisse</description>
+    <preparation_time>60</preparation_time>
+    <cooking_time>240</cooking_time>
+    <servings>8</servings>
+    <category_id>2</category_id>
+    <difficulty_level>difficile</difficulty_level>
+    <created_at>2024-01-19T12:45:00</created_at>
+    <updated_at>2024-01-19T12:45:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>1a777a31-f6a1-4bc8-a7a3-c37d1a94d5da</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2ace90ae-cbc9-4d2a-af0c-9f7edce0115d</ingredient_id>
+        <quantity>4</quantity>
+        <unit>cuisses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>704c9d12-6e4a-440c-817a-ed4d1318541e</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>fdc6dc41-8b1a-4715-bfd4-8c89bef2346c</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>bbf7aa43-9d1d-4ceb-9b3e-442e95865b98</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Faire tremper les haricots une nuit</step>
+      <step number="2">Cuire les haricots avec aromates</step>
+      <step number="3">Faire revenir les viandes</step>
+      <step number="4">Disposer en couches dans une cassole</step>
+      <step number="5">Mouiller avec le bouillon de cuisson</step>
+      <step number="6">Saupoudrer de chapelure</step>
+      <step number="7">Cuire 4 heures en cassant la croûte régulièrement</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>26</id>
+    <n>Ratatouille niçoise</n>
+    <description>Mélange de légumes du soleil mijotés à la provençale</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>60</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-20T16:30:00</created_at>
+    <updated_at>2024-01-20T16:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>87686494-87bb-4f83-8996-6cb7d14f5f32</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>44dab5ef-121a-4e4e-8cf2-504adf2b2975</ingredient_id>
+        <quantity>3</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>89a55e21-3093-4a23-a628-5f0693b08b04</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>3</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>524239c5-4a2f-473b-a038-2d67d7195585</ingredient_id>
+        <quantity>2</quantity>
+        <unit>cuillères à soupe</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Couper tous les légumes en dés</step>
+      <step number="2">Faire revenir les oignons</step>
+      <step number="3">Ajouter les aubergines et poivrons</step>
+      <step number="4">Incorporer les courgettes</step>
+      <step number="5">Ajouter les tomates et l'ail</step>
+      <step number="6">Assaisonner avec les herbes</step>
+      <step number="7">Mijoter 45 minutes à feu doux</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>27</id>
+    <n>Gigot d'agneau aux flageolets</n>
+    <description>Gigot d'agneau rôti au four avec ail et flageolets</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>60</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-21T10:00:00</created_at>
+    <updated_at>2024-01-21T10:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>aa21559d-b736-4325-88b7-33e486797adc</ingredient_id>
+        <quantity>1.8</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>42d921b7-9728-4a1b-b0d0-8fdf7f135931</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>2</quantity>
+        <unit>têtes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c7b3e063-6157-46f9-9ece-9f0cd713b1f4</ingredient_id>
+        <quantity>3</quantity>
+        <unit>branches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9e73cf1c-b1b9-4d90-b36c-002c5798b0a2</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Piquer le gigot d'ail</step>
+      <step number="2">Badigeonner de beurre</step>
+      <step number="3">Parsemer de romarin</step>
+      <step number="4">Enfourner à 220°C</step>
+      <step number="5">Arroser avec le vin blanc</step>
+      <step number="6">Préparer les flageolets</step>
+      <step number="7">Servir le gigot rosé avec les flageolets</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>28</id>
+    <n>Paella valencienne</n>
+    <description>Plat espagnol traditionnel au riz safranné avec fruits de mer et poulet</description>
+    <preparation_time>40</preparation_time>
+    <cooking_time>45</cooking_time>
+    <servings>8</servings>
+    <category_id>2</category_id>
+    <difficulty_level>difficile</difficulty_level>
+    <created_at>2024-01-22T13:15:00</created_at>
+    <updated_at>2024-01-22T13:15:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>b11a26b3-12d0-405a-a5dd-0a39416e37ce</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>45c79380-3996-4081-95dc-212d7016b1df</ingredient_id>
+        <quantity>600</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>09852e58-4892-4d68-8f45-598cfb9b6f48</ingredient_id>
+        <quantity>8</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2e166d17-ea8c-4d53-b80a-ee4dfb3c2c35</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>7fb1def3-20c4-4f94-9568-46a509761a31</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>63da09df-afe3-4506-8ce9-104d07efaeb1</ingredient_id>
+        <quantity>1</quantity>
+        <unit>gramme</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>89a55e21-3093-4a23-a628-5f0693b08b04</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Faire revenir le poulet dans la paellera</step>
+      <step number="2">Ajouter les légumes</step>
+      <step number="3">Verser le bouillon avec le safran</step>
+      <step number="4">Ajouter le riz en croix</step>
+      <step number="5">Disposer les fruits de mer</step>
+      <step number="6">Ne plus remuer</step>
+      <step number="7">Laisser cuire jusqu'au socarrat</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>29</id>
+    <n>Bouillabaisse marseillaise</n>
+    <description>Soupe de poissons traditionnelle de Marseille avec rouille et croûtons</description>
+    <preparation_time>45</preparation_time>
+    <cooking_time>60</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>difficile</difficulty_level>
+    <created_at>2024-01-23T11:30:00</created_at>
+    <updated_at>2024-01-23T11:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>ec4a88b2-639f-47e2-b8b1-f90be3118301</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5561c4ae-93b7-49b8-92e8-9d88d6db5339</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c2733dde-5444-4b2f-b055-bcd81bb45d73</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2bd3e324-6c22-4827-9d0f-178c9985ef5e</ingredient_id>
+        <quantity>2</quantity>
+        <unit>bulbes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>3</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>63da09df-afe3-4506-8ce9-104d07efaeb1</ingredient_id>
+        <quantity>1</quantity>
+        <unit>gramme</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>d9a8259f-70e4-46e0-8a18-680b293d8fe2</ingredient_id>
+        <quantity>50</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Préparer le fumet avec les parures</step>
+      <step number="2">Faire revenir les légumes</step>
+      <step number="3">Ajouter les poissons fermes</step>
+      <step number="4">Mouiller avec le fumet</step>
+      <step number="5">Ajouter safran et pastis</step>
+      <step number="6">Ajouter les poissons fragiles</step>
+      <step number="7">Servir avec rouille et croûtons</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>30</id>
+    <n>Osso buco à la milanaise</n>
+    <description>Jarrets de veau braisés à l'italienne avec gremolata</description>
+    <preparation_time>25</preparation_time>
+    <cooking_time>120</cooking_time>
+    <servings>4</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-24T15:45:00</created_at>
+    <updated_at>2024-01-24T15:45:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>e71d10c5-b075-41fd-919d-f2813f74e883</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9b0224c5-a9fa-45b7-9561-9efa960d92c5</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9e73cf1c-b1b9-4d90-b36c-002c5798b0a2</ingredient_id>
+        <quantity>250</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>452b18d7-7a74-44fb-8fcd-de95a07e485e</ingredient_id>
+        <quantity>500</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6f06a738-3fae-4238-9763-e6b355ccaa83</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f7e87e7a-cbc2-48a0-b7fc-ae947e84f541</ingredient_id>
+        <quantity>2</quantity>
+        <unit>branches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Fariner et saisir les jarrets</step>
+      <step number="2">Faire revenir les légumes</step>
+      <step number="3">Déglacer au vin blanc</step>
+      <step number="4">Ajouter tomates et bouillon</step>
+      <step number="5">Braiser 2 heures à couvert</step>
+      <step number="6">Préparer la gremolata</step>
+      <step number="7">Servir avec risotto alla milanese</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>31</id>
+    <n>Choucroute garnie alsacienne</n>
+    <description>Choucroute traditionnelle avec saucisses, lard et pommes de terre</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>150</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-25T12:00:00</created_at>
+    <updated_at>2024-01-25T12:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>173c5844-01f8-4c8d-ae7f-23ce53b92d12</ingredient_id>
+        <quantity>1.5</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6074ded7-6c98-4834-a1d8-fe1374c3b3e3</ingredient_id>
+        <quantity>600</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>823cbc3f-6f1a-46f6-aae2-a8a6f907a502</ingredient_id>
+        <quantity>6</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>a2608268-ea09-4ccf-a0b4-c0b128aa501b</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>95d49725-4c79-4ea2-b569-9c675a38ea22</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>d38a5b80-fa97-4954-9b92-fce541696ca5</ingredient_id>
+        <quantity>500</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>87fd13a9-0a67-4302-ad4d-e8ec28e0446a</ingredient_id>
+        <quantity>1</quantity>
+        <unit>kg</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Rincer la choucroute</step>
+      <step number="2">Faire un lit de choucroute</step>
+      <step number="3">Disposer les viandes</step>
+      <step number="4">Mouiller au riesling</step>
+      <step number="5">Ajouter baies de genièvre et laurier</step>
+      <step number="6">Mijoter 2h30</step>
+      <step number="7">Servir avec pommes vapeur</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>32</id>
+    <n>Lasagnes bolognaise</n>
+    <description>Lasagnes maison avec sauce bolognaise et béchamel</description>
+    <preparation_time>45</preparation_time>
+    <cooking_time>45</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-26T18:30:00</created_at>
+    <updated_at>2024-01-26T18:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>01d543c7-fcaf-4df9-91cf-ed68a98c7d8f</ingredient_id>
+        <quantity>250</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>bd539009-a403-4aac-8057-553029c7b6bf</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>a7d06967-739f-45ac-ad6e-86aa4b895eb3</ingredient_id>
+        <quantity>800</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8109a748-f334-46a5-bba1-ec64ce7a0501</ingredient_id>
+        <quantity>500</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b09001cc-6725-47e0-bc09-2976dcd3354b</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>1dba4b8e-1769-4979-a467-c7af2ddbf533</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5b87564d-6d14-4832-88c9-1c8c2fdd3427</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Préparer la sauce bolognaise</step>
+      <step number="2">Préparer la béchamel</step>
+      <step number="3">Monter les lasagnes en couches</step>
+      <step number="4">Alterner pâtes, bolognaise, béchamel</step>
+      <step number="5">Terminer par béchamel et fromages</step>
+      <step number="6">Cuire 45 minutes à 180°C</step>
+      <step number="7">Laisser reposer 10 minutes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>33</id>
+    <n>Magret de canard aux cerises</n>
+    <description>Magret de canard rosé avec sauce aux cerises et vinaigre balsamique</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>20</cooking_time>
+    <servings>4</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-27T12:15:00</created_at>
+    <updated_at>2024-01-27T12:15:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>6ea9b193-c1eb-4745-8792-154122f85e9f</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>4affbd15-b3fb-42d7-839f-3321f10a9e6e</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>0c418fb8-19f8-417a-8d07-a44fe485783f</ingredient_id>
+        <quantity>150</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6840cc1d-53c2-4881-a797-b3a62f162b98</ingredient_id>
+        <quantity>30</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>583734d3-8e4b-4802-b9a5-94a9d3c5b21c</ingredient_id>
+        <quantity>20</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>20</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Quadriller la peau des magrets</step>
+      <step number="2">Saisir côté peau à froid</step>
+      <step number="3">Retourner et cuire côté chair</step>
+      <step number="4">Laisser reposer sous aluminium</step>
+      <step number="5">Déglacer avec vin et vinaigre</step>
+      <step number="6">Ajouter cerises et miel</step>
+      <step number="7">Trancher et napper de sauce</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>34</id>
+    <n>Pot-au-feu traditionnel</n>
+    <description>Plat familial avec bœuf et légumes mijotés dans un bouillon</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>180</cooking_time>
+    <servings>8</servings>
+    <category_id>2</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-28T16:00:00</created_at>
+    <updated_at>2024-01-28T16:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>20e5a430-a180-4497-a7f9-1bb0c1b9c2c0</ingredient_id>
+        <quantity>800</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>51501821-4544-4bdd-b129-dc9688bddec6</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>e3ff7d0e-22b7-4ec2-8daf-815b4908dec6</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>454ce810-f22a-4478-861f-b3d4656babd8</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6f06a738-3fae-4238-9763-e6b355ccaa83</ingredient_id>
+        <quantity>6</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>e5279349-f25c-4fd1-8830-4aba9e47132a</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b617c78e-cc91-4978-a7e9-d28340413963</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Blanchir les viandes</step>
+      <step number="2">Démarrer en eau froide</step>
+      <step number="3">Écumer régulièrement</step>
+      <step number="4">Ajouter les légumes par étapes</step>
+      <step number="5">Mijoter 3 heures doucement</step>
+      <step number="6">Préparer les os à moelle</step>
+      <step number="7">Servir avec cornichons et gros sel</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>35</id>
+    <n>Risotto aux champignons</n>
+    <description>Risotto crémeux aux cèpes et parmesan</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>25</cooking_time>
+    <servings>4</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-29T13:00:00</created_at>
+    <updated_at>2024-01-29T13:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>1c5f43bd-4782-4d2d-9588-83b68ad527ee</ingredient_id>
+        <quantity>320</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>38e569e9-e251-48bc-9c3f-51928e7cd047</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>18fcf202-2f97-4c64-8a77-8c54fbead1bb</ingredient_id>
+        <quantity>1.5</quantity>
+        <unit>litres</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9e73cf1c-b1b9-4d90-b36c-002c5798b0a2</ingredient_id>
+        <quantity>150</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>1dba4b8e-1769-4979-a467-c7af2ddbf533</ingredient_id>
+        <quantity>80</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>795b7189-4183-423f-91ad-94738d0fc857</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Faire revenir l'échalote</step>
+      <step number="2">Nacrer le riz</step>
+      <step number="3">Déglacer au vin blanc</step>
+      <step number="4">Ajouter le bouillon louche par louche</step>
+      <step number="5">Faire sauter les cèpes séparément</step>
+      <step number="6">Incorporer cèpes et parmesan</step>
+      <step number="7">Mantecatura avec le beurre</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>36</id>
+    <n>Confit de canard sarladais</n>
+    <description>Cuisses de canard confites avec pommes sarladaises</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>150</cooking_time>
+    <servings>4</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-30T14:30:00</created_at>
+    <updated_at>2024-01-30T14:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>bce1958e-bd4d-435c-a50a-5bbb3419eed8</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>3705d1b9-a3c2-4819-8cf1-4aa02b096cde</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c072fe7b-228c-4023-a034-9229159582db</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>87fd13a9-0a67-4302-ad4d-e8ec28e0446a</ingredient_id>
+        <quantity>1</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>3</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>75153f3f-58e6-41ec-95db-164010aee6b7</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Saler les cuisses 24 heures</step>
+      <step number="2">Rincer et sécher</step>
+      <step number="3">Confire dans la graisse 2h30 à 80°C</step>
+      <step number="4">Préparer les pommes sarladaises</step>
+      <step number="5">Réchauffer les confits à la poêle</step>
+      <step number="6">Faire sauter les pommes dans la graisse</step>
+      <step number="7">Servir avec persillade</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>37</id>
+    <n>Moussaka grecque</n>
+    <description>Gratin d'aubergines et viande hachée à la grecque</description>
+    <preparation_time>40</preparation_time>
+    <cooking_time>50</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-31T17:00:00</created_at>
+    <updated_at>2024-01-31T17:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>87686494-87bb-4f83-8996-6cb7d14f5f32</ingredient_id>
+        <quantity>3</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8670a92c-7816-4b89-a3f0-a0e935d61bc1</ingredient_id>
+        <quantity>600</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8109a748-f334-46a5-bba1-ec64ce7a0501</ingredient_id>
+        <quantity>500</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b09001cc-6725-47e0-bc09-2976dcd3354b</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>0c8b4e73-928b-4a7c-8801-5253237a9898</ingredient_id>
+        <quantity>1</quantity>
+        <unit>cuillère à café</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Trancher et griller les aubergines</step>
+      <step number="2">Préparer la sauce à la viande</step>
+      <step number="3">Parfumer à la cannelle</step>
+      <step number="4">Préparer la béchamel</step>
+      <step number="5">Monter en couches alternées</step>
+      <step number="6">Terminer par la béchamel</step>
+      <step number="7">Gratiner 45 minutes au four</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>38</id>
+    <n>Navarin d'agneau printanier</n>
+    <description>Ragoût d'agneau aux légumes primeurs</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>90</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-02-01T12:30:00</created_at>
+    <updated_at>2024-02-01T12:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>ece8d5e3-222a-4841-8104-c40e40cbfe1a</ingredient_id>
+        <quantity>1.2</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>e5279349-f25c-4fd1-8830-4aba9e47132a</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6f06a738-3fae-4238-9763-e6b355ccaa83</ingredient_id>
+        <quantity>300</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>23be6347-9b89-4703-9521-6cae8cdba78a</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>20054b14-7dc3-47c9-b11b-3c87aed4e406</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>80a63891-9b72-4405-9be3-1c52cbd558d2</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Couper l'agneau en morceaux</step>
+      <step number="2">Saisir et colorer la viande</step>
+      <step number="3">Singer avec la farine</step>
+      <step number="4">Ajouter le concentré de tomate</step>
+      <step number="5">Mouiller et mijoter 45 minutes</step>
+      <step number="6">Ajouter les légumes primeurs</step>
+      <step number="7">Poursuivre la cuisson 45 minutes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>39</id>
+    <n>Tartiflette savoyarde</n>
+    <description>Gratin de pommes de terre au reblochon et lardons</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>40</cooking_time>
+    <servings>6</servings>
+    <category_id>2</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-02-02T18:00:00</created_at>
+    <updated_at>2024-02-02T18:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>87fd13a9-0a67-4302-ad4d-e8ec28e0446a</ingredient_id>
+        <quantity>1.5</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>771958ba-5716-4f42-9619-2231cb1978d1</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>81a34db6-af51-46fc-bcd9-818b1638bdf1</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>958038a7-4161-4247-91c4-606a85f3cc2b</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9e73cf1c-b1b9-4d90-b36c-002c5798b0a2</ingredient_id>
+        <quantity>100</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Cuire les pommes de terre à l'eau</step>
+      <step number="2">Faire revenir lardons et oignons</step>
+      <step number="3">Couper les pommes de terre en rondelles</step>
+      <step number="4">Disposer en couches dans un plat</step>
+      <step number="5">Arroser de crème et vin blanc</step>
+      <step number="6">Couvrir de reblochon coupé en deux</step>
+      <step number="7">Gratiner 30 minutes au four</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>40</id>
+    <n>Sole meunière</n>
+    <description>Sole dorée au beurre avec citron et persil</description>
+    <preparation_time>10</preparation_time>
+    <cooking_time>10</cooking_time>
+    <servings>4</servings>
+    <category_id>2</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-02-03T11:45:00</created_at>
+    <updated_at>2024-02-03T11:45:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>4507e667-1668-44ff-8864-f79c70611b9a</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b09001cc-6725-47e0-bc09-2976dcd3354b</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>60fd6d46-11b7-46dd-a606-366d142766ce</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>e4e21f2b-60ec-4b41-a2ca-11853795ac3f</ingredient_id>
+        <quantity>30</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Habiller et fariner les soles</step>
+      <step number="2">Chauffer beurre et huile dans une poêle</step>
+      <step number="3">Cuire les soles 4 minutes par face</step>
+      <step number="4">Réserver au chaud</step>
+      <step number="5">Faire un beurre noisette</step>
+      <step number="6">Ajouter citron et persil</step>
+      <step number="7">Napper les soles du beurre citronné</step>
+    </instructions>
+  </recipe>
+</recipes>

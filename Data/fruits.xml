@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category category="Fruits">
-    <!-- Seasonal Fruits -->
     <ingredient name="Abricot">
         <subcategory>Fruits à noyau</subcategory>
         <units>
@@ -700,8 +699,6 @@
             <season>automne</season>
         </seasonal>
     </ingredient>
-    
-    <!-- Year-round Fruits (imported or stored) -->
     <ingredient name="Ananas">
         <subcategory>Fruits tropicaux</subcategory>
         <units>
@@ -810,6 +807,16 @@
         <units>
             <unit>pièce</unit>
             <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="chataignes cuites"/>
+    <ingredient name="châtaignes cuites">
+        <subcategory>Fruits secs</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>sachet</unit>
         </units>
     </ingredient>
 </category>

@@ -1,18 +1,259 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category category="Viande">
-    <ingredient name="Poulet" />
-    <ingredient name="Bœuf" />
-    <ingredient name="Porc" />
-    <ingredient name="Agneau" />
-    <ingredient name="Dinde" />
-    <ingredient name="Canard" />
-    <ingredient name="Veau" />
-    <ingredient name="Lapin" />
-    <ingredient name="Jambon" />
-    <ingredient name="Bacon" />
-    <ingredient name="Saucisse" />
-    <ingredient name="Merguez" />
-    <ingredient name="Chorizo" />
-    <ingredient name="Steak haché" />
-    <ingredient name="Escalope" />
+    <ingredient name="Poulet"/>
+    <ingredient name="poulet">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>cuisse</unit>
+            <unit>filet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="Bœuf"/>
+    <ingredient name="Porc"/>
+    <ingredient name="Agneau"/>
+    <ingredient name="Dinde"/>
+    <ingredient name="Canard"/>
+    <ingredient name="Veau"/>
+    <ingredient name="Lapin"/>
+    <ingredient name="Jambon"/>
+    <ingredient name="Bacon"/>
+    <ingredient name="Saucisse"/>
+    <ingredient name="Merguez"/>
+    <ingredient name="Chorizo"/>
+    <ingredient name="Steak haché"/>
+    <ingredient name="Escalope"/>
+    <ingredient name="agneau hache">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="boeuf bourguignon">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="boeuf hache">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="bouillon boeuf">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="confit canard">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="coq">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="cuisses canard">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="epaule agneau">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="epaule porc">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="epaule veau">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="filet boeuf">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="gigot agneau">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="graisse canard">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="jambon blanc">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="jambon cru">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="jarrets veau">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="lard fume">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="lardons">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="lardons fumes">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="magrets canard">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="navets nouveaux">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="paleron boeuf">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="palette porc">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="poulet fermier">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="queue boeuf">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="rillettes porc">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="saucisse montbeliard">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="saucisse toulouse">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="saucisses strasbourg">
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
 </category>

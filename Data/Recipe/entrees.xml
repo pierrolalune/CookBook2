@@ -1,0 +1,1128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<recipes category="Entrées">
+  
+  <recipe>
+    <id>1</id>
+    <name>Soupe à l'oignon gratinée</name>
+    <description>Soupe traditionnelle française avec oignons caramélisés et fromage gratiné</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>45</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-15T10:30:00</created_at>
+    <updated_at>2024-01-15T10:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>6</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>cf840479-c779-428d-ba57-23b1f9a29e0f</ingredient_id>
+        <quantity>1.5</quantity>
+        <unit>litres</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9e73cf1c-b1b9-4d90-b36c-002c5798b0a2</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8a883d6c-7412-41f0-9e09-e01bbcc68636</ingredient_id>
+        <quantity>6</quantity>
+        <unit>tranches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>4a39f98b-5ccd-4c65-839a-0834ce6d7b05</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Émincer finement les oignons</step>
+      <step number="2">Faire caraméliser les oignons dans le beurre pendant 20 minutes</step>
+      <step number="3">Déglacer au vin blanc</step>
+      <step number="4">Ajouter le bouillon et laisser mijoter 20 minutes</step>
+      <step number="5">Verser dans des bols allant au four</step>
+      <step number="6">Ajouter le pain et le fromage râpé</step>
+      <step number="7">Gratiner au four 5 minutes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>2</id>
+    <name>Salade César</name>
+    <description>Salade classique avec romaine, croûtons, parmesan et sauce César maison</description>
+    <preparation_time>25</preparation_time>
+    <cooking_time>10</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-16T11:00:00</created_at>
+    <updated_at>2024-01-16T11:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>88176394-8794-4959-b6a1-ae103de8003b</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>1dba4b8e-1769-4979-a467-c7af2ddbf533</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5ce32082-4bb4-440c-98b0-7382f54a4c92</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>ef7a0820-a3b9-44b4-8061-02b402db5de9</ingredient_id>
+        <quantity>6</quantity>
+        <unit>filets</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>2</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>826b667e-2a0c-410f-9189-39dbddd43b85</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>150</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Préparer les croûtons en coupant le pain en dés et les faire dorer</step>
+      <step number="2">Laver et essorer la romaine</step>
+      <step number="3">Préparer la sauce avec anchois, ail, jaune d'œuf et huile</step>
+      <step number="4">Mélanger la salade avec la sauce</step>
+      <step number="5">Ajouter les croûtons et le parmesan râpé</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>3</id>
+    <name>Quiche Lorraine</name>
+    <description>Tarte salée traditionnelle avec lardons, œufs et crème</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>35</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-17T09:15:00</created_at>
+    <updated_at>2024-01-17T09:15:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>72ecde90-095f-4279-8005-6cd1e28f55ea</ingredient_id>
+        <quantity>1</quantity>
+        <unit>rouleau</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f7d8074a-d456-489c-bced-46dcefe04db6</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>691892b1-8c7a-4fcf-86b7-1cc25880a162</ingredient_id>
+        <quantity>3</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>958038a7-4161-4247-91c4-606a85f3cc2b</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8109a748-f334-46a5-bba1-ec64ce7a0501</ingredient_id>
+        <quantity>100</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>cdf2b5b5-1b9a-44fb-ab4e-dc688f23f141</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pincée</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Étaler la pâte dans un moule à tarte</step>
+      <step number="2">Faire revenir les lardons sans matière grasse</step>
+      <step number="3">Battre les œufs avec la crème et le lait</step>
+      <step number="4">Assaisonner avec muscade, sel et poivre</step>
+      <step number="5">Disposer les lardons sur la pâte</step>
+      <step number="6">Verser l'appareil à quiche</step>
+      <step number="7">Cuire au four à 180°C pendant 35 minutes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>4</id>
+    <name>Bruschetta aux tomates</name>
+    <description>Tartines italiennes grillées avec tomates fraîches, basilic et ail</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>5</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-18T14:20:00</created_at>
+    <updated_at>2024-01-18T14:20:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>941124ac-c83f-444b-8766-ec4703b46759</ingredient_id>
+        <quantity>8</quantity>
+        <unit>tranches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>3</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c8634be7-762d-4afb-a02a-723912331566</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>60</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6840cc1d-53c2-4881-a797-b3a62f162b98</ingredient_id>
+        <quantity>15</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Couper les tomates en petits dés</step>
+      <step number="2">Hacher finement l'ail et le basilic</step>
+      <step number="3">Mélanger tomates, ail, basilic, huile et vinaigre</step>
+      <step number="4">Griller les tranches de pain</step>
+      <step number="5">Frotter le pain grillé avec une gousse d'ail</step>
+      <step number="6">Répartir le mélange de tomates sur les tartines</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>5</id>
+    <name>Velouté de champignons</name>
+    <description>Soupe crémeuse aux champignons de Paris avec une touche de thym</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>30</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-19T12:45:00</created_at>
+    <updated_at>2024-01-19T12:45:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>ada0ac7a-47fe-4c30-a836-a3de5d8f57b9</ingredient_id>
+        <quantity>500</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>18fcf202-2f97-4c64-8a77-8c54fbead1bb</ingredient_id>
+        <quantity>1</quantity>
+        <unit>litre</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6b8293cf-de44-4bc2-984f-44caf7519dbe</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2867e91e-5ae0-4dbd-a023-be29d50462ae</ingredient_id>
+        <quantity>2</quantity>
+        <unit>branches</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Émincer l'oignon et nettoyer les champignons</step>
+      <step number="2">Faire revenir l'oignon dans le beurre</step>
+      <step number="3">Ajouter les champignons coupés et le thym</step>
+      <step number="4">Verser le bouillon et laisser mijoter 20 minutes</step>
+      <step number="5">Mixer la soupe jusqu'à obtenir une texture lisse</step>
+      <step number="6">Ajouter la crème et rectifier l'assaisonnement</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>6</id>
+    <name>Carpaccio de bœuf</name>
+    <description>Fines tranches de bœuf cru avec roquette, parmesan et citron</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>0</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-20T16:30:00</created_at>
+    <updated_at>2024-01-20T16:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>4d62eb66-6c32-43b7-9095-1432fc52acd4</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>cbc88c63-5024-48c0-b6fb-7d01a7677a3e</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>1dba4b8e-1769-4979-a467-c7af2ddbf533</ingredient_id>
+        <quantity>80</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>80</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>88de9dec-0624-40f9-a259-cc8ee36bdbf9</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pincée</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Congeler légèrement le filet de bœuf (30 minutes)</step>
+      <step number="2">Trancher très finement le bœuf</step>
+      <step number="3">Disposer les tranches sur les assiettes</step>
+      <step number="4">Arroser d'huile d'olive et de jus de citron</step>
+      <step number="5">Ajouter la roquette et les copeaux de parmesan</step>
+      <step number="6">Assaisonner de fleur de sel et poivre</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>7</id>
+    <name>Terrine de poisson aux herbes</name>
+    <description>Terrine légère de poisson blanc avec saumon et fines herbes</description>
+    <preparation_time>40</preparation_time>
+    <cooking_time>45</cooking_time>
+    <servings>8</servings>
+    <category_id>1</category_id>
+    <difficulty_level>difficile</difficulty_level>
+    <created_at>2024-01-21T10:00:00</created_at>
+    <updated_at>2024-01-21T10:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>8665d43d-e919-4b65-b112-75b61a818f4c</ingredient_id>
+        <quantity>400</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>a964eefe-ca62-413c-8821-642ce39d4493</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>691892b1-8c7a-4fcf-86b7-1cc25880a162</ingredient_id>
+        <quantity>3</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>958038a7-4161-4247-91c4-606a85f3cc2b</ingredient_id>
+        <quantity>200</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>e5cff47c-5d70-41c7-8e4b-06b5436609ee</ingredient_id>
+        <quantity>1</quantity>
+        <unit>botte</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>312f1343-a030-4196-89ed-d25afe021299</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Mixer le cabillaud avec les œufs et la crème</step>
+      <step number="2">Ajouter les herbes ciselées</step>
+      <step number="3">Couper le saumon en dés</step>
+      <step number="4">Incorporer délicatement le saumon</step>
+      <step number="5">Verser dans un moule à terrine beurré</step>
+      <step number="6">Cuire au bain-marie 45 minutes à 180°C</step>
+      <step number="7">Laisser refroidir avant de démouler</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>8</id>
+    <name>Gaspacho andalou</name>
+    <description>Soupe froide espagnole aux tomates et légumes frais</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>0</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-22T13:15:00</created_at>
+    <updated_at>2024-01-22T13:15:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>32b469eb-bb2d-4f46-a2a2-5eb69e92acc5</ingredient_id>
+        <quantity>1</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>89a55e21-3093-4a23-a628-5f0693b08b04</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b1e4eaf8-9b3d-43b5-a0b9-d39020d834e2</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5ce32082-4bb4-440c-98b0-7382f54a4c92</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>2</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>3d6b8b13-67a1-4206-a53a-afe6d7311f45</ingredient_id>
+        <quantity>30</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>100</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Ébouillanter et peler les tomates</step>
+      <step number="2">Épépiner le poivron et le concombre</step>
+      <step number="3">Tremper le pain dans l'eau</step>
+      <step number="4">Mixer tous les légumes avec l'ail et le pain</step>
+      <step number="5">Ajouter le vinaigre et l'huile en filet</step>
+      <step number="6">Passer au tamis pour une texture lisse</step>
+      <step number="7">Réfrigérer au moins 2 heures avant de servir</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>9</id>
+    <name>Rillettes de saumon</name>
+    <description>Tartinade de saumon frais et fumé avec citron et aneth</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>10</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-23T11:30:00</created_at>
+    <updated_at>2024-01-23T11:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>6e27e03a-9cc6-4d2b-b986-37751b6216e3</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>a24827b7-08a2-4c28-8038-81d8431c8a3c</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>a27f4ba6-6f8a-4031-931a-cf499937a481</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>958038a7-4161-4247-91c4-606a85f3cc2b</ingredient_id>
+        <quantity>50</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9ed74e55-33ec-4463-8fdd-2e9b3b347fec</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>312f1343-a030-4196-89ed-d25afe021299</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Cuire le saumon frais à la vapeur 10 minutes</step>
+      <step number="2">Émietter le saumon cuit</step>
+      <step number="3">Hacher finement le saumon fumé</step>
+      <step number="4">Mélanger les deux saumons avec le fromage frais</step>
+      <step number="5">Ajouter la crème, le jus de citron et l'aneth</step>
+      <step number="6">Réfrigérer 2 heures avant de servir</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>10</id>
+    <name>Feuilletés au fromage de chèvre</name>
+    <description>Petits feuilletés croustillants au chèvre et miel</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>15</cooking_time>
+    <servings>12</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-24T15:45:00</created_at>
+    <updated_at>2024-01-24T15:45:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>6af1f6c6-fb20-4a02-b075-2aa5b9ba5120</ingredient_id>
+        <quantity>1</quantity>
+        <unit>rouleau</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>417b0a2f-1d76-492d-ae14-3df04f1ded76</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>583734d3-8e4b-4802-b9a5-94a9d3c5b21c</ingredient_id>
+        <quantity>30</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2867e91e-5ae0-4dbd-a023-be29d50462ae</ingredient_id>
+        <quantity>2</quantity>
+        <unit>branches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>826b667e-2a0c-410f-9189-39dbddd43b85</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2a900bc8-07cf-4f18-ab48-5bd694c7e788</ingredient_id>
+        <quantity>50</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Découper des carrés dans la pâte feuilletée</step>
+      <step number="2">Déposer une cuillère de chèvre au centre</step>
+      <step number="3">Ajouter un peu de miel et de thym</step>
+      <step number="4">Parsemer de noix concassées</step>
+      <step number="5">Replier les coins et dorer au jaune d'œuf</step>
+      <step number="6">Cuire 15 minutes à 200°C</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>11</id>
+    <name>Tartare d'avocat et crevettes</name>
+    <description>Entrée fraîche avec avocat, crevettes et agrumes</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>0</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-25T12:00:00</created_at>
+    <updated_at>2024-01-25T12:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>beca4c16-92a8-48cf-83e8-05bd8c6b1f10</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9533f300-482f-4dd9-b1e0-933a558596d0</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>4f7d8783-ae18-49d7-94e1-b0f4db9ea139</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2e83275c-0434-46f1-b9f9-066819489075</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>7f3b5b26-e02c-4325-abd5-1257cb741a70</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>795b7189-4183-423f-91ad-94738d0fc857</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Couper les avocats en dés</step>
+      <step number="2">Arroser de jus de citron vert</step>
+      <step number="3">Décortiquer et couper les crevettes</step>
+      <step number="4">Prélever les suprêmes de pamplemousse</step>
+      <step number="5">Hacher finement l'échalote et la coriandre</step>
+      <step number="6">Mélanger délicatement tous les ingrédients</step>
+      <step number="7">Dresser dans des verrines</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>12</id>
+    <name>Escargots à la bourguignonne</name>
+    <description>Escargots au beurre persillé à l'ail, spécialité bourguignonne</description>
+    <preparation_time>30</preparation_time>
+    <cooking_time>10</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-26T18:30:00</created_at>
+    <updated_at>2024-01-26T18:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>cc4438d1-830d-47ec-92f9-7f24f2af427c</ingredient_id>
+        <quantity>24</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>4</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>60fd6d46-11b7-46dd-a606-366d142766ce</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>795b7189-4183-423f-91ad-94738d0fc857</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9bdc91a9-e052-43c5-ab0b-9b47264e7c4b</ingredient_id>
+        <quantity>50</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Préparer le beurre d'escargot</step>
+      <step number="2">Hacher finement ail, persil et échalotes</step>
+      <step number="3">Mélanger avec le beurre ramolli</step>
+      <step number="4">Ajouter le vin blanc</step>
+      <step number="5">Placer les escargots dans les coquilles</step>
+      <step number="6">Garnir généreusement de beurre persillé</step>
+      <step number="7">Cuire au four 10 minutes à 200°C</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>13</id>
+    <name>Croque-monsieur traditionnel</name>
+    <description>Sandwich chaud gratiné au jambon et fromage avec béchamel</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>10</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-27T12:15:00</created_at>
+    <updated_at>2024-01-27T12:15:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>42b82ca9-495f-4354-a9b5-5421a7a294f1</ingredient_id>
+        <quantity>8</quantity>
+        <unit>tranches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>35468e71-9710-4c4b-975f-74321f656178</ingredient_id>
+        <quantity>4</quantity>
+        <unit>tranches</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>878026dc-3f91-4aaa-89a7-b7516623273d</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>40</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b09001cc-6725-47e0-bc09-2976dcd3354b</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8109a748-f334-46a5-bba1-ec64ce7a0501</ingredient_id>
+        <quantity>300</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>cdf2b5b5-1b9a-44fb-ab4e-dc688f23f141</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pincée</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Préparer une béchamel épaisse</step>
+      <step number="2">Beurrer les tranches de pain</step>
+      <step number="3">Disposer jambon et fromage entre deux tranches</step>
+      <step number="4">Napper de béchamel</step>
+      <step number="5">Parsemer de gruyère râpé</step>
+      <step number="6">Gratiner au four 10 minutes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>14</id>
+    <name>Mousse de foie gras au porto</name>
+    <description>Mousse onctueuse de foie gras parfumée au porto</description>
+    <preparation_time>25</preparation_time>
+    <cooking_time>0</cooking_time>
+    <servings>8</servings>
+    <category_id>1</category_id>
+    <difficulty_level>moyen</difficulty_level>
+    <created_at>2024-01-28T16:00:00</created_at>
+    <updated_at>2024-01-28T16:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>2a7db2a9-3e55-4751-8232-dcc8ec69583c</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>a1ceb201-b9a4-4b67-b246-d91ae85151b0</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5c649595-62b9-4525-87e7-fdee05ae46f7</ingredient_id>
+        <quantity>50</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6b8293cf-de44-4bc2-984f-44caf7519dbe</ingredient_id>
+        <quantity>100</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>0277b229-7c76-43ed-b5ad-7c3546eb7c7a</ingredient_id>
+        <quantity>2</quantity>
+        <unit>feuilles</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>afa3d704-1536-499b-ac20-57f9114f4524</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pincée</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Ramollir la gélatine dans l'eau froide</step>
+      <step number="2">Mixer le foie gras avec le mascarpone</step>
+      <step number="3">Faire tiédir le porto et y dissoudre la gélatine</step>
+      <step number="4">Incorporer le porto au mélange</step>
+      <step number="5">Monter la crème en chantilly</step>
+      <step number="6">Incorporer délicatement la chantilly</step>
+      <step number="7">Répartir en verrines et réfrigérer 3 heures</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>15</id>
+    <name>Salade niçoise</name>
+    <description>Salade traditionnelle de Nice avec thon, anchois et légumes frais</description>
+    <preparation_time>25</preparation_time>
+    <cooking_time>10</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-29T13:00:00</created_at>
+    <updated_at>2024-01-29T13:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>c5d8d2ae-9daa-4abe-94d5-221a980347e4</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>691892b1-8c7a-4fcf-86b7-1cc25880a162</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>4</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>8db0bf6e-0506-4995-9236-debccfa1e74a</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>89a55e21-3093-4a23-a628-5f0693b08b04</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>ef7a0820-a3b9-44b4-8061-02b402db5de9</ingredient_id>
+        <quantity>8</quantity>
+        <unit>filets</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c7e43e9e-7315-4368-9a25-56e02d351792</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>60</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Cuire les œufs durs et les haricots verts</step>
+      <step number="2">Couper les tomates en quartiers</step>
+      <step number="3">Émincer les poivrons</step>
+      <step number="4">Disposer tous les légumes dans un plat</step>
+      <step number="5">Ajouter le thon émietté</step>
+      <step number="6">Garnir d'anchois et d'olives</step>
+      <step number="7">Arroser d'huile d'olive</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>16</id>
+    <name>Tapenade provençale</name>
+    <description>Pâte d'olives noires typique de Provence avec câpres et anchois</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>0</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-30T14:30:00</created_at>
+    <updated_at>2024-01-30T14:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>e0d750f2-1fb2-4c82-84f3-74c186e4cf63</ingredient_id>
+        <quantity>250</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>7a368c46-24de-44e6-820b-9b79ee4a8912</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>ef7a0820-a3b9-44b4-8061-02b402db5de9</ingredient_id>
+        <quantity>6</quantity>
+        <unit>filets</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>f6090831-7b04-469b-8621-b3c8f4f7c036</ingredient_id>
+        <quantity>2</quantity>
+        <unit>gousses</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>100</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>2867e91e-5ae0-4dbd-a023-be29d50462ae</ingredient_id>
+        <quantity>1</quantity>
+        <unit>branche</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Rincer les câpres</step>
+      <step number="2">Mixer les olives avec les câpres</step>
+      <step number="3">Ajouter les anchois et l'ail</step>
+      <step number="4">Mixer en ajoutant l'huile en filet</step>
+      <step number="5">Ajouter le thym effeuillé</step>
+      <step number="6">Rectifier la consistance avec l'huile</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>17</id>
+    <name>Crostini aux tomates séchées</name>
+    <description>Petites tartines italiennes garnies de tomates séchées et mozzarella</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>8</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-01-31T17:00:00</created_at>
+    <updated_at>2024-01-31T17:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>cabdb6f9-9271-403e-9b12-510f7180bb5e</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>344678a2-353e-4f74-86e0-b8285fa85c3b</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5b87564d-6d14-4832-88c9-1c8c2fdd3427</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>c8634be7-762d-4afb-a02a-723912331566</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b5b7aedb-ff53-4ff3-8f3d-68924a617424</ingredient_id>
+        <quantity>50</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>fb87f8fa-4ba9-4272-aeb3-94e2a8b75b29</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Couper la baguette en tranches</step>
+      <step number="2">Badigeonner d'huile d'olive</step>
+      <step number="3">Griller les tranches au four</step>
+      <step number="4">Hacher les tomates séchées</step>
+      <step number="5">Garnir de tomates et mozzarella</step>
+      <step number="6">Parsemer de pignons et basilic</step>
+      <step number="7">Passer au four 3 minutes</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>18</id>
+    <name>Velouté de potiron aux châtaignes</name>
+    <description>Soupe automnale crémeuse au potiron avec châtaignes grillées</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>35</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-02-01T12:30:00</created_at>
+    <updated_at>2024-02-01T12:30:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>1c98ecaa-253f-4039-bfcc-dd632fdd771c</ingredient_id>
+        <quantity>1</quantity>
+        <unit>kg</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9b6a95fe-d65e-4436-a146-f7cf5d9b85b6</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b489477b-fca8-466f-945d-faf2a0904a0f</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>18fcf202-2f97-4c64-8a77-8c54fbead1bb</ingredient_id>
+        <quantity>1</quantity>
+        <unit>litre</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>6b8293cf-de44-4bc2-984f-44caf7519dbe</ingredient_id>
+        <quantity>150</quantity>
+        <unit>ml</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>34165a8a-a171-4e28-8916-aba10441843a</ingredient_id>
+        <quantity>30</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Éplucher et couper le potiron en cubes</step>
+      <step number="2">Faire revenir l'oignon dans le beurre</step>
+      <step number="3">Ajouter le potiron et faire suer</step>
+      <step number="4">Verser le bouillon et cuire 25 minutes</step>
+      <step number="5">Mixer avec la moitié des châtaignes</step>
+      <step number="6">Ajouter la crème</step>
+      <step number="7">Servir avec les châtaignes restantes émiettées</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>19</id>
+    <name>Planche de charcuterie française</name>
+    <description>Assortiment de charcuteries françaises avec cornichons et pain</description>
+    <preparation_time>15</preparation_time>
+    <cooking_time>0</cooking_time>
+    <servings>6</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-02-02T18:00:00</created_at>
+    <updated_at>2024-02-02T18:00:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>bd1c83bf-3f45-40e9-8f7d-eeea589b91f0</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>5b7ea67c-1d09-41b8-bce6-2761ae19a622</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>611df360-8cab-4741-a06b-1078f470d0cb</ingredient_id>
+        <quantity>200</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>bb89ea93-9bcc-4842-aa07-8d5311c80b74</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>4ff9be9a-017f-419c-8be2-2f39d7704aaa</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>941124ac-c83f-444b-8766-ec4703b46759</ingredient_id>
+        <quantity>1</quantity>
+        <unit>pièce</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9aed6f9a-3c6b-41b4-a421-e002c52d176f</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Trancher le saucisson finement</step>
+      <step number="2">Disposer le jambon en rosaces</step>
+      <step number="3">Couper le pâté en tranches</step>
+      <step number="4">Présenter les rillettes dans un ramequin</step>
+      <step number="5">Ajouter les cornichons</step>
+      <step number="6">Trancher le pain</step>
+      <step number="7">Servir avec le beurre</step>
+    </instructions>
+  </recipe>
+
+  
+  <recipe>
+    <id>20</id>
+    <name>Beignets de courgettes</name>
+    <description>Beignets légers de courgettes râpées avec menthe fraîche</description>
+    <preparation_time>20</preparation_time>
+    <cooking_time>15</cooking_time>
+    <servings>4</servings>
+    <category_id>1</category_id>
+    <difficulty_level>facile</difficulty_level>
+    <created_at>2024-02-03T11:45:00</created_at>
+    <updated_at>2024-02-03T11:45:00</updated_at>
+    <ingredients>
+      <ingredient>
+        <ingredient_id>44dab5ef-121a-4e4e-8cf2-504adf2b2975</ingredient_id>
+        <quantity>3</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>b09001cc-6725-47e0-bc09-2976dcd3354b</ingredient_id>
+        <quantity>150</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>691892b1-8c7a-4fcf-86b7-1cc25880a162</ingredient_id>
+        <quantity>2</quantity>
+        <unit>pièces</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>9575ad60-4dd0-48a0-9cf8-b94595d39d63</ingredient_id>
+        <quantity>1</quantity>
+        <unit>bouquet</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>7012ed1d-bc23-46fc-8144-2c743b730766</ingredient_id>
+        <quantity>100</quantity>
+        <unit>grammes</unit>
+      </ingredient>
+      <ingredient>
+        <ingredient_id>157666ba-d6af-4a42-9f8d-39fd65d1f353</ingredient_id>
+        <quantity>500</quantity>
+        <unit>ml</unit>
+      </ingredient>
+    </ingredients>
+    <instructions>
+      <step number="1">Râper les courgettes</step>
+      <step number="2">Saler et laisser dégorger 15 minutes</step>
+      <step number="3">Presser pour enlever l'eau</step>
+      <step number="4">Mélanger avec farine, œufs et menthe</step>
+      <step number="5">Ajouter la feta émiettée</step>
+      <step number="6">Former des boulettes et frire</step>
+      <step number="7">Égoutter sur papier absorbant</step>
+    </instructions>
+  </recipe>
+</recipes>

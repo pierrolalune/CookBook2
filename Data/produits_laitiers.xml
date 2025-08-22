@@ -184,4 +184,39 @@
             <unit>brique</unit>
         </units>
     </ingredient>
+    <ingredient name="beurre demi sel">
+        <units>
+            <unit>g</unit>
+            <unit>ml</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="chevre frais">
+        <units>
+            <unit>g</unit>
+            <unit>ml</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="fromage frais">
+        <units>
+            <unit>g</unit>
+            <unit>ml</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="gruyere rape">
+        <units>
+            <unit>g</unit>
+            <unit>ml</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="reblochon">
+        <units>
+            <unit>g</unit>
+            <unit>ml</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
 </category>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category category="Épicerie">
-    <!-- Grains & Cereals -->
     <ingredient name="Riz">
         <subcategory>Céréales et grains</subcategory>
         <units>
@@ -99,8 +98,6 @@
             <unit>paquet</unit>
         </units>
     </ingredient>
-    
-    <!-- Legumes & Beans -->
     <ingredient name="Lentilles">
         <subcategory>Légumineuses</subcategory>
         <units>
@@ -163,8 +160,6 @@
             <unit>paquet</unit>
         </units>
     </ingredient>
-    
-    <!-- Baking & Cooking -->
     <ingredient name="Farine">
         <subcategory>Produits de boulangerie</subcategory>
         <units>
@@ -240,8 +235,6 @@
             <unit>ml</unit>
         </units>
     </ingredient>
-    
-    <!-- Oils & Vinegars -->
     <ingredient name="Huile d'olive">
         <subcategory>Huiles</subcategory>
         <units>
@@ -288,8 +281,6 @@
             <unit>bouteille</unit>
         </units>
     </ingredient>
-    
-    <!-- Condiments -->
     <ingredient name="Sel">
         <subcategory>Condiments</subcategory>
         <units>
@@ -340,8 +331,6 @@
             <unit>ml</unit>
         </units>
     </ingredient>
-    
-    <!-- Herbs & Spices -->
     <ingredient name="Basilic">
         <subcategory>Herbes aromatiques</subcategory>
         <units>
@@ -450,8 +439,6 @@
             <unit>pot</unit>
         </units>
     </ingredient>
-    
-    <!-- Canned & Preserved -->
     <ingredient name="Tomates en conserve">
         <subcategory>Conserves</subcategory>
         <units>
@@ -510,8 +497,6 @@
             <unit>g</unit>
         </units>
     </ingredient>
-    
-    <!-- Bread & Bakery -->
     <ingredient name="Pain">
         <subcategory>Boulangerie</subcategory>
         <units>
@@ -548,8 +533,6 @@
             <unit>paquet</unit>
         </units>
     </ingredient>
-    
-    <!-- Confiture & Spreads -->
     <ingredient name="Confiture">
         <subcategory>Tartinables sucrés</subcategory>
         <units>
@@ -583,6 +566,350 @@
         <units>
             <unit>pot</unit>
             <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="aneth">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="baguette">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="basilic frais">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="bouillon legumes">
+        <subcategory>Bouillons et fonds</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>cube</unit>
+        </units>
+    </ingredient>
+    <ingredient name="bouillon volaille">
+        <subcategory>Bouillons et fonds</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>cube</unit>
+        </units>
+    </ingredient>
+    <ingredient name="bouquet garni">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="cepes">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="cognac">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="coriandre fraiche">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="fleur sel">
+        <subcategory>Épices et condiments</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pincée</unit>
+        </units>
+    </ingredient>
+    <ingredient name="foie gras">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="gelatine">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="gros sel">
+        <subcategory>Épices et condiments</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pincée</unit>
+        </units>
+    </ingredient>
+    <ingredient name="herbes provence">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="huile">
+        <subcategory>Huiles et matières grasses</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+        </units>
+    </ingredient>
+    <ingredient name="huile friture">
+        <subcategory>Huiles et matières grasses</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+        </units>
+    </ingredient>
+    <ingredient name="jaune oeuf">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="menthe fraiche">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="olives noires">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="olives noires denoyautees">
+        <subcategory>Conserves</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="os moelle">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pain baguette">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pain campagne">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pain rassis">
+        <subcategory>Boulangerie</subcategory>
+        <units>
+            <unit>pièce</unit>
+            <unit>tranche</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pastis">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pate brisee">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pate campagne">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pate feuilletee">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pates lasagne">
+        <subcategory>Pâtes alimentaires</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+            <unit>paquet</unit>
+        </units>
+    </ingredient>
+    <ingredient name="persil plat">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pignons pin">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="poivre blanc">
+        <subcategory>Épices et condiments</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pincée</unit>
+        </units>
+    </ingredient>
+    <ingredient name="pommes terre nouvelles">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="porto">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="riesling">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="riz arborio">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="riz bomba">
+        <subcategory>Céréales et grains</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>kg</unit>
+        </units>
+    </ingredient>
+    <ingredient name="safran">
+        <subcategory>Épices et condiments</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pincée</unit>
+        </units>
+    </ingredient>
+    <ingredient name="saucisson sec">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="saumon frais">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="saumon fume">
+        <subcategory>Divers</subcategory>
+        <units>
+            <unit>g</unit>
+            <unit>pièce</unit>
+        </units>
+    </ingredient>
+    <ingredient name="thym frais">
+        <subcategory>Herbes et aromates</subcategory>
+        <units>
+            <unit>bouquet</unit>
+            <unit>branche</unit>
+            <unit>g</unit>
+        </units>
+    </ingredient>
+    <ingredient name="vin blanc">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="vin blanc sec">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="vin rouge">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
+        </units>
+    </ingredient>
+    <ingredient name="vinaigre xeres">
+        <subcategory>Boissons alcoolisées</subcategory>
+        <units>
+            <unit>ml</unit>
+            <unit>l</unit>
+            <unit>bouteille</unit>
         </units>
     </ingredient>
 </category>

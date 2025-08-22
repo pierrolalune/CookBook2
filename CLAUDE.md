@@ -245,6 +245,90 @@ CREATE TABLE recipe_photos (
 
 ## 📱 Features & Implementation
 
+### 📤 **Recipe Sharing System** (NEW)
+
+#### **Overview**
+The recipe sharing system provides native device integration for sharing recipes via WhatsApp, SMS, Email, and other apps. Built with Expo-compatible libraries for seamless integration.
+
+#### **Key Features**
+- **Native Integration**: Uses device's native sharing capabilities
+- **Multiple Formats**: Text and PDF export formats
+- **Bulk Sharing**: Share multiple recipes as concatenated collections
+- **Smart File Naming**: Uses recipe names instead of UUIDs
+- **Professional PDFs**: Styled layouts with proper formatting
+- **Expo Compatible**: Works with managed Expo workflow
+
+#### **Architecture**
+
+**ShareModal Component:**
+```typescript
+interface ShareModalProps {
+  visible: boolean;
+  onClose: () => void;
+  recipe?: Recipe;
+  recipes?: Recipe[];
+  mode?: 'single' | 'multiple';
+}
+```
+
+**RecipeExporter Class:**
+- `shareRecipe(recipe, format)` - Share single recipe
+- `shareMultipleRecipes(recipes, format)` - Share recipe collection
+- `exportToPDF(recipe)` - Generate PDF with expo-print
+- `exportToText(recipe)` - Generate formatted text
+
+**File Naming Strategy:**
+- Single: `Tarte_aux_pommes.pdf`
+- Two recipes: `Coq_au_Vin_et_Ratatouille.pdf`
+- Multiple: `Collection_5_recettes.pdf`
+
+#### **Implementation Details**
+
+**PDF Generation:**
+```typescript
+// Uses expo-print for Expo compatibility
+const { uri } = await Print.printToFileAsync({
+  html: htmlContent,
+  width: 595, // A4 width
+  height: 842, // A4 height
+});
+
+// Copy to desired location with proper name
+await FileSystem.copyAsync({
+  from: uri,
+  to: finalPath
+});
+```
+
+**Native Sharing:**
+```typescript
+// Uses expo-sharing for device integration
+await Sharing.shareAsync(filePath, {
+  mimeType: 'application/pdf',
+  dialogTitle: `Partager la recette: ${recipe.name}`,
+  UTI: 'com.adobe.pdf'
+});
+```
+
+**Multiple Recipe Concatenation:**
+- Creates unified PDF with collection header
+- Each recipe on separate page section
+- Professional styling throughout
+- Proper page breaks between recipes
+
+#### **User Experience**
+
+**ShareModal Features:**
+- **Centered Design**: Modal appears in center of screen
+- **Fade Animation**: Smooth appearance transition
+- **Loading States**: Shows progress during export/share
+- **Error Handling**: User-friendly error messages
+- **Touch Feedback**: Visual response to user interactions
+
+**Sharing Options:**
+1. **📱 Partager en texte** - Share via messaging apps
+2. **📄 Partager en PDF** - Share professional PDF
+
 ### Core Features Implemented
 
 #### 🥕 **Ingredient Management**
@@ -345,20 +429,25 @@ CREATE TABLE recipe_photos (
 - expo-image-picker integration
 - expo-file-system for storage
 
-#### 📤 **Export & Sharing**
-- **Multiple Export Formats**: PDF, Text, JSON
-- **Professional PDF Layout**: Formatted recipe cards
-- **Shopping List Generation**: Consolidated ingredient lists
-- **Bulk Recipe Export**: Export multiple recipes at once
-- **Native Sharing**: Share via device sharing options
-- **Print Support**: Direct printing capability
+#### 📤 **Recipe Sharing & Export**
+- **Native Sharing Integration**: Share via WhatsApp, SMS, Email, and other device apps
+- **Multiple Export Formats**: Professional PDF and Text formats
+- **Single Recipe Sharing**: Share individual recipes with proper file naming
+- **Bulk Recipe Sharing**: Concatenated collections of multiple recipes
+- **Professional PDF Generation**: Formatted recipe cards with styling
+- **Expo-Compatible**: Uses expo-print and expo-sharing for full compatibility
+
+**Dependencies:**
+- `expo-print` v14.1.4 - PDF generation
+- `expo-sharing` v13.1.5 - Native device sharing
+- `expo-file-system` - File management and storage
 
 **Implementation:**
-- `RecipeExporter` utility class
-- `useRecipeSharing` hook
-- `ShareModal` component
-- react-native-print for PDF
-- react-native-share for sharing
+- `RecipeExporter` utility class with expo-print integration
+- `useRecipeSharing` hook for state management
+- `ShareModal` component with centered design
+- Professional HTML templates for PDF styling
+- Smart file naming with recipe-based names
 
 #### 🛒 **Advanced Recipe Features**
 - **Ingredient Selector Modal**: Smart ingredient selection
@@ -450,11 +539,11 @@ CREATE TABLE recipe_photos (
    - Recent ingredients section
 
 6. **`ShareModal.tsx`**
-   - Export format selection
-   - PDF generation options
-   - Shopping list mode
-   - Bulk recipe selection
-   - Share button integration
+   - Centered modal design with fade animation
+   - Text and PDF sharing options
+   - Single and multiple recipe modes
+   - Native share integration
+   - Clean, simplified UI
 
 ### State Management Pattern
 
@@ -581,15 +670,16 @@ CREATE TABLE recipe_photos (
 8. **`useRecipeSharing`** - Export and sharing
    ```typescript
    const { 
-     sharing,
+     loading,
      error,
+     lastExportPath,
      actions: {
-       exportToPDF,
-       exportToText,
-       exportToJSON,
-       generateShoppingList,
        shareRecipe,
-       bulkShare
+       shareMultipleRecipes,
+       exportRecipe,
+       exportMultipleRecipes,
+       cleanupOldExports,
+       initializeExportSystem
      }
    } = useRecipeSharing();
    ```
@@ -890,11 +980,15 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
   - [x] Multiple photos per recipe
   - [x] Camera and gallery integration
   - [x] Photo carousel display
-- [x] **Export & Sharing** (NEW)
-  - [x] PDF, Text, JSON export formats
-  - [x] Shopping list generation
-  - [x] Bulk recipe operations
-  - [x] Native sharing integration
+- [x] **Recipe Sharing & Export System** (NEW - December 2024)
+  - [x] Native device sharing (WhatsApp, SMS, Email, etc.)
+  - [x] Professional PDF generation with expo-print
+  - [x] Text format sharing for messaging apps
+  - [x] Single and multiple recipe sharing
+  - [x] Concatenated PDF collections for bulk sharing
+  - [x] Smart file naming with recipe names
+  - [x] Expo-compatible implementation
+  - [x] Centered ShareModal with clean UI
 
 #### **UI/UX Implementation** ✅
 - [x] Main ingredients screen with collapsible sections
@@ -914,8 +1008,8 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
 - [x] **Advanced Components** (NEW)
   - [x] Ingredient selector modal
   - [x] Photo management interface
-  - [x] Export/sharing modal
-  - [x] Professional PDF layouts
+  - [x] ShareModal with native integration (December 2024)
+  - [x] Professional PDF layouts with HTML styling
 
 #### **Security & Quality** ✅
 - [x] Input validation and sanitization (`ValidationUtils`)

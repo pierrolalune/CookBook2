@@ -233,6 +233,124 @@ export class RecipeRepository {
     }
   }
 
+  async bulkCreate(inputs: CreateRecipeInput[]): Promise<Recipe[]> {
+    try {
+      // Validate all inputs first
+      for (let i = 0; i < inputs.length; i++) {
+        const validation = ValidationUtils.validateCreateRecipeInput(inputs[i]);
+        if (!validation.isValid) {
+          throw new Error(`Validation failed for recipe ${i + 1}: ${validation.errors.join(', ')}`);
+        }
+      }
+
+      const createdRecipeIds: string[] = [];
+      
+      await this.db.withTransactionAsync(async () => {
+        for (const input of inputs) {
+          const recipeId = uuid.v4();
+          const now = new Date().toISOString();
+          
+          // Create recipe
+          await this.db.runAsync(
+            `INSERT INTO recipes (
+              id, name, description, prep_time, cook_time, servings, 
+              difficulty, category, photo_uri, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              recipeId,
+              input.name.trim(),
+              input.description?.trim() || null,
+              input.prepTime || null,
+              input.cookTime || null,
+              input.servings || null,
+              input.difficulty || null,
+              input.category,
+              input.photoUri?.trim() || null,
+              now,
+              now
+            ]
+          );
+
+          // Create recipe ingredients
+          for (let i = 0; i < input.ingredients.length; i++) {
+            const ingredient = input.ingredients[i];
+            const ingredientId = uuid.v4();
+            
+            // Verify ingredient exists before inserting
+            const ingredientExists = await this.db.getFirstAsync(
+              'SELECT id FROM ingredients WHERE id = ?',
+              [ingredient.ingredientId]
+            );
+            
+            if (ingredientExists) {
+              await this.db.runAsync(
+                `INSERT INTO recipe_ingredients (
+                  id, recipe_id, ingredient_id, quantity, unit, optional, order_index, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                  ingredientId,
+                  recipeId,
+                  ingredient.ingredientId,
+                  ingredient.quantity,
+                  ingredient.unit.trim(),
+                  ingredient.optional ? 1 : 0,
+                  ingredient.orderIndex ?? i,
+                  now
+                ]
+              );
+            } else {
+              console.warn(`⚠️ [Repository] Ingredient ${ingredient.ingredientId} not found for recipe ${input.name}`);
+            }
+          }
+
+          // Create recipe instructions
+          for (const instruction of input.instructions) {
+            const instructionId = uuid.v4();
+            
+            await this.db.runAsync(
+              `INSERT INTO recipe_instructions (
+                id, recipe_id, step_number, instruction, duration, estimated_time, temperature, notes, created_at
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              [
+                instructionId,
+                recipeId,
+                instruction.stepNumber,
+                instruction.instruction.trim(),
+                instruction.duration || null,
+                instruction.estimatedTime || null,
+                instruction.temperature || null,
+                instruction.notes || null,
+                now
+              ]
+            );
+          }
+          
+          createdRecipeIds.push(recipeId);
+        }
+      });
+
+      // Load and return all created recipes
+      const createdRecipes = await Promise.all(
+        createdRecipeIds.map(id => this.findById(id))
+      );
+      
+      // Filter out any nulls (shouldn't happen but safety first)
+      const validRecipes = createdRecipes.filter((recipe): recipe is Recipe => recipe !== null);
+      
+      if (validRecipes.length !== inputs.length) {
+        throw new Error('Failed to create some recipes');
+      }
+      
+      return validRecipes;
+    } catch (error) {
+      SecureErrorHandler.handleDatabaseError(
+        error as Error,
+        'bulkCreate',
+        'recipes'
+      );
+    }
+  }
+
   async update(input: UpdateRecipeInput): Promise<Recipe> {
     try {
       // Validate ID

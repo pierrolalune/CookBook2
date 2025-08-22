@@ -1,5 +1,6 @@
 import { SQLiteDatabase, openDatabaseSync } from 'expo-sqlite';
-import { xmlDataLoader } from '../utils/xmlParser';
+import { xmlDataLoader, recipeXMLParser } from '../utils/xmlParser';
+import uuid from 'react-native-uuid';
 
 export const DATABASE_NAME = 'cookbook.db';
 
@@ -205,6 +206,23 @@ const seedDatabaseIfEmpty = async (db: SQLiteDatabase): Promise<void> => {
   console.log('🌱 [DB] Checking if seeding needed...');
   
   try {
+    // First seed ingredients
+    await seedIngredientsIfEmpty(db);
+    
+    // Then seed recipes (depends on ingredients)
+    await seedRecipesIfEmpty(db);
+    
+  } catch (error) {
+    console.error('❌ [DB] Seeding failed:', error);
+    // Don't throw - let initialization continue
+  }
+};
+
+// Seed ingredients from XML
+const seedIngredientsIfEmpty = async (db: SQLiteDatabase): Promise<void> => {
+  console.log('🥕 [DB] Checking if ingredient seeding needed...');
+  
+  try {
     // Check if we have ingredients
     const result = await db.getFirstAsync('SELECT COUNT(*) as count FROM ingredients') as { count: number };
     
@@ -266,11 +284,144 @@ const seedDatabaseIfEmpty = async (db: SQLiteDatabase): Promise<void> => {
       }
     }
     
-    console.log(`✅ [DB] Seeding complete: ${successCount} successful, ${errorCount} errors`);
+    console.log(`✅ [DB] Ingredient seeding complete: ${successCount} successful, ${errorCount} errors`);
     
   } catch (error) {
-    console.error('❌ [DB] Seeding failed:', error);
-    // Don't throw - let initialization continue
+    console.error('❌ [DB] Ingredient seeding failed:', error);
+    throw error;
+  }
+};
+
+// Seed recipes from XML
+const seedRecipesIfEmpty = async (db: SQLiteDatabase): Promise<void> => {
+  console.log('🍽️ [DB] Checking if recipe seeding needed...');
+  
+  try {
+    // Check if we have recipes
+    const result = await db.getFirstAsync('SELECT COUNT(*) as count FROM recipes') as { count: number };
+    
+    if (result.count > 0) {
+      console.log(`✅ [DB] Database already has ${result.count} recipes, skipping seed`);
+      return;
+    }
+    
+    console.log('📦 [DB] Loading recipes from XML...');
+    const recipeInputs = await recipeXMLParser.loadRecipesFromAssets();
+    
+    if (recipeInputs.length === 0) {
+      console.log('⚠️ [DB] No recipes found to seed');
+      return;
+    }
+    
+    console.log(`📥 [DB] Inserting ${recipeInputs.length} recipes with ingredients and instructions...`);
+    
+    let successCount = 0;
+    let errorCount = 0;
+    
+    for (let i = 0; i < recipeInputs.length; i++) {
+      const recipeInput = recipeInputs[i];
+      
+      try {
+        // Start transaction for each recipe
+        await db.execAsync('BEGIN TRANSACTION;');
+        
+        // Generate proper UUID for recipe
+        const recipeId = uuid.v4() as string;
+        const now = new Date().toISOString();
+        
+        // Insert recipe
+        await db.runAsync(`
+          INSERT INTO recipes (
+            id, name, description, prep_time, cook_time, servings,
+            difficulty, category, photo_uri, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+          recipeId,
+          recipeInput.name,
+          recipeInput.description || null,
+          recipeInput.prepTime || null,
+          recipeInput.cookTime || null,
+          recipeInput.servings || null,
+          recipeInput.difficulty || null,
+          recipeInput.category,
+          recipeInput.photoUri || null,
+          now,
+          now
+        ]);
+        
+        // Insert recipe ingredients
+        for (const ingredient of recipeInput.ingredients) {
+          const ingredientId = uuid.v4() as string;
+          
+          // Verify ingredient exists before inserting
+          const ingredientExists = await db.getFirstAsync(
+            'SELECT id FROM ingredients WHERE id = ?', 
+            [ingredient.ingredientId]
+          );
+          
+          if (ingredientExists) {
+            await db.runAsync(`
+              INSERT INTO recipe_ingredients (
+                id, recipe_id, ingredient_id, quantity, unit, optional, order_index, created_at
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `, [
+              ingredientId,
+              recipeId,
+              ingredient.ingredientId,
+              ingredient.quantity,
+              ingredient.unit,
+              ingredient.optional ? 1 : 0,
+              ingredient.orderIndex || 0,
+              now
+            ]);
+          } else {
+            console.warn(`⚠️ [DB] Ingredient ${ingredient.ingredientId} not found for recipe ${recipeInput.name}`);
+          }
+        }
+        
+        // Insert recipe instructions
+        for (const instruction of recipeInput.instructions) {
+          const instructionId = uuid.v4() as string;
+          
+          await db.runAsync(`
+            INSERT INTO recipe_instructions (
+              id, recipe_id, step_number, instruction, duration, estimated_time, temperature, notes, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `, [
+            instructionId,
+            recipeId,
+            instruction.stepNumber,
+            instruction.instruction,
+            instruction.duration || null,
+            instruction.estimatedTime || null,
+            instruction.temperature || null,
+            instruction.notes || null,
+            now
+          ]);
+        }
+        
+        // Commit transaction
+        await db.execAsync('COMMIT;');
+        successCount++;
+        
+        // Log progress every 5 recipes
+        if ((i + 1) % 5 === 0) {
+          console.log(`📥 [DB] Recipe progress: ${i + 1}/${recipeInputs.length} (${successCount} successful)`);
+        }
+        
+      } catch (error) {
+        // Rollback transaction on error
+        await db.execAsync('ROLLBACK;');
+        errorCount++;
+        console.warn(`⚠️ [DB] Failed to insert recipe ${recipeInput.name}:`, error);
+      }
+    }
+    
+    console.log(`✅ [DB] Recipe seeding complete: ${successCount} successful, ${errorCount} errors`);
+    
+  } catch (error) {
+    console.error('❌ [DB] Recipe seeding failed:', error);
+    throw error;
   }
 };
 

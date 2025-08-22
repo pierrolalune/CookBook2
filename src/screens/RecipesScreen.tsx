@@ -24,6 +24,7 @@ import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { RecipeCard } from '../components/recipe/RecipeCard';
 import { ShareModal } from '../components/recipe/ShareModal';
 import { AdvancedSearchModal } from '../components/recipe/AdvancedSearchModal';
+import { MakeableRecipesModal } from '../components/recipe/MakeableRecipesModal';
 import { RecipeMatchAnalyzer } from '../components/recipe/RecipeMatchAnalyzer';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { AdvancedSearchFilters, RecipeMatchResult } from '../utils/recipeSearchUtils';
@@ -47,14 +48,13 @@ export const RecipesScreen: React.FC = () => {
   
   // Advanced search state
   const [advancedSearchVisible, setAdvancedSearchVisible] = useState(false);
+  const [makeableModalVisible, setMakeableModalVisible] = useState(false);
   const [searchMode, setSearchMode] = useState<'basic' | 'advanced' | 'makeable'>('basic');
   
-  // Log searchMode changes
+  // Set search mode
   const loggedSetSearchMode = useCallback((mode: 'basic' | 'advanced' | 'makeable') => {
-    console.log('searchMode changing to', mode);
-    console.trace('searchMode change stack trace');
     setSearchMode(mode);
-  }, []); // No dependencies to avoid recreation
+  }, []);
   const [showMatchAnalysis, setShowMatchAnalysis] = useState(false);
 
   const { recipes, loading, error, actions } = useRecipes();
@@ -115,16 +115,8 @@ export const RecipesScreen: React.FC = () => {
 
   // Enhanced filtering logic with advanced search support
   const filteredRecipes = useMemo(() => {
-    console.log('filteredRecipes useMemo triggered:', {
-      searchMode,
-      hasSearched: advancedSearch.state.hasSearched,
-      resultsCount: advancedSearch.state.results.length,
-      loading: advancedSearch.state.loading
-    });
-    
     // Advanced search mode - use search results directly
     if (searchMode === 'advanced' && advancedSearch.state.hasSearched) {
-      console.log('Using advanced search results:', advancedSearch.state.results.length, 'recipes');
       return advancedSearch.state.results.map(result => result.recipe);
     }
     
@@ -219,10 +211,17 @@ export const RecipesScreen: React.FC = () => {
   }, [advancedSearch.actions, loggedSetSearchMode]);
   
   const handleWhatCanIMake = useCallback(() => {
+    // Open ingredient selection modal instead of automatic mode
+    setMakeableModalVisible(true);
+  }, []);
+
+  // Handle ingredient selection from makeable modal
+  const handleMakeableSearch = useCallback((selectedIngredientIds: string[], matchThreshold: number) => {
     loggedSetSearchMode('makeable');
     setShowMatchAnalysis(true);
-    // whatCanIMake hook automatically updates when ingredients change
-  }, [loggedSetSearchMode]);
+    // Use the enhanced hook with manual selection
+    whatCanIMake.findRecipesWithSelection(selectedIngredientIds, matchThreshold);
+  }, [loggedSetSearchMode, whatCanIMake]);
   
   const handleResetSearch = useCallback(() => {
     loggedSetSearchMode('basic');
@@ -564,7 +563,7 @@ export const RecipesScreen: React.FC = () => {
                 disabled={availableIngredients.length === 0}
               >
                 <Ionicons 
-                  name="checkmark-circle" 
+                  name={whatCanIMake.isManualMode ? "restaurant" : "checkmark-circle"} 
                   size={16} 
                   color={searchMode === 'makeable' ? colors.textWhite : colors.success} 
                 />
@@ -572,7 +571,16 @@ export const RecipesScreen: React.FC = () => {
                   styles.advancedButtonText,
                   searchMode === 'makeable' && styles.advancedButtonTextActive,
                   availableIngredients.length === 0 && styles.disabledText
-                ]}>Réalisable</Text>
+                ]}>
+                  {whatCanIMake.isManualMode ? 'Mes ingrédients' : 'Réalisable'}
+                </Text>
+                {whatCanIMake.isManualMode && whatCanIMake.selectedIngredientIds.length > 0 && (
+                  <View style={styles.selectionCountBadge}>
+                    <Text style={styles.selectionCountText}>
+                      {whatCanIMake.selectedIngredientIds.length}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
               
               {searchMode !== 'basic' && (
@@ -681,6 +689,14 @@ export const RecipesScreen: React.FC = () => {
           availableIngredients={availableIngredients}
           initialFilters={advancedSearch.state.filters}
         />
+        
+        <MakeableRecipesModal
+          visible={makeableModalVisible}
+          onClose={() => setMakeableModalVisible(false)}
+          onSearch={handleMakeableSearch}
+          availableIngredients={availableIngredients}
+          initialSelectedIds={whatCanIMake.selectedIngredientIds}
+        />
         </View>
       </View>
     </ScreenErrorBoundary>
@@ -788,6 +804,25 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginLeft: spacing.xs,
     fontWeight: typography.weights.medium,
+  },
+  
+  selectionCountBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  
+  selectionCountText: {
+    fontSize: typography.sizes.xs,
+    color: colors.textWhite,
+    fontWeight: typography.weights.bold,
   },
   
   searchStatus: {

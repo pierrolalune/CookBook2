@@ -36,6 +36,8 @@ export interface AdvancedSearchFilters {
   seasonalOnly?: boolean;
   favoritesOnly?: boolean;
   matchThreshold?: number; // 0-100, default 70
+  allowSubstitutions?: boolean; // Whether to consider ingredient substitutions
+  prioritizeSeasonalIngredients?: boolean; // Boost recipes with seasonal ingredients
 }
 
 export interface SearchSuggestion {
@@ -88,11 +90,20 @@ export class RecipeSearchUtils {
         return scoreB - scoreA;
       });
 
-      // Apply match threshold filter
+      // Apply match threshold filter with smart logic
       const threshold = filters.matchThreshold || this.DEFAULT_MATCH_THRESHOLD;
-      const thresholdResults = sortedResults.filter(result => 
-        result.matchPercentage >= threshold || result.canMake
-      );
+      
+      const thresholdResults = sortedResults.filter(result => {
+        // Smart filtering logic:
+        // 1. If they can make it completely (all required ingredients), always include
+        // 2. If match percentage meets threshold, include
+        // 3. If they have at least 1 ingredient and threshold is low (<=50), include
+        const meetsThreshold = result.matchPercentage >= threshold;
+        const hasAnyIngredients = result.availableIngredients.length > 0;
+        const lowThreshold = threshold <= 50;
+        
+        return result.canMake || meetsThreshold || (hasAnyIngredients && lowThreshold);
+      });
 
       // Cache results
       this.searchCache.set(cacheKey, {
@@ -155,7 +166,7 @@ export class RecipeSearchUtils {
           quantity: recipeIngredient.quantity,
           unit: recipeIngredient.unit,
           optional: false,
-          substitutions
+          substitutions: substitutions.map(sub => sub.ingredient)
         });
       }
     }
@@ -165,25 +176,35 @@ export class RecipeSearchUtils {
       if (availableIngredientIds.has(recipeIngredient.ingredientId)) {
         availableMatches.push(recipeIngredient.ingredientId);
       } else {
+        const optionalSubstitutions = this.findSubstitutions(recipeIngredient.ingredient, availableIngredients);
         missingOptional.push({
           ingredientId: recipeIngredient.ingredientId,
           ingredient: recipeIngredient.ingredient,
           quantity: recipeIngredient.quantity,
           unit: recipeIngredient.unit,
           optional: true,
-          substitutions: this.findSubstitutions(recipeIngredient.ingredient, availableIngredients)
+          substitutions: optionalSubstitutions.map(sub => sub.ingredient)
         });
       }
     }
 
-    // Calculate match percentage (only required ingredients count for "can make")
-    const totalRequired = requiredIngredients.length;
+    // Calculate match percentage - More flexible approach
+    // Consider both required and optional ingredients for percentage calculation
+    const totalIngredients = recipe.ingredients.length;
     const availableRequired = requiredIngredients.filter(ri => 
       availableIngredientIds.has(ri.ingredientId)
     ).length;
-
-    const matchPercentage = totalRequired > 0 ? (availableRequired / totalRequired) * 100 : 100;
-    const canMake = missingRequired.length === 0; // Can make if no required ingredients are missing
+    const availableOptional = optionalIngredients.filter(ri => 
+      availableIngredientIds.has(ri.ingredientId)
+    ).length;
+    
+    // Calculate percentage based on ALL ingredients (required + optional)
+    // This gives a more realistic match percentage
+    const totalAvailable = availableRequired + availableOptional;
+    const matchPercentage = totalIngredients > 0 ? (totalAvailable / totalIngredients) * 100 : 100;
+    
+    // Can make if no required ingredients are missing
+    const canMake = missingRequired.length === 0;
 
     // Calculate seasonal bonus
     const seasonalBonus = this.calculateSeasonalBonus(recipe, availableIngredients);
@@ -199,16 +220,122 @@ export class RecipeSearchUtils {
     };
   }
 
-  // Find ingredient substitutions
+  // Enhanced ingredient substitution system
   static findSubstitutions(
     targetIngredient: Ingredient,
-    availableIngredients: Ingredient[]
-  ): Ingredient[] {
-    return availableIngredients.filter(ingredient => 
-      ingredient.category === targetIngredient.category &&
-      ingredient.subcategory === targetIngredient.subcategory &&
-      ingredient.id !== targetIngredient.id
-    ).slice(0, 3); // Limit to 3 substitutions
+    availableIngredients: Ingredient[],
+    options: {
+      exactCategoryMatch?: boolean;
+      includeSeasonalAlternatives?: boolean;
+      maxSuggestions?: number;
+    } = {}
+  ): Array<{
+    ingredient: Ingredient;
+    substitutionType: 'exact' | 'category' | 'seasonal' | 'similar';
+    confidenceScore: number;
+    reason: string;
+  }> {
+    const {
+      exactCategoryMatch = false,
+      includeSeasonalAlternatives = true,
+      maxSuggestions = 5
+    } = options;
+
+    const substitutions: Array<{
+      ingredient: Ingredient;
+      substitutionType: 'exact' | 'category' | 'seasonal' | 'similar';
+      confidenceScore: number;
+      reason: string;
+    }> = [];
+
+    for (const ingredient of availableIngredients) {
+      if (ingredient.id === targetIngredient.id) continue;
+
+      let substitutionType: 'exact' | 'category' | 'seasonal' | 'similar';
+      let confidenceScore = 0;
+      let reason = '';
+
+      // Exact subcategory match (highest confidence)
+      if (ingredient.category === targetIngredient.category && 
+          ingredient.subcategory === targetIngredient.subcategory) {
+        substitutionType = 'exact';
+        confidenceScore = 0.95;
+        reason = `Même sous-catégorie: ${ingredient.subcategory}`;
+      }
+      // Category match
+      else if (ingredient.category === targetIngredient.category) {
+        if (exactCategoryMatch) continue; // Skip if exact match required
+        substitutionType = 'category';
+        confidenceScore = 0.75;
+        reason = `Même catégorie: ${ingredient.category}`;
+      }
+      // Seasonal alternative (same season)
+      else if (includeSeasonalAlternatives && 
+               this.isSameSeason(targetIngredient, ingredient)) {
+        substitutionType = 'seasonal';
+        confidenceScore = 0.6;
+        reason = 'Alternative saisonnière';
+      }
+      // Similar ingredients (based on name similarity or common usage)
+      else if (this.areSimilarIngredients(targetIngredient, ingredient)) {
+        substitutionType = 'similar';
+        confidenceScore = 0.4;
+        reason = 'Ingrédient similaire';
+      }
+      else {
+        continue; // No substitution found
+      }
+
+      substitutions.push({
+        ingredient,
+        substitutionType,
+        confidenceScore,
+        reason
+      });
+    }
+
+    // Sort by confidence score and limit results
+    return substitutions
+      .sort((a, b) => b.confidenceScore - a.confidenceScore)
+      .slice(0, maxSuggestions);
+  }
+
+  // Check if two ingredients are in the same season
+  private static isSameSeason(ing1: Ingredient, ing2: Ingredient): boolean {
+    if (!ing1.seasonal || !ing2.seasonal) return false;
+    
+    const currentMonth = new Date().getMonth() + 1;
+    const ing1InSeason = ing1.seasonal.months.includes(currentMonth);
+    const ing2InSeason = ing2.seasonal.months.includes(currentMonth);
+    
+    return ing1InSeason && ing2InSeason;
+  }
+
+  // Check if two ingredients are similar based on name or usage patterns
+  private static areSimilarIngredients(ing1: Ingredient, ing2: Ingredient): boolean {
+    const name1 = ing1.name.toLowerCase();
+    const name2 = ing2.name.toLowerCase();
+    
+    // Common ingredient groupings
+    const groupings = [
+      ['tomate', 'tomates'],
+      ['oignon', 'oignons', 'échalote', 'échalotes'],
+      ['pomme de terre', 'pommes de terre', 'patate'],
+      ['carotte', 'carottes'],
+      ['courgette', 'courgettes', 'aubergine', 'aubergines'],
+      ['poivron', 'poivrons'],
+      ['bœuf', 'veau', 'porc'],
+      ['poulet', 'dinde', 'volaille'],
+      ['saumon', 'truite', 'cabillaud'],
+      ['lait', 'crème', 'yaourt'],
+      ['beurre', 'margarine', 'huile'],
+      ['farine', 'fécule'],
+      ['sucre', 'miel', 'sirop'],
+    ];
+    
+    return groupings.some(group => 
+      group.includes(name1) && group.includes(name2)
+    );
   }
 
   // Apply basic filters to recipes

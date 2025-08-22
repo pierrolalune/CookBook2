@@ -66,22 +66,15 @@ export const useAdvancedRecipeSearch = ({
 
   // Helper function to update state
   const updateState = useCallback((updates: Partial<AdvancedSearchState>) => {
-    console.log('updateState called with:', updates);
-    setState(prev => {
-      const newState = { ...prev, ...updates };
-      console.log('State updated from:', { hasSearched: prev.hasSearched, results: prev.results.length }, 'to:', { hasSearched: newState.hasSearched, results: newState.results.length });
-      return newState;
-    });
+    setState(prev => ({ ...prev, ...updates }));
   }, []);
 
   // Perform advanced search
   const performSearch = useCallback(async (filters: AdvancedSearchFilters): Promise<void> => {
     try {
-      console.log('performSearch started with filters:', filters);
       // Increment search counter for stale result detection
       const searchId = ++currentSearchRef.current;
       
-      console.log('Setting loading state (hasSearched will be set after results)');
       updateState({ 
         loading: true, 
         error: null, 
@@ -108,7 +101,6 @@ export const useAdvancedRecipeSearch = ({
         return; // Ignore stale results
       }
 
-      console.log('Search completed, updating results:', results.length, 'recipes found');
       updateState({
         results,
         totalResults: results.length,
@@ -119,15 +111,6 @@ export const useAdvancedRecipeSearch = ({
 
       // Callback for parent component
       onSearchComplete?.(results);
-
-      // Log search analytics (non-blocking)
-      if (__DEV__) {
-        console.log('Advanced search performed:', {
-          action: 'advancedSearch',
-          resultsCount: results.length,
-          filtersUsed: Object.keys(filters).length
-        });
-      }
 
     } catch (error) {
       updateState({
@@ -289,7 +272,7 @@ export const useAdvancedRecipeSearch = ({
   };
 };
 
-// Specialized hook for "What Can I Make?" functionality
+// Enhanced "What Can I Make?" functionality with manual ingredient selection
 export const useWhatCanIMake = (
   recipes: Recipe[],
   availableIngredients: Ingredient[]
@@ -297,7 +280,11 @@ export const useWhatCanIMake = (
   const [makeableRecipes, setMakeableRecipes] = useState<RecipeMatchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[]>([]);
+  const [matchThreshold, setMatchThreshold] = useState(70);
+  const [isManualMode, setIsManualMode] = useState(false);
 
+  // Find recipes with all available ingredients (automatic mode)
   const findRecipes = useCallback(async () => {
     try {
       setLoading(true);
@@ -317,18 +304,123 @@ export const useWhatCanIMake = (
     }
   }, [recipes, availableIngredients]);
 
-  useEffect(() => {
-    if (recipes.length > 0 && availableIngredients.length > 0) {
-      findRecipes();
+  // Find recipes with manually selected ingredients
+  const findRecipesWithSelection = useCallback(async (
+    ingredientIds: string[],
+    threshold: number = 70
+  ) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setIsManualMode(true);
+      setSelectedIngredientIds(ingredientIds);
+      setMatchThreshold(threshold);
+
+      // Get selected ingredients
+      const selectedIngredients = availableIngredients.filter(ing => 
+        ingredientIds.includes(ing.id)
+      );
+
+      if (selectedIngredients.length === 0) {
+        setMakeableRecipes([]);
+        return;
+      }
+
+      // Use advanced search with configurable threshold
+      const results = RecipeSearchUtils.searchRecipes(
+        recipes,
+        selectedIngredients,
+        { matchThreshold: threshold }
+      );
+
+      // Filter for recipes that meet the threshold
+      const filteredResults = results.filter(result => 
+        result.matchPercentage >= threshold
+      );
+
+      setMakeableRecipes(filteredResults);
+    } catch (err) {
+      setError(SecureErrorHandler.getUserFriendlyMessage(err as Error));
+      SecureErrorHandler.logError(err as Error, { action: 'whatCanIMakeManual' });
+    } finally {
+      setLoading(false);
     }
+  }, [recipes, availableIngredients]);
+
+  // Reset to automatic mode
+  const resetToAutoMode = useCallback(async () => {
+    setIsManualMode(false);
+    setSelectedIngredientIds([]);
+    setMatchThreshold(70);
+    await findRecipes();
   }, [findRecipes]);
 
+  // Get ingredient suggestions based on current selection
+  const getIngredientSuggestions = useCallback((currentSelectionIds: string[]) => {
+    if (currentSelectionIds.length === 0) return [];
+
+    const selectedIngredients = availableIngredients.filter(ing => 
+      currentSelectionIds.includes(ing.id)
+    );
+
+    // Find recipes that use some of the selected ingredients
+    const relatedRecipes = recipes.filter(recipe => 
+      recipe.ingredients.some(ri => 
+        selectedIngredients.some(selected => selected.id === ri.ingredientId)
+      )
+    );
+
+    // Count frequency of ingredients in related recipes
+    const ingredientFreq = new Map<string, number>();
+    relatedRecipes.forEach(recipe => {
+      recipe.ingredients.forEach(ri => {
+        if (!currentSelectionIds.includes(ri.ingredientId)) {
+          const current = ingredientFreq.get(ri.ingredientId) || 0;
+          ingredientFreq.set(ri.ingredientId, current + 1);
+        }
+      });
+    });
+
+    // Get top suggestions
+    const suggestions = Array.from(ingredientFreq.entries())
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([ingredientId]) => 
+        availableIngredients.find(ing => ing.id === ingredientId)
+      )
+      .filter(Boolean) as Ingredient[];
+
+    return suggestions;
+  }, [availableIngredients, recipes]);
+
+  // Auto-run in automatic mode
+  useEffect(() => {
+    if (!isManualMode && recipes.length > 0 && availableIngredients.length > 0) {
+      findRecipes();
+    }
+  }, [findRecipes, isManualMode]);
+
   return {
+    // Results
     makeableRecipes,
     loading,
     error,
+    
+    // Mode management
+    isManualMode,
+    selectedIngredientIds,
+    matchThreshold,
+    
+    // Actions
     refresh: findRecipes,
-    totalMakeable: makeableRecipes.length
+    findRecipesWithSelection,
+    resetToAutoMode,
+    getIngredientSuggestions,
+    
+    // Stats
+    totalMakeable: makeableRecipes.length,
+    perfectMatches: makeableRecipes.filter(r => r.matchPercentage === 100).length,
+    partialMatches: makeableRecipes.filter(r => r.matchPercentage < 100).length,
   };
 };
 

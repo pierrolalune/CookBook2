@@ -17,17 +17,21 @@ interface RecipeCardProps {
   recipe: Recipe;
   onPress?: (recipe: Recipe) => void;
   onLongPress?: (recipe: Recipe) => void;
+  onEdit?: (recipe: Recipe) => void;
+  onDelete?: (recipe: Recipe) => void;
   showUsageStats?: boolean;
   compact?: boolean;
   selectionMode?: boolean;
   selected?: boolean;
-  onFavoriteChange?: () => void;
+  onFavoriteChange?: (recipeId: string, isFavorite: boolean) => void;
 }
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({
   recipe,
   onPress,
   onLongPress,
+  onEdit,
+  onDelete,
   showUsageStats = true,
   compact = false,
   selectionMode = false,
@@ -65,6 +69,28 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de modifier les favoris');
     }
+  };
+
+  const handleEditPress = () => {
+    onEdit?.(recipe);
+  };
+
+  const handleDeletePress = () => {
+    Alert.alert(
+      'Supprimer la recette',
+      `Êtes-vous sûr de vouloir supprimer "${recipe.name}" ? Cette action est irréversible.`,
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel'
+        },
+        {
+          text: 'Supprimer',
+          style: 'destructive',
+          onPress: () => onDelete?.(recipe)
+        }
+      ]
+    );
   };
 
   const getCategoryBadge = () => {
@@ -175,21 +201,46 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             {recipe.name}
           </Text>
           
-          {/* Favorite Heart */}
-          <TouchableOpacity
-            style={styles.favoriteButton}
-            onPress={handleFavoritePress}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Animated.Text
-              style={[
-                styles.favoriteIcon,
-                { transform: [{ scale: heartScale }] }
-              ]}
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            {/* Favorite Heart */}
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleFavoritePress}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              {recipe.isFavorite ? '❤️' : '🤍'}
-            </Animated.Text>
-          </TouchableOpacity>
+              <Animated.Text
+                style={[
+                  styles.actionIcon,
+                  { transform: [{ scale: heartScale }] }
+                ]}
+              >
+                {recipe.isFavorite ? '❤️' : '🤍'}
+              </Animated.Text>
+            </TouchableOpacity>
+
+            {/* Edit Button */}
+            {onEdit && (
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleEditPress}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.actionIcon}>✏️</Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Delete Button */}
+            {onDelete && (
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleDeletePress}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.actionIcon}>🗑️</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {recipe.description && !compact && (
@@ -335,11 +386,18 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
 
-  favoriteButton: {
-    padding: spacing.xs,
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
   },
 
-  favoriteIcon: {
+  actionButton: {
+    padding: spacing.xs,
+    borderRadius: spacing.borderRadius.sm,
+  },
+
+  actionIcon: {
     fontSize: 18,
   },
 

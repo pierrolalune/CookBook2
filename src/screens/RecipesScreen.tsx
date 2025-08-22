@@ -204,29 +204,20 @@ export const RecipesScreen: React.FC = () => {
   }, [actions]);
 
   const handleDeleteRecipe = useCallback(async (recipe: Recipe) => {
-    Alert.alert(
-      'Supprimer la recette',
-      `Êtes-vous sûr de vouloir supprimer "${recipe.name}" ? Cette action est irréversible.`,
-      [
-        {
-          text: 'Annuler',
-          style: 'cancel'
-        },
-        {
-          text: 'Supprimer',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await actions.deleteRecipe(recipe.id);
-              Alert.alert('Succès', 'Recette supprimée');
-            } catch (error) {
-              Alert.alert('Erreur', 'Impossible de supprimer la recette');
-            }
-          }
-        }
-      ]
-    );
+    try {
+      await actions.deleteRecipe(recipe.id);
+      Alert.alert('Succès', 'Recette supprimée');
+    } catch (error) {
+      Alert.alert('Erreur', 'Impossible de supprimer la recette');
+    }
   }, [actions]);
+
+  const handleEditRecipe = useCallback((recipe: Recipe) => {
+    router.push({
+      pathname: '/recipe/[id]/edit',
+      params: { id: recipe.id }
+    });
+  }, []);
 
   const handleAddRecipe = useCallback(() => {
     router.push('/add-recipe');
@@ -319,6 +310,8 @@ export const RecipesScreen: React.FC = () => {
             recipe={recipe}
             onPress={handleRecipePress}
             onLongPress={handleRecipeLongPress}
+            onEdit={handleEditRecipe}
+            onDelete={handleDeleteRecipe}
             showUsageStats={true}
             selectionMode={selectionMode}
             selected={bulkSharing.selectedRecipes.some(r => r.id === recipe.id)}

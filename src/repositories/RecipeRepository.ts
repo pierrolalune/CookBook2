@@ -755,4 +755,76 @@ export class RecipeRepository {
       createdAt: new Date(row.created_at)
     };
   }
+  
+  // Bulk operations for advanced search performance
+  async bulkUpdateRecipes(updates: { id: string; changes: Partial<Recipe> }[]): Promise<void> {
+    const transaction = async () => {
+      for (const update of updates) {
+        await this.update({ id: update.id, ...update.changes });
+      }
+    };
+    
+    await this.db.withTransactionAsync(transaction);
+  }
+  
+  // Index optimization for search performance
+  async createSearchIndexes(): Promise<void> {
+    try {
+      // Create indexes for commonly searched fields
+      const indexes = [
+        'CREATE INDEX IF NOT EXISTS idx_recipes_name ON recipes(name)',
+        'CREATE INDEX IF NOT EXISTS idx_recipes_category ON recipes(category)',
+        'CREATE INDEX IF NOT EXISTS idx_recipes_difficulty ON recipes(difficulty)',
+        'CREATE INDEX IF NOT EXISTS idx_recipes_prep_time ON recipes(prep_time)',
+        'CREATE INDEX IF NOT EXISTS idx_recipes_cook_time ON recipes(cook_time)',
+        'CREATE INDEX IF NOT EXISTS idx_recipe_ingredients_recipe_id ON recipe_ingredients(recipe_id)',
+        'CREATE INDEX IF NOT EXISTS idx_recipe_ingredients_ingredient_id ON recipe_ingredients(ingredient_id)',
+        'CREATE INDEX IF NOT EXISTS idx_ingredients_name ON ingredients(name)',
+        'CREATE INDEX IF NOT EXISTS idx_ingredients_category ON ingredients(category)'
+      ];
+      
+      for (const indexSql of indexes) {
+        await this.db.execAsync(indexSql);
+      }
+      
+    } catch (error) {
+      SecureErrorHandler.logError(error as Error, { action: 'createSearchIndexes' });
+    }
+  }
+  
+  // Query optimization and caching helpers
+  private static queryCache = new Map<string, { result: any; timestamp: number }>();
+  private static readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  
+  private getCachedResult<T>(cacheKey: string): T | null {
+    const cached = RecipeRepository.queryCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < RecipeRepository.CACHE_DURATION) {
+      return cached.result;
+    }
+    return null;
+  }
+  
+  private setCachedResult<T>(cacheKey: string, result: T): void {
+    RecipeRepository.queryCache.set(cacheKey, {
+      result,
+      timestamp: Date.now()
+    });
+  }
+  
+  private generateCacheKey(method: string, params: any[]): string {
+    return `${method}_${JSON.stringify(params)}`;
+  }
+  
+  static clearCache(): void {
+    RecipeRepository.queryCache.clear();
+  }
+  
+  static cleanExpiredCache(): void {
+    const now = Date.now();
+    for (const [key, cached] of RecipeRepository.queryCache.entries()) {
+      if (now - cached.timestamp >= RecipeRepository.CACHE_DURATION) {
+        RecipeRepository.queryCache.delete(key);
+      }
+    }
+  }
 }

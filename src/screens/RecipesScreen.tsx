@@ -16,12 +16,17 @@ import { colors, spacing, typography } from '../styles';
 import { useRecipes, useRecipeCategories } from '../hooks/useRecipes';
 import { useRecipeBulkSharing } from '../hooks/useRecipeSharing';
 import { useRecipeFavorites } from '../hooks/useRecipeFavorites';
+import { useAdvancedRecipeSearch, useWhatCanIMake } from '../hooks/useAdvancedRecipeSearch';
+import { useIngredients } from '../hooks/useIngredients';
 import { SearchBar } from '../components/common/SearchBar';
 import { CategoryChips } from '../components/common/CategoryChips';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { RecipeCard } from '../components/recipe/RecipeCard';
 import { ShareModal } from '../components/recipe/ShareModal';
+import { AdvancedSearchModal } from '../components/recipe/AdvancedSearchModal';
+import { RecipeMatchAnalyzer } from '../components/recipe/RecipeMatchAnalyzer';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
+import { AdvancedSearchFilters, RecipeMatchResult } from '../utils/recipeSearchUtils';
 
 interface RecipeCategoryChip {
   id: string;
@@ -39,10 +44,39 @@ export const RecipesScreen: React.FC = () => {
   const [selectionMode, setSelectionMode] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  
+  // Advanced search state
+  const [advancedSearchVisible, setAdvancedSearchVisible] = useState(false);
+  const [searchMode, setSearchMode] = useState<'basic' | 'advanced' | 'makeable'>('basic');
+  
+  // Log searchMode changes
+  const loggedSetSearchMode = useCallback((mode: 'basic' | 'advanced' | 'makeable') => {
+    console.log('searchMode changing to', mode);
+    console.trace('searchMode change stack trace');
+    setSearchMode(mode);
+  }, []); // No dependencies to avoid recreation
+  const [showMatchAnalysis, setShowMatchAnalysis] = useState(false);
 
   const { recipes, loading, error, actions } = useRecipes();
   const { categories, loading: categoriesLoading, refresh: refreshCategories } = useRecipeCategories();
   const bulkSharing = useRecipeBulkSharing();
+  
+  // Get available ingredients for advanced search
+  const { ingredients: availableIngredients } = useIngredients();
+  
+  // Advanced search functionality
+  const advancedSearch = useAdvancedRecipeSearch({
+    recipes,
+    availableIngredients,
+    onSearchComplete: (results) => {
+      if (results.length === 0) {
+        Alert.alert('Aucun résultat', 'Aucune recette ne correspond à vos critères de recherche.');
+      }
+    }
+  });
+  
+  // "What can I make?" functionality
+  const whatCanIMake = useWhatCanIMake(recipes, availableIngredients);
   
   // Create fast update callback for favorites
   const handleFavoriteChange = useCallback((recipeId: string, isFavorite: boolean) => {
@@ -79,8 +113,27 @@ export const RecipesScreen: React.FC = () => {
     return chips;
   }, [categories]);
 
-  // Filter recipes based on search and filters
+  // Enhanced filtering logic with advanced search support
   const filteredRecipes = useMemo(() => {
+    console.log('filteredRecipes useMemo triggered:', {
+      searchMode,
+      hasSearched: advancedSearch.state.hasSearched,
+      resultsCount: advancedSearch.state.results.length,
+      loading: advancedSearch.state.loading
+    });
+    
+    // Advanced search mode - use search results directly
+    if (searchMode === 'advanced' && advancedSearch.state.hasSearched) {
+      console.log('Using advanced search results:', advancedSearch.state.results.length, 'recipes');
+      return advancedSearch.state.results.map(result => result.recipe);
+    }
+    
+    // "What can I make?" mode - use makeable recipes
+    if (searchMode === 'makeable') {
+      return whatCanIMake.makeableRecipes.map(result => result.recipe);
+    }
+    
+    // Basic search mode - original logic
     let filtered = recipes;
 
     // Apply search filter
@@ -105,7 +158,18 @@ export const RecipesScreen: React.FC = () => {
     }
 
     return filtered;
-  }, [recipes, searchQuery, selectedCategory]);
+  }, [recipes, searchQuery, selectedCategory, searchMode, advancedSearch.state.hasSearched, advancedSearch.state.results, whatCanIMake.makeableRecipes]);
+  
+  // Get match results for display when in advanced mode
+  const matchResults = useMemo(() => {
+    if (searchMode === 'advanced' && advancedSearch.state.hasSearched) {
+      return advancedSearch.state.results;
+    }
+    if (searchMode === 'makeable') {
+      return whatCanIMake.makeableRecipes;
+    }
+    return [];
+  }, [searchMode, advancedSearch.state.hasSearched, advancedSearch.state.results, whatCanIMake.makeableRecipes]);
 
   // Group recipes by category for display
   const groupedRecipes = useMemo(() => {
@@ -139,11 +203,44 @@ export const RecipesScreen: React.FC = () => {
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-  }, []);
+    // Temporarily disable automatic reset to basic search
+    // if (searchMode !== 'basic') {
+    //   loggedSetSearchMode('basic');
+    //   setShowMatchAnalysis(false);
+    // }
+  }, [searchMode, loggedSetSearchMode]);
+  
+  // Advanced search handlers
+  const handleAdvancedSearch = useCallback((filters: AdvancedSearchFilters) => {
+    console.log('Starting advanced search with filters:', filters);
+    loggedSetSearchMode('advanced');
+    setShowMatchAnalysis(true);
+    advancedSearch.actions.performSearch(filters);
+  }, [advancedSearch.actions, loggedSetSearchMode]);
+  
+  const handleWhatCanIMake = useCallback(() => {
+    loggedSetSearchMode('makeable');
+    setShowMatchAnalysis(true);
+    // whatCanIMake hook automatically updates when ingredients change
+  }, [loggedSetSearchMode]);
+  
+  const handleResetSearch = useCallback(() => {
+    loggedSetSearchMode('basic');
+    setShowMatchAnalysis(false);
+    setSearchQuery('');
+    setSelectedCategory('all');
+    advancedSearch.actions.clearResults();
+  }, [advancedSearch.actions, loggedSetSearchMode]);
 
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId as RecipeCategory | 'favoris' | 'all');
-  }, []);
+    // Temporarily disable automatic reset to basic search
+    // if (searchMode !== 'basic') {
+    //   loggedSetSearchMode('basic');
+    //   setShowMatchAnalysis(false);
+    //   advancedSearch.actions.clearResults();
+    // }
+  }, [searchMode, advancedSearch.actions, loggedSetSearchMode]);
 
   const handleRecipePress = useCallback((recipe: Recipe) => {
     if (selectionMode) {
@@ -263,6 +360,39 @@ export const RecipesScreen: React.FC = () => {
     });
   }, []);
 
+  // Render recipe with match analysis if in advanced mode
+  const renderRecipeItem = useCallback((recipe: Recipe, matchResult?: RecipeMatchResult) => {
+    const commonProps = {
+      recipe,
+      onPress: handleRecipePress,
+      onLongPress: handleRecipeLongPress,
+      onEdit: handleEditRecipe,
+      onDelete: handleDeleteRecipe,
+      showUsageStats: true,
+      selectionMode,
+      selected: bulkSharing.selectedRecipes.some(r => r.id === recipe.id),
+      onFavoriteChange: handleFavoriteChange
+    };
+    
+    if (showMatchAnalysis && matchResult) {
+      return (
+        <RecipeMatchAnalyzer
+          key={`match-${recipe.id}`}
+          matchResult={matchResult}
+          onRecipePress={(recipeId) => {
+            router.push({
+              pathname: '/recipe/[id]',
+              params: { id: recipeId }
+            });
+          }}
+          showDetails={true}
+        />
+      );
+    }
+    
+    return <RecipeCard key={recipe.id} {...commonProps} />;
+  }, [handleRecipePress, handleRecipeLongPress, handleEditRecipe, handleDeleteRecipe, selectionMode, bulkSharing.selectedRecipes, handleFavoriteChange, showMatchAnalysis, router]);
+  
   const renderCategorySection = ({ item }: { item: { category: RecipeCategory | 'favoris' | 'all', recipes: Recipe[] } }) => {
     const categoryLabels = {
       favoris: 'Favoris',
@@ -294,20 +424,10 @@ export const RecipesScreen: React.FC = () => {
           </TouchableOpacity>
         )}
         
-        {!isCollapsed && item.recipes.map((recipe) => (
-          <RecipeCard
-            key={recipe.id}
-            recipe={recipe}
-            onPress={handleRecipePress}
-            onLongPress={handleRecipeLongPress}
-            onEdit={handleEditRecipe}
-            onDelete={handleDeleteRecipe}
-            showUsageStats={true}
-            selectionMode={selectionMode}
-            selected={bulkSharing.selectedRecipes.some(r => r.id === recipe.id)}
-            onFavoriteChange={handleFavoriteChange}
-          />
-        ))}
+        {!isCollapsed && item.recipes.map((recipe) => {
+          const matchResult = matchResults.find(mr => mr.recipe.id === recipe.id);
+          return renderRecipeItem(recipe, matchResult);
+        })}
       </View>
     );
   };
@@ -414,16 +534,107 @@ export const RecipesScreen: React.FC = () => {
               onChangeText={handleSearch}
               placeholder="Rechercher une recette..."
             />
+            
+            {/* Advanced search buttons */}
+            <View style={styles.advancedSearchButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.advancedButton,
+                  searchMode === 'advanced' && styles.advancedButtonActive
+                ]}
+                onPress={() => setAdvancedSearchVisible(true)}
+              >
+                <Ionicons 
+                  name="options" 
+                  size={16} 
+                  color={searchMode === 'advanced' ? colors.textWhite : colors.primary} 
+                />
+                <Text style={[
+                  styles.advancedButtonText,
+                  searchMode === 'advanced' && styles.advancedButtonTextActive
+                ]}>Avancé</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[
+                  styles.advancedButton,
+                  searchMode === 'makeable' && styles.advancedButtonActive
+                ]}
+                onPress={handleWhatCanIMake}
+                disabled={availableIngredients.length === 0}
+              >
+                <Ionicons 
+                  name="checkmark-circle" 
+                  size={16} 
+                  color={searchMode === 'makeable' ? colors.textWhite : colors.success} 
+                />
+                <Text style={[
+                  styles.advancedButtonText,
+                  searchMode === 'makeable' && styles.advancedButtonTextActive,
+                  availableIngredients.length === 0 && styles.disabledText
+                ]}>Réalisable</Text>
+              </TouchableOpacity>
+              
+              {searchMode !== 'basic' && (
+                <TouchableOpacity
+                  style={styles.resetButton}
+                  onPress={handleResetSearch}
+                >
+                  <Ionicons name="close" size={16} color={colors.textSecondary} />
+                  <Text style={styles.resetButtonText}>Effacer</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+          
+          {/* Search status indicator */}
+          {searchMode !== 'basic' && (
+            <View style={styles.searchStatus}>
+              {searchMode === 'advanced' && (
+                <View style={styles.statusItem}>
+                  <Ionicons name="search" size={14} color={colors.primary} />
+                  <Text style={styles.statusText}>
+                    {advancedSearch.state.loading ? 'Recherche...' : 
+                     `${advancedSearch.state.totalResults} résultat${advancedSearch.state.totalResults > 1 ? 's' : ''} trouvé${advancedSearch.state.totalResults > 1 ? 's' : ''}`
+                    }
+                  </Text>
+                </View>
+              )}
+              
+              {searchMode === 'makeable' && (
+                <View style={styles.statusItem}>
+                  <Ionicons name="restaurant" size={14} color={colors.success} />
+                  <Text style={styles.statusText}>
+                    {whatCanIMake.loading ? 'Analyse...' : 
+                     `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable > 1 ? 's' : ''} réalisable${whatCanIMake.totalMakeable > 1 ? 's' : ''}`
+                    }
+                  </Text>
+                </View>
+              )}
+              
+              {showMatchAnalysis && (
+                <TouchableOpacity
+                  style={styles.toggleAnalysisButton}
+                  onPress={() => setShowMatchAnalysis(!showMatchAnalysis)}
+                >
+                  <Text style={styles.toggleAnalysisText}>
+                    {showMatchAnalysis ? 'Masquer analyse' : 'Afficher analyse'}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
 
-          <View style={styles.filtersContainer}>
-            <CategoryChips
-              categories={categoryChips}
-              selectedCategory={selectedCategory}
-              onCategorySelect={handleCategorySelect}
-              loading={categoriesLoading}
-            />
-          </View>
+          {searchMode === 'basic' && (
+            <View style={styles.filtersContainer}>
+              <CategoryChips
+                categories={categoryChips}
+                selectedCategory={selectedCategory}
+                onCategorySelect={handleCategorySelect}
+                loading={categoriesLoading}
+              />
+            </View>
+          )}
         </View>
 
         {/* Recipes List */}
@@ -460,6 +671,15 @@ export const RecipesScreen: React.FC = () => {
           onClose={() => setShareModalVisible(false)}
           recipes={bulkSharing.selectedRecipes}
           mode="multiple"
+        />
+        
+        {/* Advanced Search Modal */}
+        <AdvancedSearchModal
+          visible={advancedSearchVisible}
+          onClose={() => setAdvancedSearchVisible(false)}
+          onSearch={handleAdvancedSearch}
+          availableIngredients={availableIngredients}
+          initialFilters={advancedSearch.state.filters}
         />
         </View>
       </View>
@@ -511,6 +731,96 @@ const styles = StyleSheet.create({
 
   filtersContainer: {
     // Container now just holds the CategoryChips
+  },
+  
+  // Advanced search styles
+  advancedSearchButtons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+    alignItems: 'center',
+  },
+  
+  advancedButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: spacing.borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.background,
+    gap: spacing.xs,
+  },
+  
+  advancedButtonActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  
+  advancedButtonText: {
+    ...typography.styles.small,
+    color: colors.primary,
+    fontWeight: typography.weights.medium,
+  },
+  
+  advancedButtonTextActive: {
+    color: colors.textWhite,
+  },
+  
+  disabledText: {
+    opacity: 0.5,
+  },
+  
+  resetButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: spacing.borderRadius.lg,
+    backgroundColor: colors.backgroundLight,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  
+  resetButtonText: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+    marginLeft: spacing.xs,
+    fontWeight: typography.weights.medium,
+  },
+  
+  searchStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    marginTop: spacing.sm,
+  },
+  
+  statusItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  
+  statusText: {
+    ...typography.styles.small,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.medium,
+  },
+  
+  toggleAnalysisButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  
+  toggleAnalysisText: {
+    ...typography.styles.small,
+    color: colors.primary,
+    fontWeight: typography.weights.medium,
   },
 
 

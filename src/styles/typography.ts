@@ -64,5 +64,10 @@ export const typography = {
       fontWeight: '600' as const,
       lineHeight: 20,
     },
+    tiny: {
+      fontSize: 10,
+      fontWeight: '400' as const,
+      lineHeight: 12,
+    },
   },
 } as const;

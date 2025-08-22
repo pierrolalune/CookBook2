@@ -152,4 +152,132 @@ const styles = StyleSheet.create({
     color: colors.textLight,
     fontWeight: typography.weights.bold,
   },
+  
+  rightButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  advancedButton: {
+    padding: spacing.xs,
+    marginLeft: spacing.sm,
+    borderRadius: spacing.borderRadius.sm,
+  },
+  
+  advancedButtonActive: {
+    backgroundColor: colors.primaryLight,
+  },
+  
+  advancedButtonText: {
+    fontSize: typography.sizes.md,
+  },
+  
+  advancedButtonTextActive: {
+    transform: [{ scale: 1.1 }],
+  },
+  
+  dropdown: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: colors.background,
+    borderRadius: spacing.borderRadius.lg,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: colors.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    zIndex: 1000,
+    overflow: 'hidden',
+  },
+  
+  dropdownSection: {
+    paddingVertical: spacing.xs,
+  },
+  
+  dropdownSectionTitle: {
+    ...typography.styles.small,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.semibold,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xs,
+    textTransform: 'uppercase',
+    fontSize: 11,
+  },
+  
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+  },
+  
+  dropdownItemText: {
+    ...typography.styles.body,
+    color: colors.textPrimary,
+    flex: 1,
+  },
+  
+  recentSearchIcon: {
+    fontSize: 14,
+    marginRight: spacing.sm,
+    opacity: 0.6,
+  },
+  
+  suggestionIcon: {
+    fontSize: 14,
+    marginRight: spacing.sm,
+    opacity: 0.8,
+  },
+  
+  dropdownDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: spacing.xs,
+  },
 });
+
+// Enhanced SearchBar with suggestions component
+export const SearchBarWithSuggestions: React.FC<SearchBarProps & {
+  onQueryChange?: (query: string) => void;
+}> = (props) => {
+  const [query, setQuery] = useState(props.value || '');
+  const [localSuggestions, setLocalSuggestions] = useState<string[]>([]);
+  
+  // Simulate suggestion generation (in real app, this would call an API or search service)
+  useEffect(() => {
+    if (query.length >= 2) {
+      // Mock suggestions - in real app, generate these based on search history, recipes, ingredients
+      const mockSuggestions = [
+        `${query} facile`,
+        `${query} rapide`,
+        `recette ${query}`,
+        `${query} traditionnel`
+      ].filter(s => s !== query);
+      
+      setLocalSuggestions(mockSuggestions);
+    } else {
+      setLocalSuggestions([]);
+    }
+  }, [query]);
+  
+  const handleQueryChange = (newQuery: string) => {
+    setQuery(newQuery);
+    props.onQueryChange?.(newQuery);
+    props.onChangeText?.(newQuery);
+  };
+  
+  return (
+    <SearchBar
+      {...props}
+      value={query}
+      onChangeText={handleQueryChange}
+    />
+  );
+};

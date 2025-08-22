@@ -36,11 +36,13 @@ export const colors = {
   
   // Status colors
   success: '#4caf50',
+  successLight: 'rgba(76, 175, 80, 0.1)',
   warning: '#ff9800',
   error: '#f44336',
   errorLight: 'rgba(244, 67, 54, 0.1)',
   info: '#2196f3',
   accent: '#ff6b6b',
+  secondary: '#6c757d',
   
   // Seasonal colors
   inSeason: '#4caf50',

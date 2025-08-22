@@ -11,6 +11,11 @@ interface ErrorContext {
   recipeId?: string;
   ingredientId?: string;
   photoId?: string;
+  resultsCount?: number;
+  filters?: string;
+  query?: string;
+  searchId?: string;
+  filtersUsed?: number;
 }
 
 interface SanitizedError {

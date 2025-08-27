@@ -19,6 +19,7 @@ import { RecipeIngredientsSection } from '../components/recipe/RecipeIngredients
 import { RecipeInstructionsList } from '../components/recipe/RecipeInstructionsList';
 import { PhotoCarousel } from '../components/recipe/PhotoCarousel';
 import { ShareModal } from '../components/recipe/ShareModal';
+import { CreateShoppingListModal } from '../components/shoppingList/CreateShoppingListModal';
 
 interface RecipeDetailScreenProps {
   recipeId?: string;
@@ -34,6 +35,7 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
   const [currentServings, setCurrentServings] = useState(4);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [shoppingListModalVisible, setShoppingListModalVisible] = useState(false);
 
   const { actions: recipeActions } = useRecipes();
   const sharing = useRecipeSharing();
@@ -148,6 +150,22 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
     setShareModalVisible(true);
   }, [recipe]);
 
+  const handleCreateShoppingList = useCallback(() => {
+    if (!recipe) return;
+    setShoppingListModalVisible(true);
+  }, [recipe]);
+
+  const handleShoppingListCreated = useCallback(() => {
+    setShoppingListModalVisible(false);
+    Alert.alert('Succès', 'Liste de courses créée avec succès', [
+      { text: 'OK' },
+      { 
+        text: 'Voir la liste', 
+        onPress: () => router.push('/shopping-lists')
+      }
+    ]);
+  }, []);
+
 
   const handleServingsChange = useCallback((newServings: number) => {
     setCurrentServings(newServings);
@@ -234,6 +252,10 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
           <View style={styles.headerActions}>
             <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
               <Text style={styles.actionButtonText}>📤</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.actionButton} onPress={handleCreateShoppingList}>
+              <Text style={styles.actionButtonText}>🛒</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={() => {
@@ -388,6 +410,14 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
           onClose={() => setShareModalVisible(false)}
           recipe={recipe}
           mode="single"
+        />
+
+        {/* Shopping List Modal */}
+        <CreateShoppingListModal
+          visible={shoppingListModalVisible}
+          onClose={() => setShoppingListModalVisible(false)}
+          onSuccess={handleShoppingListCreated}
+          preselectedRecipes={recipe ? [recipe] : []}
         />
       </View>
     </ScreenErrorBoundary>

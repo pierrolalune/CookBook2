@@ -26,6 +26,7 @@ import { ShareModal } from '../components/recipe/ShareModal';
 import { AdvancedSearchModal } from '../components/recipe/AdvancedSearchModal';
 import { MakeableRecipesModal } from '../components/recipe/MakeableRecipesModal';
 import { RecipeMatchAnalyzer } from '../components/recipe/RecipeMatchAnalyzer';
+import { CreateShoppingListModal } from '../components/shoppingList/CreateShoppingListModal';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { AdvancedSearchFilters, RecipeMatchResult } from '../utils/recipeSearchUtils';
 
@@ -44,6 +45,7 @@ export const RecipesScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [shoppingListModalVisible, setShoppingListModalVisible] = useState(false);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   
   // Advanced search state
@@ -345,6 +347,27 @@ export const RecipesScreen: React.FC = () => {
     setShareModalVisible(true);
   }, [bulkSharing.selectedCount]);
 
+  const handleCreateShoppingListFromRecipes = useCallback(() => {
+    if (bulkSharing.selectedCount === 0) {
+      Alert.alert('Aucune sélection', 'Veuillez sélectionner au moins une recette');
+      return;
+    }
+    setShoppingListModalVisible(true);
+  }, [bulkSharing.selectedCount]);
+
+  const handleShoppingListCreated = useCallback(() => {
+    setShoppingListModalVisible(false);
+    setSelectionMode(false);
+    bulkSharing.actions.clearSelection();
+    Alert.alert('Succès', 'Liste de courses créée avec succès', [
+      { text: 'OK' },
+      { 
+        text: 'Voir la liste', 
+        onPress: () => router.push('/shopping-lists')
+      }
+    ]);
+  }, [bulkSharing.actions]);
+
 
   // Toggle category collapse
   const toggleCategoryCollapse = useCallback((category: string) => {
@@ -503,10 +526,16 @@ export const RecipesScreen: React.FC = () => {
               {bulkSharing.selectedCount > 0 && (
                 <View style={styles.selectionActions}>
                   <TouchableOpacity
-                    style={[styles.selectionActionButton, styles.singleActionButton]}
+                    style={styles.selectionActionButton}
                     onPress={handleBulkShare}
                   >
                     <Text style={styles.selectionActionText}>📤 Partager</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.selectionActionButton}
+                    onPress={handleCreateShoppingListFromRecipes}
+                  >
+                    <Text style={styles.selectionActionText}>🛒 Liste courses</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -696,6 +725,14 @@ export const RecipesScreen: React.FC = () => {
           onSearch={handleMakeableSearch}
           availableIngredients={availableIngredients}
           initialSelectedIds={whatCanIMake.selectedIngredientIds}
+        />
+
+        {/* Shopping List Modal */}
+        <CreateShoppingListModal
+          visible={shoppingListModalVisible}
+          onClose={() => setShoppingListModalVisible(false)}
+          onSuccess={handleShoppingListCreated}
+          preselectedRecipes={bulkSharing.selectedRecipes}
         />
         </View>
       </View>

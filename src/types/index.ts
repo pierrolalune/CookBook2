@@ -298,5 +298,103 @@ export interface SeasonalUtility {
   getSeasonForMonth(month: number): string;
 }
 
+// Shopping List types
+export interface ShoppingList {
+  id: string;
+  name: string;
+  description?: string;
+  items: ShoppingListItem[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ShoppingListItem {
+  id: string;
+  listId: string;
+  ingredientId?: string; // nullable for manual entries
+  ingredient?: Ingredient; // populated when ingredientId is set
+  customName?: string; // for manual entries when no ingredient
+  quantity: number;
+  unit: string;
+  isCompleted: boolean;
+  category: IngredientCategory;
+  notes?: string;
+  orderIndex: number;
+  createdAt: Date;
+}
+
+export interface CreateShoppingListInput {
+  name: string;
+  description?: string;
+  items: CreateShoppingListItemInput[];
+}
+
+export interface UpdateShoppingListInput extends Partial<CreateShoppingListInput> {
+  id: string;
+}
+
+export interface CreateShoppingListItemInput {
+  ingredientId?: string;
+  customName?: string;
+  quantity: number;
+  unit: string;
+  category: IngredientCategory;
+  notes?: string;
+  orderIndex?: number;
+}
+
+export interface UpdateShoppingListItemInput extends Partial<CreateShoppingListItemInput> {
+  id: string;
+  isCompleted?: boolean;
+}
+
+export interface ShoppingListFilters {
+  searchQuery?: string;
+  completedItemsOnly?: boolean;
+  activeItemsOnly?: boolean;
+}
+
+export interface ShoppingListGenerationOptions {
+  includeOptionalIngredients?: boolean;
+  aggregateIdenticalIngredients?: boolean;
+  groupByCategory?: boolean;
+  listName?: string;
+  listDescription?: string;
+}
+
+export interface AggregatedShoppingItem {
+  ingredientId?: string;
+  ingredient?: Ingredient;
+  customName?: string;
+  totalQuantity: number;
+  unit: string;
+  category: IngredientCategory;
+  recipes: string[]; // recipe names that contributed this ingredient
+  notes?: string;
+}
+
+// Database row interfaces for Shopping Lists
+export interface ShoppingListRow {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShoppingListItemRow {
+  id: string;
+  list_id: string;
+  ingredient_id: string | null;
+  custom_name: string | null;
+  quantity: number;
+  unit: string;
+  is_completed: number; // SQLite boolean as integer
+  category: string;
+  notes: string | null;
+  order_index: number;
+  created_at: string;
+}
+
 // Re-export database types
 export * from './database';

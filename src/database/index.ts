@@ -162,6 +162,36 @@ const createTablesIfNeeded = async (db: SQLiteDatabase): Promise<void> => {
       );
     `);
     
+    // Create shopping_lists table
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS shopping_lists (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    
+    // Create shopping_list_items table
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS shopping_list_items (
+        id TEXT PRIMARY KEY,
+        list_id TEXT NOT NULL,
+        ingredient_id TEXT,
+        custom_name TEXT,
+        quantity REAL NOT NULL,
+        unit TEXT NOT NULL,
+        is_completed INTEGER DEFAULT 0,
+        category TEXT NOT NULL,
+        notes TEXT,
+        order_index INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (list_id) REFERENCES shopping_lists (id) ON DELETE CASCADE,
+        FOREIGN KEY (ingredient_id) REFERENCES ingredients (id)
+      );
+    `);
+    
     // Create indexes
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_ingredients_category ON ingredients(category);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_ingredients_name ON ingredients(name);');
@@ -174,6 +204,10 @@ const createTablesIfNeeded = async (db: SQLiteDatabase): Promise<void> => {
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_usage_recipe_id ON recipe_usage(recipe_id);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_photos_recipe_id ON recipe_photos(recipe_id);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_favorites_recipe_id ON recipe_favorites(recipe_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_lists_name ON shopping_lists(name);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_list_items_list_id ON shopping_list_items(list_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_list_items_ingredient_id ON shopping_list_items(ingredient_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_list_items_category ON shopping_list_items(category);');
     
     console.log('✅ [DB] Tables created/verified');
   } catch (error) {
@@ -468,6 +502,8 @@ export const resetDatabase = async (): Promise<void> => {
   
   try {
     // Drop tables in correct order (due to foreign key constraints)
+    await db.execAsync('DROP TABLE IF EXISTS shopping_list_items;');
+    await db.execAsync('DROP TABLE IF EXISTS shopping_lists;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_favorites;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_photos;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_usage;');

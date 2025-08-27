@@ -684,6 +684,49 @@ await Sharing.shareAsync(filePath, {
    } = useRecipeSharing();
    ```
 
+9. **`useShoppingLists`** - Shopping list state management (NEW - January 2025)
+   ```typescript
+   const { 
+     shoppingLists,
+     loading,
+     error,
+     actions: {
+       loadShoppingLists,
+       createShoppingList,
+       updateShoppingList,
+       deleteShoppingList,
+       duplicateShoppingList,
+       generateFromRecipes,
+       generateFromIngredients,
+       clearError,
+       refreshShoppingLists
+     }
+   } = useShoppingLists();
+   ```
+
+10. **`useShoppingListItems`** - Shopping list items management (NEW - January 2025)
+    ```typescript
+    const { 
+      items,
+      loading,
+      error,
+      completedItemsCount,
+      totalItemsCount,
+      hasCompletedItems,
+      allItemsCompleted,
+      itemsByCategory,
+      actions: {
+        loadItems,
+        updateItem,
+        deleteItem,
+        toggleItemCompletion,
+        clearCompletedItems,
+        updateItemsInMemory,
+        clearError
+      }
+    } = useShoppingListItems();
+    ```
+
 ### Data Layer Implementation
 
 #### **Repository Pattern**
@@ -714,6 +757,15 @@ await Sharing.shareAsync(filePath, {
    - Usage tracking integration
    - Search and filter support
    - Statistics generation
+
+5. **`ShoppingListRepository`** (NEW - January 2025)
+   - Complete shopping list CRUD operations with items
+   - Smart ingredient aggregation from multiple recipes
+   - Optimistic completion status updates
+   - Category-based item organization
+   - Bulk operations for clearing completed items
+   - Complex joins for loading lists with ingredient details
+   - Transaction-based list creation with multiple items
 
 #### **Database Design**
 
@@ -1000,6 +1052,16 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
   - [x] Selection history with AsyncStorage persistence
   - [x] Mathematical match percentage considering all ingredients
   - [x] Comprehensive documentation and API reference
+- [x] **Shopping List Management System** (NEW - January 2025)
+  - [x] Complete CRUD operations for shopping lists with SQLite persistence
+  - [x] Smart ingredient aggregation from multiple recipes with quantity consolidation
+  - [x] Manual list creation with quick-add common items and ingredient search
+  - [x] Real-time check-off system with optimistic UI updates and progress tracking
+  - [x] Category-based organization matching grocery store sections (Fruits, Légumes, etc.)
+  - [x] Professional text export for native sharing via WhatsApp/SMS/Email
+  - [x] Swipeable list items with delete actions and completion statistics
+  - [x] Integration with recipe system via bulk selection and detail view quick actions
+  - [x] Dedicated "Courses" tab in navigation with full shopping list management interface
 
 #### **UI/UX Implementation** ✅
 - [x] Main ingredients screen with collapsible sections
@@ -1021,6 +1083,13 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
   - [x] Photo management interface
   - [x] ShareModal with native integration (December 2024)
   - [x] Professional PDF layouts with HTML styling
+- [x] **Shopping List Components** (NEW - January 2025)
+  - [x] Shopping list overview screen with search and progress tracking
+  - [x] Detailed shopping list view with category sections and real-time check-off
+  - [x] Create shopping list modal with tabs (Quick, Ingredients, Recipes)
+  - [x] Shopping list cards with progress bars and completion statistics
+  - [x] Swipeable shopping list items with visual completion feedback
+  - [x] Text export modal with professional formatting and native sharing
 
 #### **Security & Quality** ✅
 - [x] Input validation and sanitization (`ValidationUtils`)
@@ -1354,6 +1423,30 @@ export class RecipeExporter {
 - **Bulk Export**: Multiple recipes at once
 - **Custom Styling**: Professional layouts
 
+##### **`shoppingListExporter.ts`** - Shopping List Export Utilities (NEW - January 2025)
+**Purpose**: Generates formatted text exports for shopping lists with native sharing
+
+**Key Classes:**
+```typescript
+export class ShoppingListExporter {
+  // Export methods
+  static async exportToText(shoppingList: ShoppingList, options?: ShoppingListExportOptions): Promise<string>
+  static async shareShoppingList(shoppingList: ShoppingList, options?: ShoppingListExportOptions): Promise<void>
+  
+  // Utilities
+  static parseSimpleTextList(text: string, listName?: string): { name: string; items: Array<...> }
+  static async cleanupOldExports(maxAgeInDays?: number): Promise<void>
+}
+```
+
+**Features:**
+- **Professional Text Formatting**: Category-organized shopping lists with checkboxes
+- **Native Sharing**: WhatsApp/SMS/Email integration via expo-sharing
+- **Flexible Export Options**: Include/exclude completed items, notes, category grouping
+- **Smart Formatting**: Emoji icons for categories, progress summaries, completion statistics
+- **Import Support**: Parse simple text lists back into shopping list format
+- **File Management**: Automatic cleanup of old export files
+
 #### **Hook & Utility Integration Patterns**
 
 **Repository + Hook Pattern:**
@@ -1440,6 +1533,15 @@ The CookBookP application is **production-ready** with:
   - ✅ Professional export features (PDF, shopping lists)
   - ✅ Advanced search and filtering
   - ✅ Usage tracking and analytics
+- ✅ **Shopping List Management System** (NEW - January 2025)
+  - ✅ Create shopping lists from recipes with smart ingredient aggregation
+  - ✅ Manual shopping list creation with quick-add items
+  - ✅ Real-time check-off system with optimistic updates
+  - ✅ Category-based organization matching store layout
+  - ✅ Professional text export for WhatsApp/SMS sharing
+  - ✅ Progress tracking and completion statistics
+  - ✅ Multi-recipe ingredient consolidation
+  - ✅ Swipe actions and bulk operations
 
 ---
 

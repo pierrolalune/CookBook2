@@ -39,6 +39,9 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
   // State for ingredient quantity and unit selection
   const [ingredientQuantity, setIngredientQuantity] = useState('1');
   const [ingredientUnit, setIngredientUnit] = useState('');
+  
+  // State for recipe serving multiplier
+  const [servingMultiplier, setServingMultiplier] = useState('1');
 
   // Load shopping lists when modal opens
   useEffect(() => {
@@ -48,6 +51,7 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
       // Generate default name for new list
       if (recipe) {
         setNewListName(`Liste pour "${recipe.name}"`);
+        setServingMultiplier(recipe.servings ? recipe.servings.toString() : '1'); // Default to recipe's original servings
       } else if (ingredient) {
         setNewListName(`Liste avec ${ingredient.name}`);
         // Initialize quantity and unit for ingredient
@@ -58,6 +62,7 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
       // Reset state when modal closes
       setIngredientQuantity('1');
       setIngredientUnit('');
+      setServingMultiplier('1');
     }
   }, [visible, recipe, ingredient]);
 
@@ -67,19 +72,26 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
       const itemRepository = new ShoppingListItemRepository();
 
       if (mode === 'recipe' && recipe) {
-        // Add all recipe ingredients to the list
+        // Add all recipe ingredients to the list with serving multiplier
+        const targetServings = parseFloat(servingMultiplier) || 1;
+        const originalServings = recipe.servings || 1;
+        const multiplier = targetServings / originalServings;
+        
         for (const recipeIngredient of recipe.ingredients) {
           if (recipeIngredient.optional) continue; // Skip optional ingredients
+          
+          const adjustedQuantity = recipeIngredient.quantity ? recipeIngredient.quantity * multiplier : undefined;
           
           await itemRepository.create(list.id, {
             ingredientId: recipeIngredient.ingredient.id,
             ingredientName: recipeIngredient.ingredient.name,
-            quantity: recipeIngredient.quantity,
+            quantity: adjustedQuantity,
             unit: recipeIngredient.unit,
             category: recipeIngredient.ingredient.category
           });
         }
-        Alert.alert('✅', `Ingrédients de "${recipe.name}" ajoutés à la liste !`);
+        const servingText = targetServings !== originalServings ? ` (pour ${targetServings} portion${targetServings > 1 ? 's' : ''})` : '';
+        Alert.alert('✅', `Ingrédients de "${recipe.name}"${servingText} ajoutés à la liste !`);
       } else if (mode === 'ingredient' && ingredient) {
         // Add single ingredient to the list with selected quantity and unit
         const quantity = parseFloat(ingredientQuantity) || 1;
@@ -100,7 +112,7 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
     } finally {
       setCreating(false);
     }
-  }, [recipe, ingredient, mode, onClose, ingredientQuantity, ingredientUnit]);
+  }, [recipe, ingredient, mode, onClose, ingredientQuantity, ingredientUnit, servingMultiplier]);
 
   const handleCreateNewList = useCallback(async () => {
     if (!newListName.trim()) {
@@ -112,9 +124,33 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
       setCreating(true);
 
       if (mode === 'recipe' && recipe) {
-        // Generate from recipe
-        await actions.generateFromRecipes([recipe.id], newListName.trim());
-        Alert.alert('✅', 'Nouvelle liste créée avec les ingrédients de la recette !');
+        // Generate from recipe with serving multiplier
+        const targetServings = parseFloat(servingMultiplier) || 1;
+        const originalServings = recipe.servings || 1;
+        const multiplier = targetServings / originalServings;
+        
+        // We need to create the list manually with multiplied quantities
+        // since generateFromRecipes doesn't support multipliers
+        const recipeIngredients = recipe.ingredients
+          .filter(ri => !ri.optional)
+          .map(ri => ({
+            ingredientId: ri.ingredient.id,
+            ingredientName: ri.ingredient.name,
+            quantity: ri.quantity ? ri.quantity * multiplier : undefined,
+            unit: ri.unit,
+            category: ri.ingredient.category
+          }));
+        
+        const input: CreateShoppingListInput = {
+          name: newListName.trim(),
+          description: targetServings !== originalServings ? `Généré depuis "${recipe.name}" pour ${targetServings} portion${targetServings > 1 ? 's' : ''}` : `Généré depuis "${recipe.name}"`,
+          createdFromRecipes: true,
+          items: recipeIngredients
+        };
+        
+        await actions.createShoppingList(input);
+        const servingText = targetServings !== originalServings ? ` (pour ${targetServings} portion${targetServings > 1 ? 's' : ''})` : '';
+        Alert.alert('✅', `Nouvelle liste créée avec les ingrédients de "${recipe.name}"${servingText} !`);
       } else if (mode === 'ingredient' && ingredient) {
         // Create list with single ingredient using selected quantity and unit
         const quantity = parseFloat(ingredientQuantity) || 1;
@@ -140,7 +176,7 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
     } finally {
       setCreating(false);
     }
-  }, [newListName, recipe, ingredient, mode, actions, onClose, ingredientQuantity, ingredientUnit]);
+  }, [newListName, recipe, ingredient, mode, actions, onClose, ingredientQuantity, ingredientUnit, servingMultiplier]);
 
   const renderExistingLists = () => {
     if (loading) {
@@ -235,6 +271,33 @@ const AddToShoppingListModalComponent: React.FC<AddToShoppingListModalProps> = (
           </View>
 
           <View style={styles.content}>
+            {/* Serving Size Configuration for Recipes */}
+            {mode === 'recipe' && recipe && (
+              <View style={styles.servingSizeSection}>
+                <Text style={styles.sectionTitle}>Nombre de portions</Text>
+                <View style={styles.servingRow}>
+                  <Text style={styles.servingLabel}>Recette originale: {recipe.servings || 1} portion{(recipe.servings || 1) > 1 ? 's' : ''}</Text>
+                  <View style={styles.servingInputGroup}>
+                    <Text style={styles.servingInputLabel}>Ajuster pour:</Text>
+                    <TextInput
+                      style={styles.servingInput}
+                      value={servingMultiplier}
+                      onChangeText={setServingMultiplier}
+                      keyboardType="numeric"
+                      placeholder="1"
+                      editable={!creating}
+                    />
+                    <Text style={styles.servingInputSuffix}>portion{(parseFloat(servingMultiplier) || 1) > 1 ? 's' : ''}</Text>
+                  </View>
+                </View>
+                {parseFloat(servingMultiplier) !== (recipe.servings || 1) && (
+                  <Text style={styles.servingNote}>
+                    Les quantités seront {parseFloat(servingMultiplier) > (recipe.servings || 1) ? 'augmentées' : 'réduites'} automatiquement
+                  </Text>
+                )}
+              </View>
+            )}
+
             {/* Quantity and Unit Selection for Ingredients */}
             {mode === 'ingredient' && ingredient && (
               <View style={styles.ingredientConfigSection}>
@@ -707,5 +770,60 @@ const styles = StyleSheet.create({
   },
   createNewFormInContent: {
     paddingHorizontal: 20,
+  },
+  servingSizeSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#F8FAFC',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  servingRow: {
+    marginTop: 8,
+  },
+  servingLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 12,
+  },
+  servingInputGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  servingInputLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginRight: 8,
+  },
+  servingInput: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    textAlign: 'center',
+    minWidth: 50,
+    marginHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+  },
+  servingInputSuffix: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  servingNote: {
+    fontSize: 12,
+    color: '#3B82F6',
+    fontStyle: 'italic',
+    marginTop: 8,
+    textAlign: 'center',
   },
 });

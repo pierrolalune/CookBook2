@@ -1,4 +1,4 @@
-import { IngredientCategory, RecipeCategory, RecipeDifficulty, CreateRecipeInput, CreateRecipeIngredientInput, CreateRecipeInstructionInput } from '../types';
+import { IngredientCategory, RecipeCategory, RecipeDifficulty, CreateRecipeInput, CreateRecipeIngredientInput, CreateRecipeInstructionInput, CreateShoppingListInput, UpdateShoppingListInput, CreateShoppingListItemInput, UpdateShoppingListItemInput } from '../types';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -612,6 +612,216 @@ export class ValidationUtils {
       const isSequential = JSON.stringify(sortedSteps) === JSON.stringify(expectedSteps);
       if (!isSequential) {
         errors.push('Les numéros d\'étapes doivent être séquentiels (1, 2, 3, ...)');
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  // Shopping List validation methods
+  static validateCreateShoppingListInput(input: CreateShoppingListInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate name
+    const nameValidation = this.validateString(input.name, {
+      required: true,
+      minLength: 1,
+      maxLength: 200
+    });
+    if (!nameValidation.isValid) {
+      errors.push(...nameValidation.errors.map(e => `Nom: ${e}`));
+    }
+
+    // Validate description
+    if (input.description) {
+      const descValidation = this.validateString(input.description, {
+        maxLength: 500
+      });
+      if (!descValidation.isValid) {
+        errors.push(...descValidation.errors.map(e => `Description: ${e}`));
+      }
+    }
+
+    // Validate items if provided
+    if (input.items) {
+      for (let i = 0; i < input.items.length; i++) {
+        const itemValidation = this.validateCreateShoppingListItemInput(input.items[i]);
+        if (!itemValidation.isValid) {
+          errors.push(...itemValidation.errors.map(e => `Article ${i + 1}: ${e}`));
+        }
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateUpdateShoppingListInput(input: UpdateShoppingListInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate ID
+    if (!this.isValidUUID(input.id)) {
+      errors.push('ID invalide');
+    }
+
+    // Validate name if provided
+    if (input.name !== undefined) {
+      const nameValidation = this.validateString(input.name, {
+        required: true,
+        minLength: 1,
+        maxLength: 200
+      });
+      if (!nameValidation.isValid) {
+        errors.push(...nameValidation.errors.map(e => `Nom: ${e}`));
+      }
+    }
+
+    // Validate description if provided
+    if (input.description !== undefined && input.description) {
+      const descValidation = this.validateString(input.description, {
+        maxLength: 500
+      });
+      if (!descValidation.isValid) {
+        errors.push(...descValidation.errors.map(e => `Description: ${e}`));
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateCreateShoppingListItemInput(input: CreateShoppingListItemInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate ingredient name
+    const nameValidation = this.validateString(input.ingredientName, {
+      required: true,
+      minLength: 1,
+      maxLength: 200
+    });
+    if (!nameValidation.isValid) {
+      errors.push(...nameValidation.errors.map(e => `Nom de l'ingrédient: ${e}`));
+    }
+
+    // Validate category
+    const categoryValidation = this.validateString(input.category, {
+      required: true,
+      minLength: 1,
+      maxLength: 100
+    });
+    if (!categoryValidation.isValid) {
+      errors.push(...categoryValidation.errors.map(e => `Catégorie: ${e}`));
+    }
+
+    // Validate quantity if provided
+    if (input.quantity !== undefined && input.quantity !== null) {
+      const quantityValidation = this.validateNumber(input.quantity, {
+        min: 0,
+        max: 10000
+      });
+      if (!quantityValidation.isValid) {
+        errors.push(...quantityValidation.errors.map(e => `Quantité: ${e}`));
+      }
+    }
+
+    // Validate unit if provided
+    if (input.unit) {
+      const unitValidation = this.validateString(input.unit, {
+        maxLength: 50
+      });
+      if (!unitValidation.isValid) {
+        errors.push(...unitValidation.errors.map(e => `Unité: ${e}`));
+      }
+    }
+
+    // Validate notes if provided
+    if (input.notes) {
+      const notesValidation = this.validateString(input.notes, {
+        maxLength: 500
+      });
+      if (!notesValidation.isValid) {
+        errors.push(...notesValidation.errors.map(e => `Notes: ${e}`));
+      }
+    }
+
+    // Validate ingredient ID if provided
+    if (input.ingredientId && !this.isValidUUID(input.ingredientId)) {
+      errors.push('ID ingrédient invalide');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static validateUpdateShoppingListItemInput(input: UpdateShoppingListItemInput): ValidationResult {
+    const errors: string[] = [];
+
+    // Validate ID
+    if (!this.isValidUUID(input.id)) {
+      errors.push('ID invalide');
+    }
+
+    // Validate ingredient name if provided
+    if (input.ingredientName !== undefined) {
+      const nameValidation = this.validateString(input.ingredientName, {
+        required: true,
+        minLength: 1,
+        maxLength: 200
+      });
+      if (!nameValidation.isValid) {
+        errors.push(...nameValidation.errors.map(e => `Nom de l'ingrédient: ${e}`));
+      }
+    }
+
+    // Validate category if provided
+    if (input.category !== undefined) {
+      const categoryValidation = this.validateString(input.category, {
+        required: true,
+        minLength: 1,
+        maxLength: 100
+      });
+      if (!categoryValidation.isValid) {
+        errors.push(...categoryValidation.errors.map(e => `Catégorie: ${e}`));
+      }
+    }
+
+    // Validate quantity if provided
+    if (input.quantity !== undefined && input.quantity !== null) {
+      const quantityValidation = this.validateNumber(input.quantity, {
+        min: 0,
+        max: 10000
+      });
+      if (!quantityValidation.isValid) {
+        errors.push(...quantityValidation.errors.map(e => `Quantité: ${e}`));
+      }
+    }
+
+    // Validate unit if provided
+    if (input.unit !== undefined && input.unit) {
+      const unitValidation = this.validateString(input.unit, {
+        maxLength: 50
+      });
+      if (!unitValidation.isValid) {
+        errors.push(...unitValidation.errors.map(e => `Unité: ${e}`));
+      }
+    }
+
+    // Validate notes if provided
+    if (input.notes !== undefined && input.notes) {
+      const notesValidation = this.validateString(input.notes, {
+        maxLength: 500
+      });
+      if (!notesValidation.isValid) {
+        errors.push(...notesValidation.errors.map(e => `Notes: ${e}`));
       }
     }
 

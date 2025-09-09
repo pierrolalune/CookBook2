@@ -19,6 +19,7 @@ import { RecipeIngredientsSection } from '../components/recipe/RecipeIngredients
 import { RecipeInstructionsList } from '../components/recipe/RecipeInstructionsList';
 import { PhotoCarousel } from '../components/recipe/PhotoCarousel';
 import { ShareModal } from '../components/recipe/ShareModal';
+import { AddToShoppingListModal } from '../components/shoppingList/AddToShoppingListModal';
 
 interface RecipeDetailScreenProps {
   recipeId?: string;
@@ -34,6 +35,7 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
   const [currentServings, setCurrentServings] = useState(4);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [shoppingListModalVisible, setShoppingListModalVisible] = useState(false);
 
   const { actions: recipeActions } = useRecipes();
   const sharing = useRecipeSharing();
@@ -148,6 +150,11 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
     setShareModalVisible(true);
   }, [recipe]);
 
+  const handleAddToShoppingList = useCallback(() => {
+    if (!recipe) return;
+    setShoppingListModalVisible(true);
+  }, [recipe]);
+
 
   const handleServingsChange = useCallback((newServings: number) => {
     setCurrentServings(newServings);
@@ -232,6 +239,10 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
           </TouchableOpacity>
           
           <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.actionButton} onPress={handleAddToShoppingList}>
+              <Text style={styles.actionButtonText}>🛒</Text>
+            </TouchableOpacity>
+            
             <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
               <Text style={styles.actionButtonText}>📤</Text>
             </TouchableOpacity>
@@ -388,6 +399,14 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
           onClose={() => setShareModalVisible(false)}
           recipe={recipe}
           mode="single"
+        />
+
+        {/* Add to Shopping List Modal */}
+        <AddToShoppingListModal
+          visible={shoppingListModalVisible}
+          onClose={() => setShoppingListModalVisible(false)}
+          recipe={recipe}
+          mode="recipe"
         />
       </View>
     </ScreenErrorBoundary>

@@ -275,9 +275,14 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
 
   const availableUnits = selectedIngredient ? getUnitsForIngredient(selectedIngredient) : [];
 
-  const modalTranslateY = modalAnimation.interpolate({
+  const modalOpacity = modalAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [screenHeight, 0],
+    outputRange: [0, 1],
+  });
+
+  const modalScale = modalAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1],
   });
 
   const backdropOpacity = modalAnimation.interpolate({
@@ -313,7 +318,10 @@ export const IngredientSelectorModal: React.FC<IngredientSelectorModalProps> = (
         <Animated.View
           style={[
             styles.modalContent,
-            { transform: [{ translateY: modalTranslateY }] }
+            { 
+              opacity: modalOpacity,
+              transform: [{ scale: modalScale }] 
+            }
           ]}
         >
           <KeyboardAvoidingView
@@ -495,6 +503,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   backdrop: {
@@ -503,11 +513,20 @@ const styles = StyleSheet.create({
   },
 
   modalContent: {
-    flex: 1,
     backgroundColor: colors.background,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: screenHeight * 0.15,
+    borderRadius: 20,
+    marginHorizontal: spacing.md,
+    marginVertical: screenHeight * 0.1,
+    maxHeight: screenHeight * 0.8,
+    minHeight: screenHeight * 0.6,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
   },
 
   keyboardAvoidingView: {

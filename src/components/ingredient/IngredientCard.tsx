@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import { Ingredient, IngredientCategory } from '../../types';
 import { colors, spacing, typography, commonStyles } from '../../styles';
 import { SeasonalUtils } from '../../utils/seasonalUtils';
 import { useFavorites } from '../../hooks/useFavorites';
+import { AddToShoppingListModal } from '../shoppingList/AddToShoppingListModal';
 
 interface IngredientCardProps {
   ingredient: Ingredient;
@@ -27,6 +28,7 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
 }) => {
   const { actions: favoriteActions } = useFavorites();
   const [heartScale] = React.useState(new Animated.Value(1));
+  const [shoppingListModalVisible, setShoppingListModalVisible] = useState(false);
 
   const handlePress = () => {
     onPress?.(ingredient);
@@ -52,6 +54,11 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de modifier les favoris');
     }
+  };
+
+  const handleAddToShoppingList = (e?: any) => {
+    e?.stopPropagation(); // Prevent card onPress from firing
+    setShoppingListModalVisible(true);
   };
 
 
@@ -126,6 +133,15 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
           </View>
         )}
 
+        {/* Shopping List Button */}
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={handleAddToShoppingList}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Text style={styles.favoriteIcon}>🛒</Text>
+        </TouchableOpacity>
+
         {/* Favorite Heart */}
         <TouchableOpacity
           style={styles.favoriteButton}
@@ -142,6 +158,14 @@ export const IngredientCard: React.FC<IngredientCardProps> = ({
           </Animated.Text>
         </TouchableOpacity>
       </View>
+
+      {/* Add to Shopping List Modal */}
+      <AddToShoppingListModal
+        visible={shoppingListModalVisible}
+        onClose={() => setShoppingListModalVisible(false)}
+        ingredient={ingredient}
+        mode="ingredient"
+      />
     </TouchableOpacity>
   );
 };

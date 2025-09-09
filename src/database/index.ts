@@ -162,6 +162,38 @@ const createTablesIfNeeded = async (db: SQLiteDatabase): Promise<void> => {
       );
     `);
     
+    // Create shopping_lists table
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS shopping_lists (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        created_from_recipes INTEGER DEFAULT 0,
+        is_completed INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    
+    // Create shopping_list_items table
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS shopping_list_items (
+        id TEXT PRIMARY KEY,
+        shopping_list_id TEXT NOT NULL,
+        ingredient_id TEXT,
+        ingredient_name TEXT NOT NULL,
+        quantity REAL,
+        unit TEXT,
+        category TEXT NOT NULL,
+        is_completed INTEGER DEFAULT 0,
+        notes TEXT,
+        order_index INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (shopping_list_id) REFERENCES shopping_lists (id) ON DELETE CASCADE,
+        FOREIGN KEY (ingredient_id) REFERENCES ingredients (id) ON DELETE SET NULL
+      );
+    `);
+    
     // Create indexes
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_ingredients_category ON ingredients(category);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_ingredients_name ON ingredients(name);');
@@ -174,6 +206,10 @@ const createTablesIfNeeded = async (db: SQLiteDatabase): Promise<void> => {
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_usage_recipe_id ON recipe_usage(recipe_id);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_photos_recipe_id ON recipe_photos(recipe_id);');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_recipe_favorites_recipe_id ON recipe_favorites(recipe_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_lists_name ON shopping_lists(name);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_list_items_list_id ON shopping_list_items(shopping_list_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_list_items_ingredient_id ON shopping_list_items(ingredient_id);');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_shopping_list_items_category ON shopping_list_items(category);');
     
     console.log('✅ [DB] Tables created/verified');
   } catch (error) {
@@ -188,8 +224,8 @@ const runMigrations = async (db: SQLiteDatabase): Promise<void> => {
   
   try {
     // Check if estimated_time column exists in recipe_instructions table
-    const tableInfo = await db.getAllAsync(`PRAGMA table_info(recipe_instructions);`) as any[];
-    const hasEstimatedTime = tableInfo.some(col => col.name === 'estimated_time');
+    const recipeInstructionsInfo = await db.getAllAsync(`PRAGMA table_info(recipe_instructions);`) as any[];
+    const hasEstimatedTime = recipeInstructionsInfo.some(col => col.name === 'estimated_time');
     
     if (!hasEstimatedTime) {
       console.log('📝 [DB] Adding estimated_time column to recipe_instructions...');
@@ -198,12 +234,43 @@ const runMigrations = async (db: SQLiteDatabase): Promise<void> => {
     }
     
     // Check if temperature column exists and is correct type
-    const temperatureCol = tableInfo.find(col => col.name === 'temperature');
+    const temperatureCol = recipeInstructionsInfo.find(col => col.name === 'temperature');
     if (temperatureCol && temperatureCol.type !== 'TEXT') {
       console.log('📝 [DB] Updating temperature column type in recipe_instructions...');
       // Note: SQLite doesn't support ALTER COLUMN, so we'll need to recreate the table
       // For now, we'll log this as a known issue
       console.log('⚠️ [DB] Temperature column type needs manual migration - consider database reset');
+    }
+
+    // Check if shopping_lists table exists and has all required columns
+    const tableExists = await db.getFirstAsync(`SELECT name FROM sqlite_master WHERE type='table' AND name='shopping_lists';`) as any;
+    
+    if (!tableExists) {
+      console.log('📝 [DB] Shopping lists table does not exist - will be created by createTablesIfNeeded');
+    } else {
+      // Check shopping_lists columns
+      const shoppingListsInfo = await db.getAllAsync(`PRAGMA table_info(shopping_lists);`) as any[];
+      const hasCreatedFromRecipes = shoppingListsInfo.some(col => col.name === 'created_from_recipes');
+      
+      if (!hasCreatedFromRecipes) {
+        console.log('📝 [DB] Adding created_from_recipes column to shopping_lists...');
+        await db.execAsync(`ALTER TABLE shopping_lists ADD COLUMN created_from_recipes INTEGER DEFAULT 0;`);
+        console.log('✅ [DB] Added created_from_recipes column successfully');
+      }
+
+      const hasIsCompleted = shoppingListsInfo.some(col => col.name === 'is_completed');
+      if (!hasIsCompleted) {
+        console.log('📝 [DB] Adding is_completed column to shopping_lists...');
+        await db.execAsync(`ALTER TABLE shopping_lists ADD COLUMN is_completed INTEGER DEFAULT 0;`);
+        console.log('✅ [DB] Added is_completed column successfully');
+      }
+    }
+
+    // Check if shopping_list_items table exists
+    const itemsTableExists = await db.getFirstAsync(`SELECT name FROM sqlite_master WHERE type='table' AND name='shopping_list_items';`) as any;
+    
+    if (!itemsTableExists) {
+      console.log('📝 [DB] Shopping list items table does not exist - will be created by createTablesIfNeeded');
     }
     
     console.log('✅ [DB] Database migrations complete');
@@ -468,6 +535,8 @@ export const resetDatabase = async (): Promise<void> => {
   
   try {
     // Drop tables in correct order (due to foreign key constraints)
+    await db.execAsync('DROP TABLE IF EXISTS shopping_list_items;');
+    await db.execAsync('DROP TABLE IF EXISTS shopping_lists;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_favorites;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_photos;');
     await db.execAsync('DROP TABLE IF EXISTS recipe_usage;');

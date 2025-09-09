@@ -59,7 +59,7 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
     <Modal
       visible={visible}
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>

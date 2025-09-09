@@ -214,6 +214,30 @@ export interface RecipeUsageRow {
   used_at: string;
 }
 
+export interface ShoppingListRow {
+  id: string;
+  name: string;
+  description: string | null;
+  created_from_recipes: number; // SQLite boolean as integer
+  is_completed: number; // SQLite boolean as integer
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShoppingListItemRow {
+  id: string;
+  shopping_list_id: string;
+  ingredient_id: string | null;
+  ingredient_name: string;
+  quantity: number | null;
+  unit: string | null;
+  category: string;
+  is_completed: number; // SQLite boolean as integer
+  notes: string | null;
+  order_index: number;
+  created_at: string;
+}
+
 export interface DatabaseSchema {
   ingredients: {
     id: string;
@@ -280,6 +304,28 @@ export interface DatabaseSchema {
     recipe_id: string;
     created_at: string;
   };
+  shopping_lists: {
+    id: string;
+    name: string;
+    description: string | null;
+    created_from_recipes: number;
+    is_completed: number;
+    created_at: string;
+    updated_at: string;
+  };
+  shopping_list_items: {
+    id: string;
+    shopping_list_id: string;
+    ingredient_id: string | null;
+    ingredient_name: string;
+    quantity: number | null;
+    unit: string | null;
+    category: string;
+    is_completed: number;
+    notes: string | null;
+    order_index: number;
+    created_at: string;
+  };
 }
 
 export type DetailedSeasonStatus = 
@@ -289,6 +335,66 @@ export type DetailedSeasonStatus =
   | 'in-season'
   | 'out-of-season'
   | 'year-round';
+
+// Shopping List types
+export interface ShoppingList {
+  id: string;
+  name: string;
+  description?: string;
+  createdFromRecipes: boolean;
+  isCompleted: boolean;
+  items: ShoppingListItem[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ShoppingListItem {
+  id: string;
+  shoppingListId: string;
+  ingredientId?: string;
+  ingredient?: Ingredient;
+  ingredientName: string;
+  quantity?: number;
+  unit?: string;
+  category: string;
+  isCompleted: boolean;
+  notes?: string;
+  orderIndex: number;
+  createdAt: Date;
+}
+
+export interface CreateShoppingListInput {
+  name: string;
+  description?: string;
+  createdFromRecipes?: boolean;
+  items?: CreateShoppingListItemInput[];
+}
+
+export interface UpdateShoppingListInput extends Partial<CreateShoppingListInput> {
+  id: string;
+  isCompleted?: boolean;
+}
+
+export interface CreateShoppingListItemInput {
+  ingredientId?: string;
+  ingredientName: string;
+  quantity?: number;
+  unit?: string;
+  category: string;
+  notes?: string;
+  orderIndex?: number;
+}
+
+export interface UpdateShoppingListItemInput extends Partial<CreateShoppingListItemInput> {
+  id: string;
+  isCompleted?: boolean;
+}
+
+export interface ShoppingListFilters {
+  searchQuery?: string;
+  completedOnly?: boolean;
+  fromRecipesOnly?: boolean;
+}
 
 export interface SeasonalUtility {
   getCurrentMonth(): number;

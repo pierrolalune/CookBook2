@@ -281,6 +281,7 @@ export const useWhatCanIMake = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[]>([]);
+  const [excludedIngredientIds, setExcludedIngredientIds] = useState<string[]>([]);
   const [matchThreshold, setMatchThreshold] = useState(70);
   const [isManualMode, setIsManualMode] = useState(false);
 
@@ -315,6 +316,7 @@ export const useWhatCanIMake = (
       setError(null);
       setIsManualMode(true);
       setSelectedIngredientIds(ingredientIds);
+      setExcludedIngredientIds(excludedIngredientIds);
       setMatchThreshold(threshold);
 
       // Get selected ingredients
@@ -361,6 +363,7 @@ export const useWhatCanIMake = (
   const resetToAutoMode = useCallback(async () => {
     setIsManualMode(false);
     setSelectedIngredientIds([]);
+    setExcludedIngredientIds([]);
     setMatchThreshold(70);
     await findRecipes();
   }, [findRecipes]);
@@ -419,6 +422,7 @@ export const useWhatCanIMake = (
     // Mode management
     isManualMode,
     selectedIngredientIds,
+    excludedIngredientIds,
     matchThreshold,
     
     // Actions

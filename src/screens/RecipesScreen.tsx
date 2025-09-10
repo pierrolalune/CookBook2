@@ -572,12 +572,18 @@ export const RecipesScreen: React.FC = () => {
                   searchMode === 'makeable' && styles.advancedButtonTextActive,
                   availableIngredients.length === 0 && styles.disabledText
                 ]}>
-                  {whatCanIMake.isManualMode ? 'Mes ingrédients' : 'Réalisable'}
+                  {whatCanIMake.isManualMode 
+                    ? (whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0 
+                       ? 'Exclusions' 
+                       : 'Mes ingrédients')
+                    : 'Réalisable'}
                 </Text>
-                {whatCanIMake.isManualMode && whatCanIMake.selectedIngredientIds.length > 0 && (
+                {whatCanIMake.isManualMode && ((whatCanIMake.selectedIngredientIds.length > 0 || whatCanIMake.excludedIngredientIds.length > 0) || searchMode === 'makeable') && (
                   <View style={styles.selectionCountBadge}>
                     <Text style={styles.selectionCountText}>
-                      {whatCanIMake.selectedIngredientIds.length}
+                      {whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0
+                        ? whatCanIMake.excludedIngredientIds.length
+                        : whatCanIMake.selectedIngredientIds.length}
                     </Text>
                   </View>
                 )}
@@ -614,7 +620,10 @@ export const RecipesScreen: React.FC = () => {
                   <Ionicons name="restaurant" size={14} color={colors.success} />
                   <Text style={styles.statusText}>
                     {whatCanIMake.loading ? 'Analyse...' : 
-                     `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable > 1 ? 's' : ''} réalisable${whatCanIMake.totalMakeable > 1 ? 's' : ''}`
+                     // Check if we're in exclusion-only mode
+                     whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0
+                       ? `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable > 1 ? 's' : ''} sans ingrédients exclus`
+                       : `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable > 1 ? 's' : ''} réalisable${whatCanIMake.totalMakeable > 1 ? 's' : ''}`
                     }
                   </Text>
                 </View>

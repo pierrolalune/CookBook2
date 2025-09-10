@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   TouchableOpacity, 
   Text, 
@@ -19,7 +19,7 @@ export const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({
   style,
   size = 'medium'
 }) => {
-  const scaleAnim = new Animated.Value(1);
+  const [scaleAnim] = useState(new Animated.Value(1));
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {

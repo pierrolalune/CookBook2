@@ -16,6 +16,7 @@ import { IngredientListView } from '../components/ingredient/IngredientListView'
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { IngredientDetailModal } from '../components/ingredient/IngredientDetailModal';
+import { AddToShoppingListModal } from '../components/shoppingList/AddToShoppingListModal';
 import { Ingredient, IngredientCategory } from '../types';
 import { colors, spacing, commonStyles } from '../styles';
 import { SeasonalUtils } from '../utils/seasonalUtils';
@@ -41,6 +42,10 @@ export const IngredientsScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  
+  // Shopping cart modal state
+  const [addToCartModalVisible, setAddToCartModalVisible] = useState(false);
+  const [ingredientForCart, setIngredientForCart] = useState<Ingredient | null>(null);
   
 
   const { 
@@ -273,10 +278,13 @@ export const IngredientsScreen: React.FC = () => {
   };
 
   const handleAddToCart = (ingredient: Ingredient) => {
-    // TODO: Implement add to shopping list functionality
-    console.log('Add to cart:', ingredient.name);
-    // This would typically navigate to shopping list or show a quantity selector
-    router.push('/shopping-lists');
+    setIngredientForCart(ingredient);
+    setAddToCartModalVisible(true);
+  };
+
+  const handleCloseAddToCartModal = () => {
+    setAddToCartModalVisible(false);
+    setIngredientForCart(null);
   };
 
   const handleRefresh = async () => {
@@ -394,6 +402,13 @@ export const IngredientsScreen: React.FC = () => {
           ingredient={selectedIngredient}
           visible={modalVisible}
           onClose={handleCloseModal}
+        />
+
+        <AddToShoppingListModal
+          visible={addToCartModalVisible}
+          onClose={handleCloseAddToCartModal}
+          ingredient={ingredientForCart || undefined}
+          mode="ingredient"
         />
       </View>
     </ScreenErrorBoundary>

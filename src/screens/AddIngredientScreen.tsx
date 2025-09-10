@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TextInput,
-  TouchableOpacity,
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
   Alert,
-  Switch,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useIngredientsContext } from '../contexts/IngredientsContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useIngredients } from '../hooks/useIngredients';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
+import { ModernInput } from '../components/common/ModernInput';
+import { DropdownSelector } from '../components/common/DropdownSelector';
+import { ModernToggle } from '../components/common/ModernToggle';
+import { CategorySelector } from '../components/common/CategorySelector';
+import { SeasonalMonthSelector } from '../components/common/SeasonalMonthSelector';
 import { IngredientCategory, CreateIngredientInput, SeasonalData } from '../types';
-import { colors, spacing, typography, commonStyles } from '../styles';
+import { colors, spacing, typography } from '../styles';
 
 interface FormData {
   name: string;
@@ -32,35 +36,69 @@ interface FormData {
   tags: string[];
 }
 
-const MONTHS = [
-  { id: 1, name: 'Jan' },
-  { id: 2, name: 'Fév' },
-  { id: 3, name: 'Mar' },
-  { id: 4, name: 'Avr' },
-  { id: 5, name: 'Mai' },
-  { id: 6, name: 'Juin' },
-  { id: 7, name: 'Juil' },
-  { id: 8, name: 'Août' },
-  { id: 9, name: 'Sep' },
-  { id: 10, name: 'Oct' },
-  { id: 11, name: 'Nov' },
-  { id: 12, name: 'Déc' },
+const CATEGORIES = [
+  { id: 'fruits' as IngredientCategory, name: 'Fruits', icon: '🍎' },
+  { id: 'legumes' as IngredientCategory, name: 'Légumes', icon: '🥬' },
+  { id: 'peche' as IngredientCategory, name: 'Poisson', icon: '🐟' },
+  { id: 'viande' as IngredientCategory, name: 'Viande', icon: '🥩' },
+  { id: 'produits_laitiers' as IngredientCategory, name: 'Produits laitiers', icon: '🥛' },
+  { id: 'epicerie' as IngredientCategory, name: 'Épicerie', icon: '🛒' },
 ];
 
-const CATEGORIES: Array<{ id: IngredientCategory; name: string; icon: string }> = [
-  { id: 'fruits', name: 'Fruits', icon: '🍎' },
-  { id: 'legumes', name: 'Légumes', icon: '🥬' },
-  { id: 'peche', name: 'Poisson', icon: '🐟' },
-  { id: 'viande', name: 'Viande', icon: '🥩' },
-  { id: 'produits_laitiers', name: 'Produits laitiers', icon: '🥛' },
-  { id: 'epicerie', name: 'Épicerie', icon: '🛒' },
-];
+const SUBCATEGORY_OPTIONS = {
+  fruits: [
+    { value: 'agrumes', label: 'Agrumes' },
+    { value: 'fruits_rouges', label: 'Fruits rouges' },
+    { value: 'fruits_tropicaux', label: 'Fruits tropicaux' },
+    { value: 'fruits_a_noyau', label: 'Fruits à noyau' },
+    { value: 'fruits_a_pepin', label: 'Fruits à pépin' },
+  ],
+  legumes: [
+    { value: 'legumes_racines', label: 'Légumes racines' },
+    { value: 'legumes_feuilles', label: 'Légumes feuilles' },
+    { value: 'legumes_fruits', label: 'Légumes fruits' },
+    { value: 'legumes_fleurs', label: 'Légumes fleurs' },
+    { value: 'legumes_tiges', label: 'Légumes tiges' },
+  ],
+  peche: [
+    { value: 'poisson_blanc', label: 'Poisson blanc' },
+    { value: 'poisson_gras', label: 'Poisson gras' },
+    { value: 'crustaces', label: 'Crustacés' },
+    { value: 'mollusques', label: 'Mollusques' },
+  ],
+  viande: [
+    { value: 'boeuf', label: 'Bœuf' },
+    { value: 'porc', label: 'Porc' },
+    { value: 'volaille', label: 'Volaille' },
+    { value: 'agneau', label: 'Agneau' },
+    { value: 'gibier', label: 'Gibier' },
+  ],
+  produits_laitiers: [
+    { value: 'lait', label: 'Lait' },
+    { value: 'fromage', label: 'Fromage' },
+    { value: 'yaourt', label: 'Yaourt' },
+    { value: 'creme', label: 'Crème' },
+    { value: 'beurre', label: 'Beurre' },
+  ],
+  epicerie: [
+    { value: 'cereales', label: 'Céréales' },
+    { value: 'legumineuses', label: 'Légumineuses' },
+    { value: 'condiments', label: 'Condiments' },
+    { value: 'epices', label: 'Épices' },
+    { value: 'huiles', label: 'Huiles' },
+  ],
+  autres: [
+    { value: 'divers', label: 'Divers' },
+    { value: 'non_classe', label: 'Non classé' },
+  ],
+};
 
 const DEFAULT_UNITS = ['pièce', 'kg', 'g', 'L', 'ml', 'c. à soupe', 'c. à café'];
 
 export const AddIngredientScreen: React.FC = () => {
-  const { createIngredient, loading } = useIngredientsContext();
-  
+  const insets = useSafeAreaInsets();
+  const { actions, loading } = useIngredients();
+
   const [formData, setFormData] = useState<FormData>({
     name: '',
     category: 'fruits',
@@ -75,10 +113,13 @@ export const AddIngredientScreen: React.FC = () => {
     tags: [],
   });
 
-  const [newTag, setNewTag] = useState('');
-
   const updateFormData = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCategoryChange = (category: IngredientCategory) => {
+    updateFormData('category', category);
+    updateFormData('subcategory', ''); // Reset subcategory when category changes
   };
 
   const handleMonthToggle = (monthId: number) => {
@@ -88,6 +129,12 @@ export const AddIngredientScreen: React.FC = () => {
       : [...formData.selectedMonths, monthId];
     
     updateFormData('selectedMonths', newSelectedMonths);
+    
+    // Remove from peak months if unselected from regular months
+    if (isSelected && formData.peakMonths.includes(monthId)) {
+      const newPeakMonths = formData.peakMonths.filter(id => id !== monthId);
+      updateFormData('peakMonths', newPeakMonths);
+    }
     
     // Auto-update season based on selected months
     if (newSelectedMonths.length > 0) {
@@ -126,17 +173,6 @@ export const AddIngredientScreen: React.FC = () => {
     return seasons.join('-');
   };
 
-  const addTag = () => {
-    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
-      updateFormData('tags', [...formData.tags, newTag.trim()]);
-      setNewTag('');
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    updateFormData('tags', formData.tags.filter(tag => tag !== tagToRemove));
-  };
-
   const validateForm = (): string | null => {
     if (!formData.name.trim()) return 'Le nom est requis';
     if (!formData.subcategory.trim()) return 'La sous-catégorie est requise';
@@ -169,7 +205,7 @@ export const AddIngredientScreen: React.FC = () => {
     };
 
     try {
-      const newIngredient = await createIngredient(createInput);
+      const newIngredient = await actions.createIngredient(createInput);
       if (newIngredient) {
         Alert.alert(
           'Succès!',
@@ -198,13 +234,44 @@ export const AddIngredientScreen: React.FC = () => {
     );
   };
 
+  const currentSubcategoryOptions = SUBCATEGORY_OPTIONS[formData.category] || [];
+
   return (
     <ScreenErrorBoundary>
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Gradient Header */}
+        <LinearGradient
+          colors={['#667eea', '#764ba2']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top }]}
+        >
+          <View style={styles.headerContent}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Nouvel Ingrédient</Text>
+          </View>
+
+          {/* Info Banner */}
+          <View style={styles.infoBanner}>
+            <View style={styles.infoIcon}>
+              <Text style={styles.infoIconText}>ℹ️</Text>
+            </View>
+            <Text style={styles.infoText}>
+              Cet ingrédient sera automatiquement ajouté à "Mes produits" et à la catégorie sélectionnée
+            </Text>
+          </View>
+        </LinearGradient>
+
+        {/* Form Content */}
         <KeyboardAvoidingView 
-          style={styles.container}
+          style={styles.formContainer}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         >
           <ScrollView 
             style={styles.scrollView}
@@ -212,468 +279,257 @@ export const AddIngredientScreen: React.FC = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-        {/* Info Box */}
-        <View style={styles.infoBox}>
-          <Text style={styles.infoIcon}>ℹ️</Text>
-          <Text style={styles.infoText}>
-            Cet ingrédient sera automatiquement ajouté à "Mes produits" et à la catégorie sélectionnée
-          </Text>
-        </View>
+            {/* Ingredient Name */}
+            <ModernInput
+              label="Nom de l'ingrédient"
+              required
+              value={formData.name}
+              onChangeText={(value) => updateFormData('name', value)}
+              placeholder="Ex: Tomate cerise"
+              autoCapitalize="words"
+            />
 
-        {/* Name Input */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Nom de l'ingrédient *</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.name}
-            onChangeText={(value) => updateFormData('name', value)}
-            placeholder="Ex: Tomate cerise"
-            autoCapitalize="words"
-          />
-        </View>
+            {/* Category Selection */}
+            <CategorySelector
+              label="Catégorie principale"
+              required
+              categories={CATEGORIES}
+              selectedCategory={formData.category}
+              onSelect={handleCategoryChange}
+            />
 
-        {/* Category Selection */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Catégorie principale *</Text>
-          <View style={styles.categoryGrid}>
-            {CATEGORIES.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={[
-                  styles.categoryOption,
-                  formData.category === category.id && styles.categoryOptionSelected
-                ]}
-                onPress={() => updateFormData('category', category.id)}
-              >
-                <Text style={styles.categoryIcon}>{category.icon}</Text>
-                <Text style={[
-                  styles.categoryText,
-                  formData.category === category.id && styles.categoryTextSelected
-                ]}>
-                  {category.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+            {/* Subcategory Selection */}
+            <DropdownSelector
+              label="Sous-catégorie"
+              required
+              value={formData.subcategory}
+              placeholder="Sélectionner une sous-catégorie"
+              options={currentSubcategoryOptions}
+              onSelect={(value) => updateFormData('subcategory', value)}
+            />
 
-        {/* Subcategory Input */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Sous-catégorie *</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.subcategory}
-            onChangeText={(value) => updateFormData('subcategory', value)}
-            placeholder="Ex: Légume fruit"
-            autoCapitalize="words"
-          />
-        </View>
+            {/* Seasonal Toggle */}
+            <ModernToggle
+              label="Produit de saison"
+              icon="🌿"
+              value={formData.isSeasonal}
+              onValueChange={(value) => {
+                updateFormData('isSeasonal', value);
+                if (!value) {
+                  updateFormData('selectedMonths', []);
+                  updateFormData('peakMonths', []);
+                  updateFormData('season', '');
+                }
+              }}
+            />
 
-        {/* Seasonal Toggle */}
-        <View style={styles.toggleGroup}>
-          <View style={styles.toggleLeft}>
-            <Text style={styles.toggleIcon}>🌿</Text>
-            <Text style={styles.toggleLabel}>Produit de saison</Text>
-          </View>
-          <Switch
-            value={formData.isSeasonal}
-            onValueChange={(value) => updateFormData('isSeasonal', value)}
-            trackColor={{ false: colors.backgroundDark, true: colors.primaryLight }}
-            thumbColor={formData.isSeasonal ? colors.primary : colors.textLight}
-          />
-        </View>
+            {/* Seasonal Month Selection */}
+            <SeasonalMonthSelector
+              selectedMonths={formData.selectedMonths}
+              peakMonths={formData.peakMonths}
+              onMonthToggle={handleMonthToggle}
+              onPeakMonthToggle={handlePeakMonthToggle}
+              isVisible={formData.isSeasonal}
+            />
 
-        {/* Month Selection */}
-        {formData.isSeasonal && (
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>📅 Mois de disponibilité</Text>
-            <View style={styles.monthsGrid}>
-              {MONTHS.map((month) => (
-                <TouchableOpacity
-                  key={month.id}
-                  style={[
-                    styles.monthOption,
-                    formData.selectedMonths.includes(month.id) && styles.monthOptionSelected
-                  ]}
-                  onPress={() => handleMonthToggle(month.id)}
-                >
-                  <Text style={[
-                    styles.monthText,
-                    formData.selectedMonths.includes(month.id) && styles.monthTextSelected
-                  ]}>
-                    {month.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            
-            {formData.selectedMonths.length > 0 && (
-              <View style={styles.peakMonthsSection}>
-                <Text style={styles.subLabel}>Mois de pic de saison (optionnel)</Text>
-                <View style={styles.monthsGrid}>
-                  {MONTHS.filter(month => formData.selectedMonths.includes(month.id)).map((month) => (
-                    <TouchableOpacity
-                      key={month.id}
-                      style={[
-                        styles.monthOption,
-                        styles.peakMonthOption,
-                        formData.peakMonths.includes(month.id) && styles.peakMonthOptionSelected
-                      ]}
-                      onPress={() => handlePeakMonthToggle(month.id)}
-                    >
-                      <Text style={[
-                        styles.monthText,
-                        formData.peakMonths.includes(month.id) && styles.monthTextSelected
-                      ]}>
-                        {month.name}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* Description Input */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Description (optionnel)</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.description}
-            onChangeText={(value) => updateFormData('description', value)}
-            placeholder="Description courte"
-            multiline
-          />
-        </View>
-
-        {/* Tags */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Tags</Text>
-          <Text style={styles.helperText}>
-            Les tags permettent de filtrer rapidement les ingrédients
-          </Text>
-          <View style={styles.tagsContainer}>
-            {formData.tags.map((tag) => (
-              <View key={tag} style={styles.tag}>
-                <Text style={styles.tagText}>{tag}</Text>
-                <TouchableOpacity onPress={() => removeTag(tag)}>
-                  <Text style={styles.tagRemove}>×</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-            <View style={styles.tagInputContainer}>
-              <TextInput
-                style={styles.tagInput}
-                value={newTag}
-                onChangeText={setNewTag}
-                placeholder="Nouveau tag"
-                onSubmitEditing={addTag}
-                returnKeyType="done"
-              />
-              <TouchableOpacity style={styles.addTagButton} onPress={addTag}>
-                <Text style={styles.addTagText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        {/* Notes Input */}
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Notes (optionnel)</Text>
-          <TextInput
-            style={[styles.input, styles.notesInput]}
-            value={formData.notes}
-            onChangeText={(value) => updateFormData('notes', value)}
-            placeholder="Informations supplémentaires..."
-            multiline
-            numberOfLines={3}
-          />
-        </View>
+            {/* Description */}
+            <ModernInput
+              label="Description"
+              value={formData.description}
+              onChangeText={(value) => updateFormData('description', value)}
+              placeholder="Ajoutez des notes ou informations supplémentaires..."
+              multiline
+              characterLimit={200}
+              showCharacterCount
+            />
           </ScrollView>
 
           {/* Bottom Actions */}
-          <View style={styles.bottomActions}>
+          <View style={[styles.bottomActions, { paddingBottom: insets.bottom }]}>
             <TouchableOpacity 
-              style={[commonStyles.button, styles.cancelButton]}
+              style={styles.cancelButton}
               onPress={handleCancel}
+              activeOpacity={0.7}
             >
-              <Text style={[commonStyles.secondaryButtonText, styles.cancelButtonText]}>
-                Annuler
-              </Text>
+              <Text style={styles.cancelButtonIcon}>✕</Text>
+              <Text style={styles.cancelButtonText}>Annuler</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
-              style={[commonStyles.button, commonStyles.primaryButton, styles.submitButton]}
+              style={styles.submitButton}
               onPress={handleSubmit}
               disabled={loading}
+              activeOpacity={0.8}
             >
-              <Text style={commonStyles.buttonText}>
-                {loading ? 'Création...' : 'Ajouter l\'ingrédient'}
-              </Text>
+              <LinearGradient
+                colors={['#667eea', '#764ba2']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.submitButtonGradient}
+              >
+                <Text style={styles.submitButtonIcon}>✓</Text>
+                <Text style={styles.submitButtonText}>
+                  {loading ? 'Création...' : 'Ajouter l\'ingrédient'}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
     </ScreenErrorBoundary>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  
   container: {
     flex: 1,
+    backgroundColor: '#f8f9fa',
   },
-  
+
+  header: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    gap: 20,
+  },
+
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  backButtonText: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: '300',
+  },
+
+  headerTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: '700',
+    flex: 1,
+  },
+
+  infoBanner: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 15,
+    padding: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+
+  infoIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#667eea',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+
+  infoIconText: {
+    color: 'white',
+    fontSize: 20,
+  },
+
+  infoText: {
+    flex: 1,
+    color: '#5a6c7d',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+
+  formContainer: {
+    flex: 1,
+  },
+
   scrollView: {
     flex: 1,
   },
-  
+
   scrollContent: {
-    padding: spacing.screenPadding,
+    padding: 25,
+    paddingBottom: 100,
   },
-  
-  infoBox: {
-    backgroundColor: colors.primaryLight,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-    padding: spacing.cardPadding,
-    borderRadius: spacing.borderRadius.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.xl,
-  },
-  
-  infoIcon: {
-    fontSize: 18,
-    marginRight: spacing.md,
-  },
-  
-  infoText: {
-    ...typography.styles.small,
-    color: colors.primary,
-    flex: 1,
-  },
-  
-  formGroup: {
-    marginBottom: spacing.xl,
-  },
-  
-  label: {
-    ...typography.styles.body,
-    fontWeight: typography.weights.semibold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  
-  subLabel: {
-    ...typography.styles.caption,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
-  },
-  
-  helperText: {
-    ...typography.styles.small,
-    color: colors.textLight,
-    marginBottom: spacing.sm,
-  },
-  
-  input: {
-    ...commonStyles.input,
-  },
-  
-  notesInput: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  
-  categoryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-  },
-  
-  categoryOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.cardPadding,
-    borderRadius: spacing.borderRadius.lg,
-    backgroundColor: colors.backgroundDark,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    minWidth: '45%',
-  },
-  
-  categoryOptionSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  
-  categoryIcon: {
-    fontSize: typography.sizes.lg,
-    marginRight: spacing.sm,
-  },
-  
-  categoryText: {
-    ...typography.styles.caption,
-    color: colors.textSecondary,
-  },
-  
-  categoryTextSelected: {
-    color: colors.textWhite,
-    fontWeight: typography.weights.semibold,
-  },
-  
-  toggleGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: spacing.lg,
-    backgroundColor: colors.backgroundDark,
-    borderRadius: spacing.borderRadius.lg,
-    marginBottom: spacing.xl,
-  },
-  
-  toggleLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  
-  toggleIcon: {
-    fontSize: typography.sizes.lg,
-    marginRight: spacing.sm,
-  },
-  
-  toggleLabel: {
-    ...typography.styles.body,
-    color: colors.textPrimary,
-  },
-  
-  monthsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  
-  monthOption: {
-    padding: spacing.md,
-    backgroundColor: colors.backgroundLight,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: spacing.borderRadius.md,
-    minWidth: 60,
-    alignItems: 'center',
-  },
-  
-  monthOptionSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  
-  peakMonthOption: {
-    borderColor: colors.warning,
-  },
-  
-  peakMonthOptionSelected: {
-    backgroundColor: colors.warning,
-    borderColor: colors.warning,
-  },
-  
-  monthText: {
-    ...typography.styles.small,
-    color: colors.textSecondary,
-  },
-  
-  monthTextSelected: {
-    color: colors.textWhite,
-    fontWeight: typography.weights.semibold,
-  },
-  
-  peakMonthsSection: {
-    marginTop: spacing.lg,
-    padding: spacing.md,
-    backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.md,
-  },
-  
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  
-  tag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primaryLight,
-    borderRadius: spacing.borderRadius.xl,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  
-  tagText: {
-    ...typography.styles.small,
-    color: colors.primary,
-    marginRight: spacing.xs,
-  },
-  
-  tagRemove: {
-    ...typography.styles.small,
-    color: colors.primary,
-    fontWeight: typography.weights.bold,
-  },
-  
-  tagInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderStyle: 'dashed',
-    borderRadius: spacing.borderRadius.xl,
-    paddingLeft: spacing.md,
-  },
-  
-  tagInput: {
-    ...typography.styles.small,
-    color: colors.primary,
-    flex: 1,
-    paddingVertical: spacing.xs,
-  },
-  
-  addTagButton: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  
-  addTagText: {
-    ...typography.styles.body,
-    color: colors.primary,
-    fontWeight: typography.weights.bold,
-  },
-  
+
   bottomActions: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    padding: 20,
     flexDirection: 'row',
-    padding: spacing.screenPadding,
-    backgroundColor: colors.backgroundLight,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    gap: spacing.md,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
-  
+
   cancelButton: {
     flex: 1,
-    backgroundColor: colors.backgroundDark,
+    padding: 16,
+    backgroundColor: '#f5f7fa',
+    borderRadius: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
-  
+
+  cancelButtonIcon: {
+    fontSize: 16,
+    color: '#5a6c7d',
+  },
+
   cancelButtonText: {
-    color: colors.textSecondary,
+    fontSize: 16,
+    color: '#5a6c7d',
+    fontWeight: '600',
   },
-  
+
   submitButton: {
-    flex: 2,
+    flex: 1,
+    borderRadius: 15,
+  },
+
+  submitButtonGradient: {
+    padding: 16,
+    borderRadius: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+
+  submitButtonIcon: {
+    fontSize: 16,
+    color: 'white',
+  },
+
+  submitButtonText: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: '600',
   },
 });

@@ -711,6 +711,7 @@ export const RecipesScreen: React.FC = () => {
           onSearch={handleMakeableSearch}
           availableIngredients={availableIngredients}
           initialSelectedIds={whatCanIMake.selectedIngredientIds}
+          initialExcludedIds={whatCanIMake.excludedIngredientIds}
         />
         </View>
       </View>

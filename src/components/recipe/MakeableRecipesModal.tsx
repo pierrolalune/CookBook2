@@ -25,6 +25,7 @@ interface MakeableRecipesModalProps {
   onSearch: (selectedIngredients: string[], matchThreshold: number, excludedIngredients?: string[]) => void;
   availableIngredients: Ingredient[];
   initialSelectedIds?: string[];
+  initialExcludedIds?: string[];
 }
 
 export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
@@ -32,7 +33,8 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
   onClose,
   onSearch,
   availableIngredients,
-  initialSelectedIds = []
+  initialSelectedIds = [],
+  initialExcludedIds = []
 }) => {
   // State for selected ingredients
   const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[]>(initialSelectedIds);
@@ -48,10 +50,10 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
   useEffect(() => {
     if (visible) {
       setSelectedIngredientIds(initialSelectedIds);
-      setExcludedIngredientIds([]);
+      setExcludedIngredientIds(initialExcludedIds);
       setSearchQuery('');
     }
-  }, [visible, initialSelectedIds]);
+  }, [visible, initialSelectedIds, initialExcludedIds]);
 
   // Adjust match threshold when selected ingredients change
   useEffect(() => {

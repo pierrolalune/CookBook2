@@ -28,7 +28,9 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
   exclusionOnlyMode = false
 }) => {
   const [showMissingIngredients, setShowMissingIngredients] = useState(false);
+  const [showRecipeIngredients, setShowRecipeIngredients] = useState(false);
   const [animatedHeight] = useState(new Animated.Value(0));
+  const [ingredientsAnimatedHeight] = useState(new Animated.Value(0));
 
   const { recipe, matchPercentage, availableIngredients, missingIngredients, optionalMissing, canMake, seasonalBonus } = matchResult;
 
@@ -37,6 +39,17 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
     setShowMissingIngredients(!showMissingIngredients);
     
     Animated.timing(animatedHeight, {
+      toValue,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const toggleRecipeIngredients = () => {
+    const toValue = showRecipeIngredients ? 0 : 1;
+    setShowRecipeIngredients(!showRecipeIngredients);
+    
+    Animated.timing(ingredientsAnimatedHeight, {
       toValue,
       duration: 300,
       useNativeDriver: false,
@@ -58,16 +71,9 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
   };
 
   const renderMatchBadge = () => {
-    // In exclusion-only mode, show different content
+    // In exclusion-only mode, don't show any badge
     if (exclusionOnlyMode) {
-      return (
-        <View style={[styles.matchBadge, { backgroundColor: colors.successLight }]}>
-          <Ionicons name="checkmark-circle" size={16} color={colors.success} />
-          <Text style={[styles.matchPercentage, { color: colors.success }]}>
-            Autorisé
-          </Text>
-        </View>
-      );
+      return null;
     }
     
     const matchColor = getMatchColor(matchPercentage);
@@ -100,15 +106,20 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
   };
 
   const renderIngredientCounts = () => {
-    // In exclusion-only mode, don't show ingredient match counts
+    // In exclusion-only mode, make ingredient count clickable to show ingredients
     if (exclusionOnlyMode) {
       return (
-        <View style={styles.ingredientCounts}>
+        <TouchableOpacity style={styles.ingredientCounts} onPress={toggleRecipeIngredients}>
           <View style={styles.countItem}>
             <Ionicons name="restaurant" size={16} color={colors.primary} />
-            <Text style={styles.countText}>{recipe.ingredients.length} ingrédients</Text>
+            <Text style={[styles.countText, styles.clickableText]}>{recipe.ingredients.length} ingrédients</Text>
+            <Ionicons 
+              name={showRecipeIngredients ? 'chevron-up' : 'chevron-down'} 
+              size={14} 
+              color={colors.primary} 
+            />
           </View>
-        </View>
+        </TouchableOpacity>
       );
     }
     
@@ -133,6 +144,41 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
           </View>
         )}
       </View>
+    );
+  };
+
+  const renderRecipeIngredientsList = () => {
+    const maxHeight = ingredientsAnimatedHeight.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 200],
+    });
+
+    return (
+      <Animated.View style={[styles.recipeIngredientsContainer, { maxHeight }]}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.ingredientsSection}>
+            <Text style={styles.ingredientsSectionTitle}>Ingrédients de cette recette</Text>
+            {recipe.ingredients.map((recipeIngredient, index) => (
+              <View key={`recipe-ingredient-${recipeIngredient.id}-${index}`} style={styles.recipeIngredientItem}>
+                <View style={styles.recipeIngredientInfo}>
+                  <Ionicons name="restaurant-outline" size={16} color={colors.primary} />
+                  <Text style={styles.recipeIngredientName}>
+                    {recipeIngredient.ingredient.name}
+                  </Text>
+                  <Text style={styles.recipeIngredientQuantity}>
+                    {recipeIngredient.quantity} {recipeIngredient.unit}
+                  </Text>
+                  {recipeIngredient.optional && (
+                    <View style={styles.optionalBadge}>
+                      <Text style={styles.optionalBadgeText}>opt.</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </Animated.View>
     );
   };
 
@@ -290,8 +336,8 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
               )}
             </View>
 
-            {/* Only show missing ingredients list when not in exclusion-only mode */}
-            {!exclusionOnlyMode && renderMissingIngredientsList()}
+            {/* Show recipe ingredients list in exclusion-only mode, missing ingredients otherwise */}
+            {exclusionOnlyMode ? renderRecipeIngredientsList() : renderMissingIngredientsList()}
           </View>
         )}
       </View>
@@ -527,5 +573,62 @@ const styles = StyleSheet.create({
   substitutionText: {
     ...typography.styles.tiny,
     color: colors.primary,
+  },
+
+  clickableText: {
+    color: colors.primary,
+    fontWeight: typography.weights.medium,
+  },
+
+  recipeIngredientsContainer: {
+    overflow: 'hidden',
+  },
+
+  ingredientsSection: {
+    marginBottom: spacing.md,
+  },
+
+  ingredientsSectionTitle: {
+    ...typography.styles.body,
+    fontWeight: typography.weights.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
+  },
+
+  recipeIngredientItem: {
+    marginBottom: spacing.sm,
+  },
+
+  recipeIngredientInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+
+  recipeIngredientName: {
+    ...typography.styles.body,
+    color: colors.textPrimary,
+    flex: 1,
+  },
+
+  recipeIngredientQuantity: {
+    ...typography.styles.small,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.medium,
+  },
+
+  optionalBadge: {
+    backgroundColor: colors.backgroundLight,
+    borderRadius: spacing.borderRadius.sm,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: 2,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+
+  optionalBadgeText: {
+    ...typography.styles.tiny,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.medium,
   },
 });

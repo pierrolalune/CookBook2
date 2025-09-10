@@ -39,6 +39,7 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
   const [excludedIngredientIds, setExcludedIngredientIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [matchThreshold, setMatchThreshold] = useState(1); // Minimum number of ingredients that must match
+  const [isExcludeMode, setIsExcludeMode] = useState(false); // Toggle between add/exclude mode
   
   // History management
   const selectionHistory = useIngredientSelectionHistory();
@@ -333,8 +334,33 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>
-                  Ajouter des ingrédients
+                  Ajouter ou exclure des ingrédients
                 </Text>
+              </View>
+              
+              <View style={styles.modeToggleContainer}>
+                <Text style={styles.modeToggleLabel}>Mode:</Text>
+                <View style={styles.modeToggle}>
+                  <TouchableOpacity
+                    style={[styles.modeToggleButton, !isExcludeMode && styles.modeToggleButtonActive]}
+                    onPress={() => setIsExcludeMode(false)}
+                  >
+                    <Ionicons name="add-circle" size={16} color={!isExcludeMode ? colors.textWhite : colors.success} />
+                    <Text style={[styles.modeToggleButtonText, !isExcludeMode && styles.modeToggleButtonTextActive]}>
+                      Ajouter
+                    </Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={[styles.modeToggleButton, isExcludeMode && styles.modeToggleButtonActive]}
+                    onPress={() => setIsExcludeMode(true)}
+                  >
+                    <Ionicons name="ban" size={16} color={isExcludeMode ? colors.textWhite : colors.error} />
+                    <Text style={[styles.modeToggleButtonText, isExcludeMode && styles.modeToggleButtonTextActive]}>
+                      Exclure
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
               
               {/* Search Bar */}
@@ -361,7 +387,7 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
                       ]}>
                         <TouchableOpacity
                           style={styles.searchResultMainAction}
-                          onPress={() => handleIngredientToggle(ingredient.id)}
+                          onPress={() => isExcludeMode ? handleIngredientExcludeToggle(ingredient.id) : handleIngredientToggle(ingredient.id)}
                           disabled={isSelected || isExcluded}
                         >
                           <View style={styles.searchResultContent}>
@@ -387,19 +413,12 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
                             <Ionicons name="checkmark-circle" size={20} color={colors.success} />
                           ) : isExcluded ? (
                             <Ionicons name="close-circle" size={20} color={colors.error} />
+                          ) : isExcludeMode ? (
+                            <Ionicons name="ban" size={20} color={colors.error} />
                           ) : (
                             <Ionicons name="add-circle-outline" size={20} color={colors.primary} />
                           )}
                         </TouchableOpacity>
-                        
-                        {!isSelected && !isExcluded && (
-                          <TouchableOpacity
-                            style={styles.excludeButton}
-                            onPress={() => handleIngredientExcludeToggle(ingredient.id)}
-                          >
-                            <Ionicons name="ban" size={16} color={colors.error} />
-                          </TouchableOpacity>
-                        )}
                       </View>
                     );
                   })}
@@ -834,5 +853,54 @@ const styles = StyleSheet.create({
   excludeButton: {
     padding: spacing.sm,
     marginLeft: spacing.xs,
+    backgroundColor: colors.errorLight,
+    borderRadius: spacing.borderRadius.sm,
+    borderWidth: 1,
+    borderColor: colors.error,
+  },
+
+  modeToggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    gap: spacing.sm,
+  },
+
+  modeToggleLabel: {
+    ...typography.styles.body,
+    color: colors.textPrimary,
+    fontWeight: typography.weights.medium,
+  },
+
+  modeToggle: {
+    flexDirection: 'row',
+    backgroundColor: colors.backgroundLight,
+    borderRadius: spacing.borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+  },
+
+  modeToggleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    gap: spacing.xs,
+  },
+
+  modeToggleButtonActive: {
+    backgroundColor: colors.primary,
+  },
+
+  modeToggleButtonText: {
+    ...typography.styles.caption,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.medium,
+  },
+
+  modeToggleButtonTextActive: {
+    color: colors.textWhite,
+    fontWeight: typography.weights.semibold,
   },
 });

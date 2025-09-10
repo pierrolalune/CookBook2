@@ -192,67 +192,71 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
 
           {/* Content */}
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-            {/* Seasonal Ingredients Toggle */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Sélection rapide</Text>
-              <TouchableOpacity
-                style={styles.seasonalToggleButton}
-                onPress={handleSeasonalSelect}
-              >
-                <View style={styles.seasonalToggleContent}>
-                  <Ionicons name="leaf" size={20} color={colors.success} />
-                  <View style={styles.seasonalToggleText}>
-                    <Text style={styles.seasonalToggleLabel}>
-                      Ingrédients de saison
-                    </Text>
-                    <Text style={styles.seasonalToggleSubtext}>
-                      {currentSeasonLabel} • {seasonalIngredients.length} disponibles
-                      {peakSeasonCount > 0 && ` (${peakSeasonCount} en pic)`}
-                    </Text>
-                  </View>
-                  {seasonalIngredients.filter(ing => selectedIngredientIds.includes(ing.id)).length > 0 && (
-                    <View style={styles.seasonalSelectedBadge}>
-                      <Text style={styles.seasonalSelectedText}>
-                        {seasonalIngredients.filter(ing => selectedIngredientIds.includes(ing.id)).length}
+            {/* Seasonal Ingredients Toggle - Only show when not in exclusion-only mode */}
+            {!(selectedIngredientIds.length === 0 && excludedIngredientIds.length > 0) && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Sélection rapide</Text>
+                <TouchableOpacity
+                  style={styles.seasonalToggleButton}
+                  onPress={handleSeasonalSelect}
+                >
+                  <View style={styles.seasonalToggleContent}>
+                    <Ionicons name="leaf" size={20} color={colors.success} />
+                    <View style={styles.seasonalToggleText}>
+                      <Text style={styles.seasonalToggleLabel}>
+                        Ingrédients de saison
+                      </Text>
+                      <Text style={styles.seasonalToggleSubtext}>
+                        {currentSeasonLabel} • {seasonalIngredients.length} disponibles
+                        {peakSeasonCount > 0 && ` (${peakSeasonCount} en pic)`}
                       </Text>
                     </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            {/* Match Threshold Slider */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Seuil de correspondance: au moins {matchThreshold} ingrédient{matchThreshold > 1 ? 's' : ''}
-              </Text>
-              <Text style={styles.sectionDescription}>
-                Nombre minimum d'ingrédients de votre sélection que la recette doit contenir
-              </Text>
-              <View style={styles.sliderContainer}>
-                <Text style={styles.sliderLabel}>1</Text>
-                <Slider
-                  style={styles.slider}
-                  minimumValue={1}
-                  maximumValue={Math.min(5, selectedIngredientIds.length || 1)}
-                  step={1}
-                  value={matchThreshold}
-                  onValueChange={setMatchThreshold}
-                  minimumTrackTintColor={colors.primary}
-                  maximumTrackTintColor={colors.border}
-                />
-                <Text style={styles.sliderLabel}>{Math.min(5, selectedIngredientIds.length || 1)}</Text>
+                    {seasonalIngredients.filter(ing => selectedIngredientIds.includes(ing.id)).length > 0 && (
+                      <View style={styles.seasonalSelectedBadge}>
+                        <Text style={styles.seasonalSelectedText}>
+                          {seasonalIngredients.filter(ing => selectedIngredientIds.includes(ing.id)).length}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.thresholdDescription}>
-                {matchThreshold === 1
-                  ? "Toutes les recettes contenant au moins un de vos ingrédients"
-                  : matchThreshold <= 2
-                  ? "Recettes avec quelques ingrédients en commun"
-                  : matchThreshold <= 3
-                  ? "Recettes avec plusieurs ingrédients en commun"
-                  : "Recettes avec beaucoup d'ingrédients en commun"}
-              </Text>
-            </View>
+            )}
+
+            {/* Match Threshold Slider - Only show when we have selected ingredients */}
+            {selectedIngredientIds.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>
+                  Seuil de correspondance: au moins {matchThreshold} ingrédient{matchThreshold > 1 ? 's' : ''}
+                </Text>
+                <Text style={styles.sectionDescription}>
+                  Nombre minimum d'ingrédients de votre sélection que la recette doit contenir
+                </Text>
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.sliderLabel}>1</Text>
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={1}
+                    maximumValue={Math.min(5, selectedIngredientIds.length || 1)}
+                    step={1}
+                    value={matchThreshold}
+                    onValueChange={setMatchThreshold}
+                    minimumTrackTintColor={colors.primary}
+                    maximumTrackTintColor={colors.border}
+                  />
+                  <Text style={styles.sliderLabel}>{Math.min(5, selectedIngredientIds.length || 1)}</Text>
+                </View>
+                <Text style={styles.thresholdDescription}>
+                  {matchThreshold === 1
+                    ? "Toutes les recettes contenant au moins un de vos ingrédients"
+                    : matchThreshold <= 2
+                    ? "Recettes avec quelques ingrédients en commun"
+                    : matchThreshold <= 3
+                    ? "Recettes avec plusieurs ingrédients en commun"
+                    : "Recettes avec beaucoup d'ingrédients en commun"}
+                </Text>
+              </View>
+            )}
 
             {/* Selected Ingredients List */}
             {selectedIngredientIds.length > 0 && (

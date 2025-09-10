@@ -138,10 +138,10 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
 
   // Handle search execution
   const handleSearch = useCallback(async () => {
-    if (selectedIngredientIds.length === 0) {
+    if (selectedIngredientIds.length === 0 && excludedIngredientIds.length === 0) {
       Alert.alert(
-        'Aucun ingrédient sélectionné',
-        'Veuillez sélectionner au moins un ingrédient pour trouver des recettes.'
+        'Aucune sélection',
+        'Veuillez sélectionner au moins un ingrédient ou exclure des ingrédients pour trouver des recettes.'
       );
       return;
     }
@@ -183,7 +183,10 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
               <Text style={styles.headerTitle}>Que puis-je cuisiner ?</Text>
             </View>
             <Text style={styles.selectedCount}>
-              {selectedIngredientIds.length} ingrédient{selectedIngredientIds.length !== 1 ? 's' : ''}
+              {selectedIngredientIds.length > 0 && `${selectedIngredientIds.length} sélectionné${selectedIngredientIds.length !== 1 ? 's' : ''}`}
+              {selectedIngredientIds.length > 0 && excludedIngredientIds.length > 0 && ' • '}
+              {excludedIngredientIds.length > 0 && `${excludedIngredientIds.length} exclu${excludedIngredientIds.length !== 1 ? 's' : ''}`}
+              {selectedIngredientIds.length === 0 && excludedIngredientIds.length === 0 && 'Aucune sélection'}
             </Text>
           </View>
 
@@ -451,10 +454,10 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
             <TouchableOpacity
               style={[
                 styles.searchButton,
-                selectedIngredientIds.length === 0 && styles.searchButtonDisabled
+                (selectedIngredientIds.length === 0 && excludedIngredientIds.length === 0) && styles.searchButtonDisabled
               ]}
               onPress={handleSearch}
-              disabled={selectedIngredientIds.length === 0}
+              disabled={selectedIngredientIds.length === 0 && excludedIngredientIds.length === 0}
             >
               <Ionicons name="restaurant" size={20} color={colors.textWhite} />
               <Text style={styles.searchButtonText}>

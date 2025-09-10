@@ -227,8 +227,6 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
         quantity: quantity,
         unit: unit
       });
-      
-      Alert.alert('✅', 'Quantité mise à jour !');
     } catch (error) {
       console.error('Error updating item quantity:', error);
       Alert.alert('Erreur', 'Impossible de mettre à jour la quantité');

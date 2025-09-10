@@ -46,28 +46,16 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
     setShowUnitDropdown(false);
   };
 
-  const handleQuantityBlur = () => {
-    if (onUpdateQuantity) {
-      const quantity = parseFloat(editQuantity) || 0;
-      if (quantity > 0 && editUnit.trim()) {
-        onUpdateQuantity(quantity, editUnit.trim());
-      }
-    }
+  const handleQuantityCancel = () => {
     setIsEditingQuantity(false);
+    setEditQuantity(item.quantity?.toString() || '');
+    setEditUnit(item.unit || '');
     setShowUnitDropdown(false);
   };
 
   const handleUnitSelect = (unit: string) => {
     setEditUnit(unit);
     setShowUnitDropdown(false);
-    
-    if (onUpdateQuantity) {
-      const quantity = parseFloat(editQuantity) || 0;
-      if (quantity > 0 && unit.trim()) {
-        onUpdateQuantity(quantity, unit.trim());
-      }
-    }
-    setIsEditingQuantity(false);
   };
 
   return (
@@ -114,7 +102,6 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
                       style={styles.quantityInput}
                       value={editQuantity}
                       onChangeText={setEditQuantity}
-                      onBlur={handleQuantityBlur}
                       onSubmitEditing={handleQuantitySubmit}
                       keyboardType="numeric"
                       placeholder="Qté"
@@ -140,12 +127,24 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
                         style={styles.unitInput}
                         value={editUnit}
                         onChangeText={setEditUnit}
-                        onBlur={handleQuantityBlur}
                         onSubmitEditing={handleQuantitySubmit}
                         placeholder="Unité"
                         returnKeyType="done"
                       />
                     )}
+                    
+                    <TouchableOpacity
+                      style={styles.confirmButton}
+                      onPress={handleQuantitySubmit}
+                    >
+                      <Text style={styles.confirmButtonText}>✓</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={handleQuantityCancel}
+                    >
+                      <Text style={styles.cancelButtonText}>✕</Text>
+                    </TouchableOpacity>
                   </View>
                   
                   {item.availableUnits && item.availableUnits.length > 0 && showUnitDropdown && (
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
   editingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
   },
   quantityInput: {
     backgroundColor: '#FFFFFF',
@@ -426,5 +425,29 @@ const styles = StyleSheet.create({
   selectedUnitOptionText: {
     color: '#3B82F6',
     fontWeight: '600',
+  },
+  confirmButton: {
+    backgroundColor: '#10B981',
+    borderRadius: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginLeft: 4,
+  },
+  confirmButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#EF4444',
+    borderRadius: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginLeft: 4,
+  },
+  cancelButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

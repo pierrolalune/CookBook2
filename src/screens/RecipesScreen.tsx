@@ -374,6 +374,11 @@ export const RecipesScreen: React.FC = () => {
     };
     
     if (showMatchAnalysis && matchResult) {
+      // Check if we're in exclusion-only mode
+      const exclusionOnlyMode = searchMode === 'makeable' && 
+        whatCanIMake.selectedIngredientIds.length === 0 && 
+        whatCanIMake.excludedIngredientIds.length > 0;
+        
       return (
         <RecipeMatchAnalyzer
           key={`match-${recipe.id}`}
@@ -385,12 +390,13 @@ export const RecipesScreen: React.FC = () => {
             });
           }}
           showDetails={true}
+          exclusionOnlyMode={exclusionOnlyMode}
         />
       );
     }
     
     return <RecipeCard key={recipe.id} {...commonProps} />;
-  }, [handleRecipePress, handleRecipeLongPress, handleEditRecipe, handleDeleteRecipe, selectionMode, bulkSharing.selectedRecipes, handleFavoriteChange, showMatchAnalysis, router]);
+  }, [handleRecipePress, handleRecipeLongPress, handleEditRecipe, handleDeleteRecipe, selectionMode, bulkSharing.selectedRecipes, handleFavoriteChange, showMatchAnalysis, router, searchMode, whatCanIMake.selectedIngredientIds, whatCanIMake.excludedIngredientIds]);
   
   const renderCategorySection = ({ item }: { item: { category: RecipeCategory | 'favoris' | 'all', recipes: Recipe[] } }) => {
     const categoryLabels = {

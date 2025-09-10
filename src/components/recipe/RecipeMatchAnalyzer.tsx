@@ -17,13 +17,15 @@ interface RecipeMatchAnalyzerProps {
   onRecipePress?: (recipeId: string) => void;
   showDetails?: boolean;
   compact?: boolean;
+  exclusionOnlyMode?: boolean; // New prop to indicate exclusion-only mode
 }
 
 export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
   matchResult,
   onRecipePress,
   showDetails = false,
-  compact = false
+  compact = false,
+  exclusionOnlyMode = false
 }) => {
   const [showMissingIngredients, setShowMissingIngredients] = useState(false);
   const [animatedHeight] = useState(new Animated.Value(0));
@@ -56,6 +58,18 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
   };
 
   const renderMatchBadge = () => {
+    // In exclusion-only mode, show different content
+    if (exclusionOnlyMode) {
+      return (
+        <View style={[styles.matchBadge, { backgroundColor: colors.successLight }]}>
+          <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+          <Text style={[styles.matchPercentage, { color: colors.success }]}>
+            Autorisé
+          </Text>
+        </View>
+      );
+    }
+    
     const matchColor = getMatchColor(matchPercentage);
     const matchIcon = getMatchIcon(matchPercentage);
     
@@ -85,28 +99,42 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
     );
   };
 
-  const renderIngredientCounts = () => (
-    <View style={styles.ingredientCounts}>
-      <View style={styles.countItem}>
-        <Ionicons name="checkmark" size={16} color={colors.success} />
-        <Text style={styles.countText}>{availableIngredients.length}</Text>
+  const renderIngredientCounts = () => {
+    // In exclusion-only mode, don't show ingredient match counts
+    if (exclusionOnlyMode) {
+      return (
+        <View style={styles.ingredientCounts}>
+          <View style={styles.countItem}>
+            <Ionicons name="restaurant" size={16} color={colors.primary} />
+            <Text style={styles.countText}>{recipe.ingredients.length} ingrédients</Text>
+          </View>
+        </View>
+      );
+    }
+    
+    return (
+      <View style={styles.ingredientCounts}>
+        <View style={styles.countItem}>
+          <Ionicons name="checkmark" size={16} color={colors.success} />
+          <Text style={styles.countText}>{availableIngredients.length}</Text>
+        </View>
+        
+        {missingIngredients.length > 0 && (
+          <View style={styles.countItem}>
+            <Ionicons name="close" size={16} color={colors.error} />
+            <Text style={styles.countText}>{missingIngredients.length}</Text>
+          </View>
+        )}
+        
+        {optionalMissing.length > 0 && (
+          <View style={styles.countItem}>
+            <Ionicons name="help-circle" size={16} color={colors.textSecondary} />
+            <Text style={styles.countText}>{optionalMissing.length} opt.</Text>
+          </View>
+        )}
       </View>
-      
-      {missingIngredients.length > 0 && (
-        <View style={styles.countItem}>
-          <Ionicons name="close" size={16} color={colors.error} />
-          <Text style={styles.countText}>{missingIngredients.length}</Text>
-        </View>
-      )}
-      
-      {optionalMissing.length > 0 && (
-        <View style={styles.countItem}>
-          <Ionicons name="help-circle" size={16} color={colors.textSecondary} />
-          <Text style={styles.countText}>{optionalMissing.length} opt.</Text>
-        </View>
-      )}
-    </View>
-  );
+    );
+  };
 
   const renderMissingIngredientsList = () => {
     if (missingIngredients.length === 0 && optionalMissing.length === 0) {
@@ -244,7 +272,8 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
             <View style={styles.detailsHeader}>
               {renderIngredientCounts()}
               
-              {(missingIngredients.length > 0 || optionalMissing.length > 0) && (
+              {/* Only show missing ingredients toggle when not in exclusion-only mode */}
+              {!exclusionOnlyMode && (missingIngredients.length > 0 || optionalMissing.length > 0) && (
                 <TouchableOpacity
                   style={styles.toggleButton}
                   onPress={toggleMissingIngredients}
@@ -261,7 +290,8 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
               )}
             </View>
 
-            {renderMissingIngredientsList()}
+            {/* Only show missing ingredients list when not in exclusion-only mode */}
+            {!exclusionOnlyMode && renderMissingIngredientsList()}
           </View>
         )}
       </View>

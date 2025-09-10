@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
-import { ShoppingListItem } from '../../types';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ShoppingListItem, IngredientCategory } from '../../types';
 import { ShoppingListUtils } from '../../utils/shoppingListUtils';
 import { ShoppingListItemCard } from './ShoppingListItemCard';
+import { MiniProgressBar } from './ShoppingListProgressBar';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 
 interface CategorySectionProps {
@@ -13,7 +15,18 @@ interface CategorySectionProps {
   onItemPress?: (item: ShoppingListItem) => void;
   onItemLongPress?: (item: ShoppingListItem) => void;
   initialExpanded?: boolean;
+  searchQuery?: string;
 }
+
+const CATEGORY_ICONS = {
+  fruits: '🍎',
+  legumes: '🥕', 
+  peche: '🐟',
+  viande: '🥩',
+  produits_laitiers: '🥛',
+  epicerie: '🛒',
+  autres: '📦'
+};
 
 const CategorySectionComponent: React.FC<CategorySectionProps> = ({
   category,
@@ -22,7 +35,8 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
   onUpdateItemQuantity,
   onItemPress,
   onItemLongPress,
-  initialExpanded = true
+  initialExpanded = true,
+  searchQuery = ''
 }) => {
   const [expanded, setExpanded] = useState(initialExpanded);
   const [animation] = useState(new Animated.Value(initialExpanded ? 1 : 0));
@@ -40,11 +54,22 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
     }).start();
   };
 
-  const completedItems = items.filter(item => item.isCompleted);
-  const totalItems = items.length;
+  // Filter items based on search query
+  const filteredItems = searchQuery.trim() 
+    ? items.filter(item => item.ingredientName.toLowerCase().includes(searchQuery.toLowerCase()))
+    : items;
+
+  const completedItems = filteredItems.filter(item => item.isCompleted);
+  const totalItems = filteredItems.length;
   const completionPercentage = totalItems > 0 ? Math.round((completedItems.length / totalItems) * 100) : 0;
 
   const categoryDisplayName = ShoppingListUtils.getCategoryDisplayName(category);
+  const categoryIcon = CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS] || CATEGORY_ICONS.autres;
+
+  // Don't render if no items match search
+  if (filteredItems.length === 0) {
+    return null;
+  }
 
   return (
     <View style={[styles.container, hasEditingItem && styles.elevatedContainer]}>
@@ -54,28 +79,27 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
         activeOpacity={0.7}
       >
         <View style={styles.headerLeft}>
-          <Text style={styles.categoryTitle}>
-            {categoryDisplayName}
-          </Text>
-          <Text style={styles.itemCount}>
-            {completedItems.length}/{totalItems} articles
-          </Text>
+          <Text style={styles.categoryIcon}>{categoryIcon}</Text>
+          <View style={styles.categoryInfo}>
+            <Text style={styles.categoryTitle}>
+              {categoryDisplayName}
+            </Text>
+            <Text style={styles.itemCount}>
+              {completedItems.length}/{totalItems} articles
+            </Text>
+          </View>
         </View>
         
         <View style={styles.headerRight}>
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBackground}>
-              <View 
-                style={[
-                  styles.progressFill, 
-                  { width: `${completionPercentage}%` }
-                ]} 
-              />
-            </View>
-            <Text style={styles.progressText}>
-              {completionPercentage}%
-            </Text>
-          </View>
+          <MiniProgressBar
+            completed={completedItems.length}
+            total={totalItems}
+            width={60}
+          />
+          
+          <Text style={styles.progressPercentage}>
+            {completionPercentage}%
+          </Text>
           
           <Animated.View style={{
             transform: [{
@@ -85,7 +109,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
               })
             }]
           }}>
-            <Text style={styles.chevron}>▼</Text>
+            <Text style={styles.chevron}>⌄</Text>
           </Animated.View>
         </View>
       </TouchableOpacity>
@@ -99,7 +123,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
         overflow: 'visible'
       }}>
         <View style={styles.itemsContainer}>
-          {items
+          {filteredItems
             .sort((a, b) => {
               // Sort by completion status (uncompleted first), then by order
               if (a.isCompleted !== b.isCompleted) {
@@ -116,6 +140,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
                 onPress={onItemPress ? () => onItemPress(item) : undefined}
                 onLongPress={onItemLongPress ? () => onItemLongPress(item) : undefined}
                 isLastInCategory={index === array.length - 1}
+                searchQuery={searchQuery}
               />
             ))}
         </View>
@@ -132,76 +157,78 @@ export const CategorySection: React.FC<CategorySectionProps> = (props) => (
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
     marginBottom: 8,
-    borderRadius: 8,
-    overflow: 'visible',
+    marginHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowRadius: 8,
+    elevation: 2,
+    overflow: 'visible',
   },
   elevatedContainer: {
     elevation: 10,
     zIndex: 10,
   },
   header: {
-    backgroundColor: '#F9FAFB',
-    padding: 16,
+    backgroundColor: 'rgba(102, 126, 234, 0.05)',
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#f5f7fa',
   },
   headerLeft: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryIcon: {
+    fontSize: 28,
+    marginRight: 12,
+  },
+  categoryInfo: {
+    flex: 1,
   },
   categoryTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#2c3e50',
     marginBottom: 2,
   },
   itemCount: {
     fontSize: 13,
-    color: '#6B7280',
+    color: '#95a5a6',
+    fontWeight: '500',
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
   },
-  progressContainer: {
-    alignItems: 'flex-end',
-    marginRight: 12,
-  },
-  progressBackground: {
-    width: 60,
-    height: 4,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 2,
-    marginBottom: 4,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#10B981',
-    borderRadius: 2,
-  },
-  progressText: {
-    fontSize: 11,
-    color: '#6B7280',
-    fontWeight: '500',
+  progressPercentage: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#764ba2',
+    minWidth: 35,
+    textAlign: 'right',
   },
   chevron: {
-    fontSize: 12,
-    color: '#9CA3AF',
+    fontSize: 16,
+    color: '#95a5a6',
+    paddingHorizontal: 5,
   },
   itemsContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
     overflow: 'visible',
   },
 });

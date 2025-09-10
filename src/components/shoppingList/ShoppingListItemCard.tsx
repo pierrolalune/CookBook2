@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Animated } from 'react-native';
 import { ShoppingListItem } from '../../types';
 import { ShoppingListUtils } from '../../utils/shoppingListUtils';
+import { ModernCheckbox } from '../common/ModernCheckbox';
+import { QuantityEditor } from './QuantityEditor';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 
 interface ShoppingListItemCardProps {
@@ -10,7 +12,10 @@ interface ShoppingListItemCardProps {
   onUpdateQuantity?: (quantity: number, unit: string) => void;
   onPress?: () => void;
   onLongPress?: () => void;
+  onDelete?: () => void;
   isLastInCategory?: boolean;
+  searchQuery?: string;
+  style?: any;
 }
 
 const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
@@ -19,7 +24,10 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
   onUpdateQuantity,
   onPress,
   onLongPress,
-  isLastInCategory = false
+  onDelete,
+  isLastInCategory = false,
+  searchQuery = '',
+  style
 }) => {
   const [editQuantity, setEditQuantity] = useState(item.quantity?.toString() || '');
   const [editUnit, setEditUnit] = useState(item.unit || '');
@@ -58,161 +66,69 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
     setShowUnitDropdown(false);
   };
 
+  const availableUnits = item.availableUnits || ['pièce', 'kg', 'g', 'L', 'ml'];
+
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
         styles.container,
         item.isCompleted && styles.completedContainer,
-        isEditingQuantity && styles.editingItemContainer
+        style
       ]}
-      onPress={onPress || onToggleComplete}
+      onPress={onPress}
       onLongPress={onLongPress}
       activeOpacity={0.7}
     >
-      <TouchableOpacity 
-        style={styles.checkboxContainer}
-        onPress={onToggleComplete}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      >
-        <View style={[
-          styles.checkbox,
-          item.isCompleted && styles.checkedCheckbox
-        ]}>
-          {item.isCompleted && (
-            <Text style={styles.checkmark}>✓</Text>
-          )}
-        </View>
-      </TouchableOpacity>
+      {/* Checkbox */}
+      <View style={styles.checkboxContainer}>
+        <ModernCheckbox
+          checked={item.isCompleted}
+          onToggle={onToggleComplete}
+          size="medium"
+        />
+      </View>
 
-      <View style={styles.content}>
-        <View style={styles.mainContent}>
+      {/* Item Content */}
+      <View style={styles.itemContent}>
+        <View style={styles.itemInfo}>
           <Text style={[
-            styles.name,
-            item.isCompleted && styles.completedName
-          ]} numberOfLines={2}>
-            {item.ingredientName}
+            styles.itemName,
+            item.isCompleted && styles.completedItemName
+          ]} numberOfLines={1}>
+            {item.ingredientName || 'Ingrédient sans nom'}
           </Text>
-          
+
+          {/* Quantity Display under ingredient name */}
           {(item.quantity || item.unit) && (
-            <View style={styles.quantityRow}>
-              {isEditingQuantity ? (
-                <View style={styles.editingWrapper}>
-                  <View style={styles.editingContainer}>
-                    <TextInput
-                      style={styles.quantityInput}
-                      value={editQuantity}
-                      onChangeText={setEditQuantity}
-                      onSubmitEditing={handleQuantitySubmit}
-                      keyboardType="numeric"
-                      placeholder="Qté"
-                      autoFocus
-                      selectTextOnFocus
-                      returnKeyType="done"
-                    />
-                    
-                    {item.availableUnits && item.availableUnits.length > 0 ? (
-                      <TouchableOpacity
-                        style={styles.unitDropdownButton}
-                        onPress={() => setShowUnitDropdown(!showUnitDropdown)}
-                      >
-                        <Text style={styles.unitDropdownText}>
-                          {editUnit || 'Unité'}
-                        </Text>
-                        <Text style={styles.unitDropdownArrow}>
-                          {showUnitDropdown ? '▲' : '▼'}
-                        </Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <TextInput
-                        style={styles.unitInput}
-                        value={editUnit}
-                        onChangeText={setEditUnit}
-                        onSubmitEditing={handleQuantitySubmit}
-                        placeholder="Unité"
-                        returnKeyType="done"
-                      />
-                    )}
-                    
-                    <TouchableOpacity
-                      style={styles.confirmButton}
-                      onPress={handleQuantitySubmit}
-                    >
-                      <Text style={styles.confirmButtonText}>✓</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.cancelButton}
-                      onPress={handleQuantityCancel}
-                    >
-                      <Text style={styles.cancelButtonText}>✕</Text>
-                    </TouchableOpacity>
-                  </View>
-                  
-                  {item.availableUnits && item.availableUnits.length > 0 && showUnitDropdown && (
-                    <View style={[
-                      styles.unitDropdownList,
-                      isLastInCategory && styles.unitDropdownListAbove
-                    ]}>
-                      <ScrollView 
-                        style={styles.unitScrollView}
-                        showsVerticalScrollIndicator={true}
-                        nestedScrollEnabled={true}
-                      >
-                        {item.availableUnits.map((unitOption) => (
-                          <TouchableOpacity
-                            key={unitOption}
-                            style={[
-                              styles.unitOption,
-                              editUnit === unitOption && styles.selectedUnitOption
-                            ]}
-                            onPress={() => handleUnitSelect(unitOption)}
-                          >
-                            <Text style={[
-                              styles.unitOptionText,
-                              editUnit === unitOption && styles.selectedUnitOptionText
-                            ]}>
-                              {unitOption}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </ScrollView>
-                    </View>
-                  )}
-                </View>
-              ) : (
-                <TouchableOpacity
-                  style={styles.quantityContainer}
-                  onPress={handleQuantityPress}
-                  disabled={item.isCompleted}
-                >
-                  <Text style={[
-                    styles.quantity,
-                    item.isCompleted && styles.completedQuantity,
-                    onUpdateQuantity && !item.isCompleted && styles.editableQuantity
-                  ]}>
-                    {item.quantity} {item.unit}
-                  </Text>
-                </TouchableOpacity>
-              )}
+            <View style={styles.quantityDisplayContainer}>
+              <QuantityEditor
+                quantity={item.quantity || 1}
+                unit={item.unit || 'pièce'}
+                units={availableUnits}
+                onQuantityChange={(quantity) => {
+                  if (onUpdateQuantity) {
+                    onUpdateQuantity(quantity, item.unit || 'pièce');
+                  }
+                }}
+                onUnitChange={(unit) => {
+                  if (onUpdateQuantity) {
+                    onUpdateQuantity(item.quantity || 1, unit);
+                  }
+                }}
+                disabled={item.isCompleted}
+                compact={true}
+              />
             </View>
           )}
-          
+
           {item.notes && (
             <Text style={[
-              styles.notes,
-              item.isCompleted && styles.completedNotes
+              styles.itemNotes,
+              item.isCompleted && styles.completedItemNotes
             ]} numberOfLines={1}>
-              💬 {item.notes}
+              {item.notes}
             </Text>
           )}
-        </View>
-
-        <View style={styles.categoryContainer}>
-          <Text style={[
-            styles.category,
-            item.isCompleted && styles.completedCategory
-          ]}>
-            {ShoppingListUtils.getCategoryDisplayName(item.category).split(' ')[0]}
-          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -227,227 +143,67 @@ export const ShoppingListItemCard: React.FC<ShoppingListItemCardProps> = (props)
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: '#fafbfc',
+    borderRadius: 10,
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    paddingHorizontal: 12,
+    marginVertical: 2,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#e8ecef',
+    minHeight: 80,
     overflow: 'visible',
   },
+
   completedContainer: {
-    backgroundColor: '#F9FAFB',
-    opacity: 0.7,
+    opacity: 0.6,
+    backgroundColor: '#f0f2f5',
   },
-  editingItemContainer: {
-    zIndex: 9999,
-    elevation: 9999,
-  },
+
   checkboxContainer: {
     marginRight: 12,
+    flexShrink: 0,
+    marginTop: 10,
   },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkedCheckbox: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
-  },
-  checkmark: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  content: {
+
+  itemContent: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    marginRight: 12,
   },
-  mainContent: {
+
+  itemInfo: {
     flex: 1,
   },
-  name: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-    marginBottom: 2,
+
+  itemName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2c3e50',
+    marginBottom: 1,
+    minHeight: 18,
   },
-  completedName: {
+
+  completedItemName: {
     textDecorationLine: 'line-through',
-    color: '#9CA3AF',
+    color: '#95a5a6',
   },
-  notes: {
-    fontSize: 13,
-    color: '#6B7280',
+
+  itemNotes: {
+    fontSize: 12,
+    color: '#95a5a6',
     fontStyle: 'italic',
   },
-  completedNotes: {
-    color: '#9CA3AF',
+
+  completedItemNotes: {
+    color: '#bdc3c7',
   },
-  categoryContainer: {
-    marginLeft: 8,
-  },
-  category: {
-    fontSize: 20,
-    color: '#9CA3AF',
-  },
-  completedCategory: {
-    color: '#D1D5DB',
-  },
-  quantityRow: {
+
+  quantityDisplayContainer: {
     marginTop: 4,
     marginBottom: 2,
-    overflow: 'visible',
-    zIndex: 1,
-  },
-  quantityContainer: {
     alignSelf: 'flex-start',
-  },
-  quantity: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '500',
-    paddingVertical: 2,
-    paddingHorizontal: 6,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 4,
-  },
-  completedQuantity: {
-    color: '#9CA3AF',
-    textDecorationLine: 'line-through',
-  },
-  editableQuantity: {
-    backgroundColor: '#EFF6FF',
-    color: '#3B82F6',
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
-  },
-  editingWrapper: {
-    position: 'relative',
-    zIndex: 999,
-  },
-  editingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  quantityInput: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    fontSize: 14,
-    textAlign: 'center',
-    minWidth: 50,
-  },
-  unitInput: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    fontSize: 14,
-    minWidth: 60,
-  },
-  unitDropdownButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    minWidth: 80,
-  },
-  unitDropdownText: {
-    fontSize: 14,
-    color: '#374151',
-    flex: 1,
-  },
-  unitDropdownArrow: {
-    fontSize: 10,
-    color: '#6B7280',
-    marginLeft: 4,
-  },
-  unitDropdownList: {
-    position: 'absolute',
-    top: 36,
-    left: 56,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 4,
-    maxHeight: 120,
-    minWidth: 80,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 1000,
-    zIndex: 99999,
-  },
-  unitDropdownListAbove: {
-    top: undefined,
-    bottom: 36,
-  },
-  unitScrollView: {
-    maxHeight: 120,
-  },
-  unitOption: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  selectedUnitOption: {
-    backgroundColor: '#EFF6FF',
-  },
-  unitOptionText: {
-    fontSize: 14,
-    color: '#374151',
-  },
-  selectedUnitOptionText: {
-    color: '#3B82F6',
-    fontWeight: '600',
-  },
-  confirmButton: {
-    backgroundColor: '#10B981',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginLeft: 4,
-  },
-  confirmButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  cancelButton: {
-    backgroundColor: '#EF4444',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginLeft: 4,
-  },
-  cancelButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold',
+    
   },
 });

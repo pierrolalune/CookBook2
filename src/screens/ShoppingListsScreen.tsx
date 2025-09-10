@@ -8,13 +8,15 @@ import {
   RefreshControl,
   Alert,
   ActivityIndicator,
+  ScrollView,
+  TextInput,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { ShoppingList } from '../types';
 import { useShoppingLists } from '../hooks/useShoppingLists';
-import { ShoppingListCard } from '../components/shoppingList/ShoppingListCard';
+import { ModernShoppingListCard } from '../components/shoppingList/ModernShoppingListCard';
 import { ShareShoppingListModal } from '../components/shoppingList/ShareShoppingListModal';
-import { SearchBar } from '../components/common/SearchBar';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 
@@ -132,13 +134,12 @@ const ShoppingListsScreenComponent: React.FC = () => {
   }, [router]);
 
   const renderShoppingList = useCallback(({ item }: { item: ShoppingList }) => (
-    <ShoppingListCard
+    <ModernShoppingListCard
       shoppingList={item}
       onPress={() => handleListPress(item)}
-      onLongPress={() => handleListLongPress(item)}
       onDelete={() => handleDelete(item)}
     />
-  ), [handleListPress, handleListLongPress, handleDelete]);
+  ), [handleListPress, handleDelete]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -153,7 +154,14 @@ const ShoppingListsScreenComponent: React.FC = () => {
           style={styles.primaryButton}
           onPress={handleCreateNew}
         >
-          <Text style={styles.primaryButtonText}>Créer une liste</Text>
+          <LinearGradient
+            colors={['#667eea', '#764ba2']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.primaryButtonGradient}
+          >
+            <Text style={styles.primaryButtonText}>Créer une liste</Text>
+          </LinearGradient>
         </TouchableOpacity>
         
         <TouchableOpacity
@@ -175,7 +183,14 @@ const ShoppingListsScreenComponent: React.FC = () => {
         style={styles.retryButton}
         onPress={() => actions.loadShoppingLists()}
       >
-        <Text style={styles.retryButtonText}>Réessayer</Text>
+        <LinearGradient
+          colors={['#667eea', '#764ba2']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.primaryButtonGradient}
+        >
+          <Text style={styles.retryButtonText}>Réessayer</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   ), [error, actions]);
@@ -191,34 +206,55 @@ const ShoppingListsScreenComponent: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        placeholder="Rechercher dans les listes..."
-        style={styles.searchBar}
-      />
-
-      {error ? (
-        renderError()
-      ) : (
-        <FlatList
-          data={filteredLists}
-          renderItem={renderShoppingList}
-          keyExtractor={item => item.id}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              colors={['#3B82F6']}
+      {/* Modern Gradient Header */}
+      <LinearGradient
+        colors={['#667eea', '#764ba2']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>Mes Listes de Courses</Text>
+          
+          {/* Integrated Search Bar */}
+          <View style={styles.searchContainer}>
+            <Text style={styles.searchIcon}>🔍</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Rechercher dans les listes..."
+              placeholderTextColor="rgba(118, 75, 162, 0.6)"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
             />
-          }
-          ListEmptyComponent={!loading ? renderEmptyState : null}
-          contentContainerStyle={
-            filteredLists.length === 0 ? styles.emptyContainer : styles.listContainer
-          }
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+          </View>
+        </View>
+      </LinearGradient>
+
+      {/* Content */}
+      <View style={styles.content}>
+        {error ? (
+          renderError()
+        ) : (
+          <FlatList
+            data={filteredLists}
+            renderItem={renderShoppingList}
+            keyExtractor={item => item.id}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={['#667eea']}
+                tintColor="#667eea"
+              />
+            }
+            ListEmptyComponent={!loading ? renderEmptyState : null}
+            contentContainerStyle={
+              filteredLists.length === 0 ? styles.emptyContainer : styles.listContainer
+            }
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
 
       <FloatingAddButton
         onPress={handleCreateNew}
@@ -246,120 +282,212 @@ export const ShoppingListsScreen: React.FC = () => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#f5f7fa',
   },
-  searchBar: {
-    margin: 16,
+
+  header: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
+
+  headerContent: {
+    marginTop: 20,
+  },
+
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 20,
+  },
+
+  searchContainer: {
+    position: 'relative',
+    marginBottom: 0,
+  },
+
+  searchIcon: {
+    position: 'absolute',
+    left: 18,
+    top: '50%',
+    marginTop: -10,
+    fontSize: 16,
+    color: '#764ba2',
+    zIndex: 1,
+  },
+
+  searchInput: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 15,
+    fontSize: 16,
+    color: '#2c3e50',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+
+  content: {
+    flex: 1,
+    backgroundColor: '#f5f7fa',
+  },
+
   listContainer: {
-    paddingBottom: 100, // Space for FAB
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 120,
   },
+
   emptyContainer: {
     flex: 1,
   },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#f5f7fa',
   },
+
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#6B7280',
+    color: '#95a5a6',
+    fontWeight: '500',
   },
+
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 32,
+    paddingHorizontal: 40,
   },
+
   emptyStateIcon: {
     fontSize: 64,
-    marginBottom: 16,
+    marginBottom: 20,
+    opacity: 0.3,
   },
+
   emptyStateTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: 8,
+    color: '#2c3e50',
+    marginBottom: 10,
     textAlign: 'center',
   },
+
   emptyStateDescription: {
     fontSize: 16,
-    color: '#6B7280',
+    color: '#95a5a6',
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 32,
+    lineHeight: 24,
+    marginBottom: 40,
   },
+
   emptyStateActions: {
     width: '100%',
     maxWidth: 280,
+    gap: 12,
   },
+
   primaryButton: {
-    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 12,
+    borderRadius: 15,
     alignItems: 'center',
-    marginBottom: 12,
+    overflow: 'hidden',
   },
+
+  primaryButtonGradient: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+    width: '100%',
+  },
+
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
   },
+
   secondaryButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffffff',
     paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 12,
+    borderRadius: 15,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderWidth: 2,
+    borderColor: '#e8ecf1',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
   },
+
   secondaryButtonText: {
-    color: '#374151',
+    color: '#2c3e50',
     fontSize: 16,
     fontWeight: '500',
   },
+
   errorState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
   },
+
   errorIcon: {
     fontSize: 48,
     marginBottom: 16,
   },
+
   errorTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#DC2626',
+    color: '#e74c3c',
     marginBottom: 8,
     textAlign: 'center',
   },
+
   errorDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#95a5a6',
     textAlign: 'center',
     marginBottom: 24,
   },
+
   retryButton: {
-    backgroundColor: '#3B82F6',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
+
   retryButtonText: {
-    color: '#FFFFFF',
+    color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
   },
+
   fab: {
     position: 'absolute',
     bottom: 32,
-    right: 16,
+    right: 20,
   },
 });

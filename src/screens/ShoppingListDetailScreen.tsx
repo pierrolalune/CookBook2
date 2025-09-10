@@ -8,8 +8,10 @@ import {
   RefreshControl,
   Alert,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
+  TextInput
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ShoppingList, ShoppingListItem, Ingredient } from '../types';
 import { useShoppingLists } from '../hooks/useShoppingLists';
@@ -17,7 +19,7 @@ import { useShoppingListItems } from '../hooks/useShoppingListItems';
 import { CategorySection } from '../components/shoppingList/CategorySection';
 import { ShareShoppingListModal } from '../components/shoppingList/ShareShoppingListModal';
 import { IngredientSelectorModal } from '../components/recipe/IngredientSelectorModal';
-import { SearchBar } from '../components/common/SearchBar';
+import { ShoppingListProgressBar } from '../components/shoppingList/ShoppingListProgressBar';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { ShoppingListUtils } from '../utils/shoppingListUtils';
 import { ShoppingListItemRepository } from '../repositories/ShoppingListItemRepository';
@@ -26,18 +28,18 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { actions: listActions } = useShoppingLists();
-  const { 
-    items, 
-    loading, 
-    error, 
-    completedItemsCount, 
+  const {
+    items,
+    loading,
+    error,
+    completedItemsCount,
     totalItemsCount,
     hasCompletedItems,
     allItemsCompleted,
     itemsByCategory,
-    actions: itemActions 
+    actions: itemActions
   } = useShoppingListItems();
-  
+
   const [shoppingList, setShoppingList] = useState<ShoppingList | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [shareModalVisible, setShareModalVisible] = useState(false);
@@ -56,27 +58,29 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
 
       try {
         setLoadingList(true);
-        
+
         // Load shopping list details directly from repository
         const { ShoppingListRepository } = await import('../repositories/ShoppingListRepository');
         const repository = new ShoppingListRepository();
-        
+
         console.log('Loading shopping list with ID:', id);
         const list = await repository.findById(id);
-        
+
         if (!list) {
           console.error('Shopping list not found for ID:', id);
           Alert.alert('Erreur', `Liste de courses introuvable (ID: ${id})`);
           router.back();
           return;
         }
-        
+
         console.log('Shopping list loaded successfully:', list.name);
 
         setShoppingList(list);
-        
+
         // Load items
+        console.log('Loading items for shopping list ID:', id);
         await itemActions.loadItems(id);
+        console.log('Items loaded successfully');
       } catch (error) {
         console.error('Error loading shopping list:', error);
         Alert.alert('Erreur', 'Impossible de charger la liste de courses');
@@ -89,22 +93,31 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
   }, [id]);
 
   // Filter items based on search query
-  const filteredItems = searchQuery.trim() 
+  const filteredItems = searchQuery.trim()
     ? ShoppingListUtils.searchItems(items, searchQuery)
     : items;
+
+  // Debug logging
+  console.log('ShoppingListDetailScreen - Debug Info:', {
+    shoppingListId: id,
+    totalItems: items.length,
+    filteredItems: filteredItems.length,
+    searchQuery,
+    itemsData: items.slice(0, 3) // Show first 3 items for debugging
+  });
 
   // Group filtered items by category
   const groupedItems = ShoppingListUtils.groupItemsByCategory(filteredItems);
 
   // Get sorted categories
-  const sortedCategories = Object.keys(groupedItems).sort((a, b) => 
+  const sortedCategories = Object.keys(groupedItems).sort((a, b) =>
     ShoppingListUtils.getCategoryOrder(a) - ShoppingListUtils.getCategoryOrder(b)
   );
 
   const handleItemToggle = useCallback(async (item: ShoppingListItem) => {
     try {
       await itemActions.toggleItemCompletion(item.id);
-      
+
       // Update shopping list completion status if needed
       const stats = ShoppingListUtils.getCompletionStats(items);
       if (shoppingList && shoppingList.isCompleted !== stats.allItemsCompleted) {
@@ -122,11 +135,11 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
 
   const handleRefresh = useCallback(async () => {
     if (!id) return;
-    
+
     setRefreshing(true);
     try {
       await itemActions.loadItems(id);
-      
+
       // Refresh shopping list data
       await listActions.loadShoppingLists();
       const updatedList = listActions.getShoppingListById(id);
@@ -198,7 +211,7 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
 
     try {
       const itemRepository = new ShoppingListItemRepository();
-      
+
       await itemRepository.create(shoppingList.id, {
         ingredientId: ingredient.id,
         ingredientName: ingredient.name,
@@ -209,7 +222,7 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
 
       // Refresh the items list
       await itemActions.loadItems(shoppingList.id);
-      
+
       Alert.alert('✅', `"${ingredient.name}" ajouté à la liste !`);
       setIngredientSelectorVisible(false);
     } catch (error) {
@@ -242,26 +255,26 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
     return (
       <View style={styles.header}>
         <Text style={styles.title}>{shoppingList.name}</Text>
-        
+
         {shoppingList.description && (
           <Text style={styles.description}>{shoppingList.description}</Text>
         )}
-        
+
         <View style={styles.statsContainer}>
           <View style={styles.progressContainer}>
             <View style={styles.progressBackground}>
-              <View 
+              <View
                 style={[
-                  styles.progressFill, 
+                  styles.progressFill,
                   { width: `${stats.completionPercentage}%` }
-                ]} 
+                ]}
               />
             </View>
             <Text style={styles.progressText}>
               {stats.completedItems}/{stats.totalItems} articles • {stats.completionPercentage}%
             </Text>
           </View>
-          
+
           <Text style={styles.timeEstimate}>
             ⏱️ {timeEstimate.estimatedTimeText}
           </Text>
@@ -273,7 +286,7 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
               <Text style={styles.badgeText}>🍽️ Recettes</Text>
             </View>
           )}
-          
+
           {stats.allItemsCompleted && (
             <View style={[styles.badge, styles.completedBadge]}>
               <Text style={styles.completedBadgeText}>✅ Terminé</Text>
@@ -288,14 +301,14 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
           >
             <Text style={styles.actionButtonText}>📤 Partager</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[styles.actionButton, styles.addIngredientButton]}
             onPress={() => setIngredientSelectorVisible(true)}
           >
             <Text style={styles.addIngredientButtonText}>➕ Ajouter</Text>
           </TouchableOpacity>
-          
+
           {hasCompletedItems && (
             <>
               <TouchableOpacity
@@ -304,7 +317,7 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
               >
                 <Text style={styles.uncheckButtonText}>↩️ Décocher</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={[styles.actionButton, styles.clearButton]}
                 onPress={handleClearCompleted}
@@ -371,52 +384,113 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        placeholder="Rechercher un article..."
-        style={styles.searchBar}
-      />
+      {/* Modern Gradient Header with Back Button and Recipe Info */}
+      <LinearGradient
+        colors={['#667eea', '#764ba2']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
 
-      {error ? (
-        renderError()
-      ) : (
-        <ScrollView
-          style={styles.scrollView}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              colors={['#3B82F6']}
-            />
-          }
-          showsVerticalScrollIndicator={false}
-        >
-          {renderHeader()}
-          
-          {loading && items.length === 0 ? (
-            <View style={styles.loadingItems}>
-              <ActivityIndicator size="small" color="#3B82F6" />
-              <Text style={styles.loadingItemsText}>Chargement des articles...</Text>
+
+        {/* Recipe Info Card */}
+        {shoppingList && (
+          <View style={styles.recipeInfoCard}>
+            <Text style={styles.recipeTitle}>{shoppingList.name}</Text>
+            {shoppingList.description && (
+              <Text style={styles.recipeSubtitle}>{shoppingList.description}</Text>
+            )}
+
+            {/* Progress Bar */}
+            <View style={styles.progressSection}>
+              <ShoppingListProgressBar
+                completed={completedItemsCount}
+                total={totalItemsCount}
+                showLabel={true}
+                showPercentage={true}
+                size="medium"
+              />
             </View>
-          ) : sortedCategories.length === 0 ? (
-            renderEmptyState()
-          ) : (
-            <View style={styles.categoriesContainer}>
-              {sortedCategories.map(category => (
-                <CategorySection
-                  key={category}
-                  category={category}
-                  items={groupedItems[category]}
-                  onToggleItemComplete={handleItemToggle}
-                  onUpdateItemQuantity={handleUpdateItemQuantity}
-                  initialExpanded={true}
-                />
-              ))}
+
+            {/* Meta Information */}
+            <View style={styles.recipeMetaSection}>
+              {/* Empty - removed time estimate and recipe button */}
             </View>
-          )}
-        </ScrollView>
-      )}
+
+            {/* Action Buttons */}
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                style={[styles.actionBtn, styles.shareBtn]}
+                onPress={handleShare}
+              >
+                <Text style={styles.actionIcon}>📤</Text>
+                <Text style={styles.actionText}>Partager</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionBtn, styles.addBtn]}
+                onPress={() => setIngredientSelectorVisible(true)}
+              >
+                <Text style={styles.actionIcon}>➕</Text>
+                <Text style={styles.actionText}>Ajouter</Text>
+              </TouchableOpacity>
+
+              {hasCompletedItems && (
+                <TouchableOpacity
+                  style={[styles.actionBtn, styles.uncheckBtn]}
+                  onPress={handleUncheckAll}
+                >
+                  <Text style={styles.actionIcon}>↻</Text>
+                  <Text style={styles.actionText}>Décocher</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+      </LinearGradient>
+
+      {/* Content */}
+      <View style={styles.content}>
+        {error ? (
+          renderError()
+        ) : (
+          <ScrollView
+            style={styles.scrollView}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={['#667eea']}
+                tintColor="#667eea"
+              />
+            }
+            showsVerticalScrollIndicator={false}
+          >
+            {loading && items.length === 0 ? (
+              <View style={styles.loadingItems}>
+                <ActivityIndicator size="small" color="#667eea" />
+                <Text style={styles.loadingItemsText}>Chargement des articles...</Text>
+              </View>
+            ) : sortedCategories.length === 0 ? (
+              renderEmptyState()
+            ) : (
+              <View style={styles.categoriesContainer}>
+                {sortedCategories.map(category => (
+                  <CategorySection
+                    key={category}
+                    category={category}
+                    items={groupedItems[category]}
+                    onToggleItemComplete={handleItemToggle}
+                    onUpdateItemQuantity={handleUpdateItemQuantity}
+                    searchQuery={searchQuery}
+                    initialExpanded={true}
+                  />
+                ))}
+              </View>
+            )}
+          </ScrollView>
+        )}
+      </View>
 
       <ShareShoppingListModal
         visible={shareModalVisible}
@@ -443,203 +517,281 @@ export const ShoppingListDetailScreen: React.FC = () => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#f5f7fa',
   },
-  searchBar: {
-    margin: 16,
+
+  // Header Styles
+  header: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
+
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+
+  backButton: {
+    marginRight: 15,
+    padding: 5,
+  },
+
+  backButtonText: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+
+  headerTitle: {
+    color: '#ffffff',
+    fontSize: 10,
+    fontWeight: '700',
+    flex: 1,
+  },
+
+  recipeInfoCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 20,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+
+  recipeTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2c3e50',
+    marginBottom: 8,
+  },
+
+  recipeSubtitle: {
+    fontSize: 12,
+    color: '#95a5a6',
+    marginBottom: 15,
+    fontStyle: 'italic',
+  },
+
+  progressSection: {
+    marginBottom: 5,
+  },
+
+  recipeMetaSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 5,
+  },
+
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+
+  metaIcon: {
+    fontSize: 10,
+  },
+
+  metaText: {
+    fontSize: 13,
+    color: '#95a5a6',
+    fontWeight: '500',
+  },
+
+  recipeLink: {
+    fontSize: 13,
+    color: '#667eea',
+    fontWeight: '600',
+  },
+
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+
+  actionBtn: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+
+  shareBtn: {
+    backgroundColor: '#e8f0fe',
+  },
+
+  addBtn: {
+    backgroundColor: '#e8f5e9',
+  },
+
+  uncheckBtn: {
+    backgroundColor: '#fff3e0',
+  },
+
+  actionIcon: {
+    fontSize: 14,
+  },
+
+  actionText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // Search Section
+  searchSection: {
+    padding: 20,
+    backgroundColor: '#f5f7fa',
+    position: 'relative',
+  },
+
+  searchIcon: {
+    position: 'absolute',
+    left: 35,
+    top: '50%',
+    marginTop: -10,
+    fontSize: 16,
+    color: '#95a5a6',
+    zIndex: 1,
+  },
+
+  searchInput: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 15,
+    fontSize: 16,
+    color: '#2c3e50',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+
+  // Content
+  content: {
+    flex: 1,
+    backgroundColor: '#f5f7fa',
+  },
+
   scrollView: {
     flex: 1,
   },
+
+  categoriesContainer: {
+    paddingHorizontal: 0,
+    paddingBottom: 30,
+  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#f5f7fa',
   },
+
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#6B7280',
-  },
-  header: {
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginBottom: 16,
-    lineHeight: 20,
-  },
-  statsContainer: {
-    marginBottom: 16,
-  },
-  progressContainer: {
-    marginBottom: 8,
-  },
-  progressBackground: {
-    height: 8,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 4,
-    marginBottom: 8,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#10B981',
-    borderRadius: 4,
-  },
-  progressText: {
-    fontSize: 14,
-    color: '#6B7280',
+    color: '#95a5a6',
     fontWeight: '500',
   },
-  timeEstimate: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  badges: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  badge: {
-    backgroundColor: '#EFF6FF',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginRight: 8,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: '#1D4ED8',
-    fontWeight: '500',
-  },
-  completedBadge: {
-    backgroundColor: '#ECFDF5',
-  },
-  completedBadgeText: {
-    color: '#059669',
-  },
-  actions: {
-    flexDirection: 'row',
-  },
-  actionButton: {
-    backgroundColor: '#3B82F6',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  clearButton: {
-    backgroundColor: '#EF4444',
-  },
-  clearButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  uncheckButton: {
-    backgroundColor: '#F59E0B',
-  },
-  uncheckButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  addIngredientButton: {
-    backgroundColor: '#10B981',
-  },
-  addIngredientButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  categoriesContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 32,
-  },
+
   loadingItems: {
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: 32,
+    justifyContent: 'center',
+    paddingVertical: 20,
+    gap: 10,
   },
+
   loadingItemsText: {
-    marginTop: 8,
     fontSize: 14,
-    color: '#6B7280',
+    color: '#95a5a6',
   },
+
   emptyState: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 64,
-    paddingHorizontal: 32,
+    paddingHorizontal: 40,
+    paddingTop: 60,
   },
+
   emptyStateIcon: {
     fontSize: 64,
-    marginBottom: 16,
+    marginBottom: 20,
+    opacity: 0.3,
   },
+
   emptyStateTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: 8,
+    color: '#2c3e50',
+    marginBottom: 10,
     textAlign: 'center',
   },
+
   emptyStateDescription: {
     fontSize: 16,
-    color: '#6B7280',
+    color: '#95a5a6',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 24,
   },
+
   errorState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
   },
+
   errorIcon: {
     fontSize: 48,
     marginBottom: 16,
   },
+
   errorTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#DC2626',
+    color: '#e74c3c',
     marginBottom: 8,
     textAlign: 'center',
   },
+
   errorDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#95a5a6',
     textAlign: 'center',
     marginBottom: 24,
   },
+
   retryButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#667eea',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 10,
   },
+
   retryButtonText: {
-    color: '#FFFFFF',
+    color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
   },

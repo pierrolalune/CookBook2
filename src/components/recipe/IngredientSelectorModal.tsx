@@ -517,8 +517,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: spacing.md,
     marginVertical: screenHeight * 0.1,
-    maxHeight: screenHeight * 0.8,
-    minHeight: screenHeight * 0.6,
+    height: screenHeight * 0.8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -604,6 +603,7 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     padding: spacing.md,
+    minHeight: screenHeight * 0.4,
   },
 
   categorySection: {

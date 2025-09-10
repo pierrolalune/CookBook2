@@ -29,7 +29,8 @@ export class ShoppingListItemRepository {
         SELECT 
           sli.*,
           i.name as ingredient_full_name,
-          i.category as ingredient_category
+          i.category as ingredient_category,
+          i.units as ingredient_units
         FROM shopping_list_items sli
         LEFT JOIN ingredients i ON sli.ingredient_id = i.id
         WHERE sli.shopping_list_id = ?
@@ -39,6 +40,7 @@ export class ShoppingListItemRepository {
       const rows = await this.db.getAllAsync(query, [shoppingListId]) as (ShoppingListItemRow & {
         ingredient_full_name?: string;
         ingredient_category?: string;
+        ingredient_units?: string;
       })[];
 
       return rows.map(this.mapRowToShoppingListItem);
@@ -61,7 +63,8 @@ export class ShoppingListItemRepository {
         SELECT 
           sli.*,
           i.name as ingredient_full_name,
-          i.category as ingredient_category
+          i.category as ingredient_category,
+          i.units as ingredient_units
         FROM shopping_list_items sli
         LEFT JOIN ingredients i ON sli.ingredient_id = i.id
         WHERE sli.id = ?
@@ -70,6 +73,7 @@ export class ShoppingListItemRepository {
       const row = await this.db.getFirstAsync(query, [id]) as (ShoppingListItemRow & {
         ingredient_full_name?: string;
         ingredient_category?: string;
+        ingredient_units?: string;
       }) | null;
 
       return row ? this.mapRowToShoppingListItem(row) : null;
@@ -400,7 +404,18 @@ export class ShoppingListItemRepository {
   private mapRowToShoppingListItem(row: ShoppingListItemRow & {
     ingredient_full_name?: string;
     ingredient_category?: string;
+    ingredient_units?: string;
   }): ShoppingListItem {
+    // Parse available units from JSON if they exist
+    let availableUnits: string[] | undefined;
+    if (row.ingredient_units) {
+      try {
+        availableUnits = JSON.parse(row.ingredient_units);
+      } catch (e) {
+        availableUnits = undefined;
+      }
+    }
+
     return {
       id: row.id,
       shoppingListId: row.shopping_list_id,
@@ -408,6 +423,7 @@ export class ShoppingListItemRepository {
       ingredientName: row.ingredient_name,
       quantity: row.quantity || undefined,
       unit: row.unit || undefined,
+      availableUnits,
       category: row.category,
       isCompleted: row.is_completed === 1,
       notes: row.notes || undefined,

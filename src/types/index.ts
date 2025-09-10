@@ -356,6 +356,7 @@ export interface ShoppingListItem {
   ingredientName: string;
   quantity?: number;
   unit?: string;
+  availableUnits?: string[];
   category: string;
   isCompleted: boolean;
   notes?: string;

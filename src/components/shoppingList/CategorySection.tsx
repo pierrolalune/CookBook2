@@ -9,6 +9,7 @@ interface CategorySectionProps {
   category: string;
   items: ShoppingListItem[];
   onToggleItemComplete: (item: ShoppingListItem) => void;
+  onUpdateItemQuantity?: (item: ShoppingListItem, quantity: number, unit: string) => void;
   onItemPress?: (item: ShoppingListItem) => void;
   onItemLongPress?: (item: ShoppingListItem) => void;
   initialExpanded?: boolean;
@@ -18,12 +19,14 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
   category,
   items,
   onToggleItemComplete,
+  onUpdateItemQuantity,
   onItemPress,
   onItemLongPress,
   initialExpanded = true
 }) => {
   const [expanded, setExpanded] = useState(initialExpanded);
   const [animation] = useState(new Animated.Value(initialExpanded ? 1 : 0));
+  const [hasEditingItem, setHasEditingItem] = useState(false);
 
   const toggleExpanded = () => {
     const toValue = expanded ? 0 : 1;
@@ -44,7 +47,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
   const categoryDisplayName = ShoppingListUtils.getCategoryDisplayName(category);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, hasEditingItem && styles.elevatedContainer]}>
       <TouchableOpacity 
         style={styles.header}
         onPress={toggleExpanded}
@@ -93,7 +96,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
           outputRange: [0, 1000] // Large enough to accommodate content
         }),
         opacity: animation,
-        overflow: 'hidden'
+        overflow: 'visible'
       }}>
         <View style={styles.itemsContainer}>
           {items
@@ -104,13 +107,15 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
               }
               return a.orderIndex - b.orderIndex;
             })
-            .map(item => (
+            .map((item, index, array) => (
               <ShoppingListItemCard
                 key={item.id}
                 item={item}
                 onToggleComplete={() => onToggleItemComplete(item)}
+                onUpdateQuantity={onUpdateItemQuantity ? (quantity, unit) => onUpdateItemQuantity(item, quantity, unit) : undefined}
                 onPress={onItemPress ? () => onItemPress(item) : undefined}
                 onLongPress={onItemLongPress ? () => onItemLongPress(item) : undefined}
+                isLastInCategory={index === array.length - 1}
               />
             ))}
         </View>
@@ -130,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginBottom: 8,
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: 'visible',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -139,6 +144,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
+  },
+  elevatedContainer: {
+    elevation: 10,
+    zIndex: 10,
   },
   header: {
     backgroundColor: '#F9FAFB',
@@ -193,5 +202,6 @@ const styles = StyleSheet.create({
   },
   itemsContainer: {
     backgroundColor: '#FFFFFF',
+    overflow: 'visible',
   },
 });

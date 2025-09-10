@@ -11,14 +11,16 @@ import {
   ScrollView
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { ShoppingList, ShoppingListItem } from '../types';
+import { ShoppingList, ShoppingListItem, Ingredient } from '../types';
 import { useShoppingLists } from '../hooks/useShoppingLists';
 import { useShoppingListItems } from '../hooks/useShoppingListItems';
 import { CategorySection } from '../components/shoppingList/CategorySection';
 import { ShareShoppingListModal } from '../components/shoppingList/ShareShoppingListModal';
+import { IngredientSelectorModal } from '../components/recipe/IngredientSelectorModal';
 import { SearchBar } from '../components/common/SearchBar';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { ShoppingListUtils } from '../utils/shoppingListUtils';
+import { ShoppingListItemRepository } from '../repositories/ShoppingListItemRepository';
 
 const ShoppingListDetailScreenComponent: React.FC = () => {
   const router = useRouter();
@@ -39,6 +41,7 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
   const [shoppingList, setShoppingList] = useState<ShoppingList | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [ingredientSelectorVisible, setIngredientSelectorVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loadingList, setLoadingList] = useState(true);
 
@@ -190,6 +193,48 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
     );
   }, [shoppingList, hasCompletedItems, completedItemsCount, itemActions]);
 
+  const handleAddIngredient = useCallback(async (ingredient: Ingredient, quantity: number, unit: string) => {
+    if (!shoppingList) return;
+
+    try {
+      const itemRepository = new ShoppingListItemRepository();
+      
+      await itemRepository.create(shoppingList.id, {
+        ingredientId: ingredient.id,
+        ingredientName: ingredient.name,
+        quantity: quantity,
+        unit: unit,
+        category: ingredient.category
+      });
+
+      // Refresh the items list
+      await itemActions.loadItems(shoppingList.id);
+      
+      Alert.alert('✅', `"${ingredient.name}" ajouté à la liste !`);
+      setIngredientSelectorVisible(false);
+    } catch (error) {
+      console.error('Error adding ingredient to shopping list:', error);
+      Alert.alert('Erreur', 'Impossible d\'ajouter l\'ingrédient à la liste');
+    }
+  }, [shoppingList, itemActions]);
+
+  const handleUpdateItemQuantity = useCallback(async (item: ShoppingListItem, quantity: number, unit: string) => {
+    if (!shoppingList) return;
+
+    try {
+      await itemActions.updateItem({
+        id: item.id,
+        quantity: quantity,
+        unit: unit
+      });
+      
+      Alert.alert('✅', 'Quantité mise à jour !');
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
+      Alert.alert('Erreur', 'Impossible de mettre à jour la quantité');
+    }
+  }, [shoppingList, itemActions]);
+
   const renderHeader = useCallback(() => {
     if (!shoppingList) return null;
 
@@ -244,6 +289,13 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
             onPress={handleShare}
           >
             <Text style={styles.actionButtonText}>📤 Partager</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[styles.actionButton, styles.addIngredientButton]}
+            onPress={() => setIngredientSelectorVisible(true)}
+          >
+            <Text style={styles.addIngredientButtonText}>➕ Ajouter</Text>
           </TouchableOpacity>
           
           {hasCompletedItems && (
@@ -359,6 +411,7 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
                   category={category}
                   items={groupedItems[category]}
                   onToggleItemComplete={handleItemToggle}
+                  onUpdateItemQuantity={handleUpdateItemQuantity}
                   initialExpanded={true}
                 />
               ))}
@@ -371,6 +424,13 @@ const ShoppingListDetailScreenComponent: React.FC = () => {
         visible={shareModalVisible}
         shoppingList={shoppingList}
         onClose={() => setShareModalVisible(false)}
+      />
+
+      <IngredientSelectorModal
+        visible={ingredientSelectorVisible}
+        onClose={() => setIngredientSelectorVisible(false)}
+        onAddIngredient={handleAddIngredient}
+        excludeIngredientIds={items.map(item => item.ingredientId).filter(Boolean) as string[]}
       />
     </View>
   );
@@ -504,6 +564,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F59E0B',
   },
   uncheckButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  addIngredientButton: {
+    backgroundColor: '#10B981',
+  },
+  addIngredientButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',

@@ -198,14 +198,30 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
       return null;
     }
 
+    // Calculate dynamic max height based on number of missing ingredients
+    const totalMissingCount = missingIngredients.length + optionalMissing.length;
+    const itemHeight = 60; // Approximate height per missing ingredient item (including substitutions)
+    const sectionHeaderHeight = 35; // Height for section titles
+    const maxDisplayItems = 8; // Maximum items to show before scrolling
+    const sectionsCount = (missingIngredients.length > 0 ? 1 : 0) + (optionalMissing.length > 0 ? 1 : 0);
+    const totalHeadersHeight = sectionsCount * sectionHeaderHeight;
+    const calculatedHeight = Math.min(
+      totalMissingCount * itemHeight + totalHeadersHeight, 
+      maxDisplayItems * itemHeight + totalHeadersHeight
+    );
+
     const maxHeight = animatedHeight.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 200],
+      outputRange: [0, calculatedHeight],
     });
 
     return (
       <Animated.View style={[styles.missingIngredientsContainer, { maxHeight }]}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          showsVerticalScrollIndicator={true}
+          nestedScrollEnabled={true}
+          style={{ maxHeight: calculatedHeight }}
+        >
           {/* Required missing ingredients */}
           {missingIngredients.length > 0 && (
             <View style={styles.missingSection}>

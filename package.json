@@ -29,7 +29,8 @@
     "react-native-safe-area-context": "^5.6.1",
     "react-native-uuid": "^2.0.3",
     "react-native-view-shot": "^4.0.3",
-    "react-native-xml2js": "^1.0.3"
+    "react-native-xml2js": "^1.0.3",
+    "expo-linear-gradient": "~14.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -32,6 +32,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const focusAnim = new Animated.Value(0);
 
+  // Sync internal state with external value prop
+  useEffect(() => {
+    setSearchQuery(value);
+  }, [value]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       onSearch?.(searchQuery);
@@ -51,6 +56,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleClear = () => {
     setSearchQuery('');
+    onSearch?.('');
+    onChangeText?.('');
     onClear?.();
   };
 

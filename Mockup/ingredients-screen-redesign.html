@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingrédients - Redesign</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            background: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-left {
+            display: flex;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0 0 30px 30px;
+        }
+
+        .header-category {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .back-button {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .category-header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .category-header-icon {
+            font-size: 48px;
+        }
+
+        .category-header-text h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .category-header-count {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #764ba2;
+        }
+
+        /* Filter Pills */
+        .filter-pills {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+
+        .filter-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pill.active {
+            background: white;
+            color: #764ba2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Categories Grid */
+        .categories {
+            padding: 25px 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .category-card.seasonal {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, transparent 50%, rgba(118, 75, 162, 0.1) 50%);
+            border-radius: 0 20px 0 0;
+        }
+
+        .category-card.seasonal::before {
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.3) 50%);
+        }
+
+        .category-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .category-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .category-count {
+            font-size: 14px;
+            color: #95a5a6;
+        }
+
+        /* Ingredients List */
+        .ingredients-list {
+            padding: 20px;
+        }
+
+        .ingredient-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ingredient-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .ingredient-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .ingredient-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ingredient-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+
+        .ingredient-category {
+            font-size: 13px;
+            color: #95a5a6;
+        }
+
+        .ingredient-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .season-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-debut {
+            background: #2ecc71;
+        }
+
+        .badge-pic {
+            background: #e67e22;
+        }
+
+        .badge-fin {
+            background: #95a5a6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cart {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-favorite {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cart:hover, .btn-favorite:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-favorite.active {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            border-radius: 25px 25px 0 0;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #95a5a6;
+        }
+
+        .nav-item.active {
+            color: #764ba2;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* FAB Button */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        /* Add padding to bottom for nav */
+        .content-wrapper {
+            padding-bottom: 100px;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Filter Bar for Category View */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f5f7fa;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .filter-chip.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-chip:hover {
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main Categories View -->
+        <div id="categoriesView" class="view active">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>8:59</span>
+                </div>
+                <div class="status-right">
+                    <span>🔋 32%</span>
+                    <span>📶</span>
+                    <span>WiFi</span>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="header">
+                <h1>Mes Ingrédients</h1>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-bar" placeholder="Rechercher un ingrédient...">
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="filter-pills">
+                    <div class="pill active">📋 Tous</div>
+                    <div class="pill">❤️ Favoris</div>
+                    <div class="pill">⭐ Mes produits</div>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Categories Section -->
+                <div class="categories">
+                    <h2 class="section-title">Catégories</h2>
+                    <div class="category-grid">
+                        <div class="category-card seasonal" onclick="showCategory('Produits de saison')">
+                            <div class="category-icon">🌿</div>
+                            <div class="category-name">Produits de saison</div>
+                            <div class="category-count">53 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Fruits')">
+                            <div class="category-icon">🍎</div>
+                            <div class="category-name">Fruits</div>
+                            <div class="category-count">71 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Légumes')">
+                            <div class="category-icon">🥬</div>
+                            <div class="category-name">Légumes</div>
+                            <div class="category-count">49 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Poisson')">
+                            <div class="category-icon">🐟</div>
+                            <div class="category-name">Poisson</div>
+                            <div class="category-count">26 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Viande')">
+                            <div class="category-icon">🥩</div>
+                            <div class="category-name">Viande</div>
+                            <div class="category-count">30 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Produits laitiers')">
+                            <div class="category-icon">🥛</div>
+                            <div class="category-name">Produits laitiers</div>
+                            <div class="category-count">29 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Épicerie')">
+                            <div class="category-icon">🛒</div>
+                            <div class="category-name">Épicerie</div>
+                            <div class="category-count">122 produits</div>
+                        </div>
+                        <div class="category-card" onclick="showCategory('Mes produits')">
+                            <div class="category-icon">⭐</div>
+                            <div class="category-name">Mes produits</div>
+                            <div class="category-count">8 produits</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Detail View -->
+        <div id="categoryDetailView" class="view">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>8:59</span>
+                </div>
+                <div class="status-right">
+                    <span>🔋 32%</span>
+                    <span>📶</span>
+                    <span>WiFi</span>
+                </div>
+            </div>
+
+            <!-- Category Header -->
+            <div class="header-category">
+                <div class="back-button" onclick="showMainView()">←</div>
+                <div class="category-header-info">
+                    <div class="category-header-icon" id="categoryIcon">🐟</div>
+                    <div class="category-header-text">
+                        <h2 id="categoryTitle">Poisson</h2>
+                        <div class="category-header-count" id="categoryCount">26 produits disponibles</div>
+                    </div>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-bar" placeholder="Rechercher dans cette catégorie...">
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar" id="filterBar">
+                <!-- Dynamic filters will be inserted here -->
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Ingredients List -->
+                <div class="ingredients-list" id="ingredientsList">
+                    <!-- Dynamic ingredients will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- FAB Button -->
+        <div class="fab">+</div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-items">
+                <div class="nav-item active">
+                    <span class="nav-icon">🥘</span>
+                    <span class="nav-label">Ingrédients</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-label">Recettes</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Listes</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Paramètres</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categoryData = {
+            'Produits de saison': {
+                icon: '🌿',
+                count: 53,
+                filters: ['Tous', 'Légumes', 'Fruits', 'Début de saison', 'Pic de saison', 'Fin de saison'],
+                items: [
+                    { name: 'Brocoli', category: 'Légumes fleurs', season: 'debut' },
+                    { name: 'Coing', category: 'Fruits à pépins', season: 'debut' },
+                    { name: 'Cornouille', category: 'Baies', season: 'pic' },
+                    { name: 'Cynorrhodon', category: 'Baies', season: 'debut' },
+                    { name: 'Figue', category: 'Fruits méditerranéens', season: 'pic' },
+                    { name: 'Artichaut', category: 'Légumes fleurs', season: 'fin' },
+                    { name: 'Aubergine', category: 'Légumes fruits', season: 'fin' },
+                    { name: 'Amande fraîche', category: 'Fruits secs', season: 'pic' }
+                ]
+            },
+            'Fruits': {
+                icon: '🍎',
+                count: 71,
+                filters: ['Tous', 'Fruits à pépins', 'Fruits à noyau', 'Agrumes', 'Baies', 'Fruits exotiques', 'Fruits secs'],
+                items: [
+                    { name: 'Pomme', category: 'Fruits à pépins' },
+                    { name: 'Poire', category: 'Fruits à pépins' },
+                    { name: 'Coing', category: 'Fruits à pépins', season: 'debut' },
+                    { name: 'Orange', category: 'Agrumes' },
+                    { name: 'Citron', category: 'Agrumes' },
+                    { name: 'Pamplemousse', category: 'Agrumes' },
+                    { name: 'Mandarine', category: 'Agrumes' },
+                    { name: 'Banane', category: 'Fruits exotiques' },
+                    { name: 'Mangue', category: 'Fruits exotiques' },
+                    { name: 'Ananas', category: 'Fruits exotiques' },
+                    { name: 'Fruit de la passion', category: 'Fruits exotiques' },
+                    { name: 'Litchi', category: 'Fruits exotiques' },
+                    { name: 'Fraise', category: 'Baies' },
+                    { name: 'Framboise', category: 'Baies' },
+                    { name: 'Myrtille', category: 'Baies' },
+                    { name: 'Mûre', category: 'Baies' },
+                    { name: 'Cassis', category: 'Baies' },
+                    { name: 'Groseille', category: 'Baies' },
+                    { name: 'Pêche', category: 'Fruits à noyau' },
+                    { name: 'Abricot', category: 'Fruits à noyau' },
+                    { name: 'Cerise', category: 'Fruits à noyau' },
+                    { name: 'Prune', category: 'Fruits à noyau' },
+                    { name: 'Nectarine', category: 'Fruits à noyau' },
+                    { name: 'Mirabelle', category: 'Fruits à noyau' },
+                    { name: 'Figue', category: 'Fruits méditerranéens', season: 'pic' },
+                    { name: 'Noix', category: 'Fruits secs' },
+                    { name: 'Amande', category: 'Fruits secs' },
+                    { name: 'Noisette', category: 'Fruits secs' },
+                    { name: 'Châtaigne', category: 'Fruits secs' }
+                ]
+            },
+            'Légumes': {
+                icon: '🥬',
+                count: 49,
+                filters: ['Tous', 'Légumes racines', 'Légumes feuilles', 'Légumes fruits', 'Légumes fleurs', 'Légumes tiges'],
+                items: [
+                    { name: 'Carotte', category: 'Légumes racines' },
+                    { name: 'Pomme de terre', category: 'Légumes racines' },
+                    { name: 'Betterave', category: 'Légumes racines' },
+                    { name: 'Navet', category: 'Légumes racines' },
+                    { name: 'Radis', category: 'Légumes racines' },
+                    { name: 'Tomate', category: 'Légumes fruits' },
+                    { name: 'Brocoli', category: 'Légumes fleurs', season: 'debut' },
+                    { name: 'Poivron', category: 'Légumes fruits' },
+                    { name: 'Épinard', category: 'Légumes feuilles' },
+                    { name: 'Laitue', category: 'Légumes feuilles' },
+                    { name: 'Roquette', category: 'Légumes feuilles' },
+                    { name: 'Mâche', category: 'Légumes feuilles' },
+                    { name: 'Courgette', category: 'Légumes fruits' },
+                    { name: 'Aubergine', category: 'Légumes fruits', season: 'fin' },
+                    { name: 'Concombre', category: 'Légumes fruits' },
+                    { name: 'Potiron', category: 'Légumes fruits' },
+                    { name: 'Chou-fleur', category: 'Légumes fleurs' },
+                    { name: 'Artichaut', category: 'Légumes fleurs', season: 'fin' },
+                    { name: 'Asperge', category: 'Légumes tiges' },
+                    { name: 'Poireau', category: 'Légumes tiges' },
+                    { name: 'Céleri', category: 'Légumes tiges' }
+                ]
+            },
+            'Poisson': {
+                icon: '🐟',
+                count: 26,
+                filters: ['Tous', 'Coquillages', 'Crustacés', 'Poissons blancs', 'Poissons gras', 'Céphalopodes'],
+                items: [
+                    { name: 'Huîtres', category: 'Coquillages', season: 'debut' },
+                    { name: 'Coquilles Saint-Jacques', category: 'Coquillages', favorite: true },
+                    { name: 'Moules', category: 'Coquillages', season: 'debut' },
+                    { name: 'Palourdes', category: 'Coquillages' },
+                    { name: 'Crabe', category: 'Crustacés' },
+                    { name: 'Homard', category: 'Crustacés' },
+                    { name: 'Langoustine', category: 'Crustacés' },
+                    { name: 'Crevettes', category: 'Crustacés' },
+                    { name: 'Cabillaud', category: 'Poissons blancs', favorite: true },
+                    { name: 'Sole', category: 'Poissons blancs' },
+                    { name: 'Bar', category: 'Poissons blancs' },
+                    { name: 'Merlan', category: 'Poissons blancs' },
+                    { name: 'Saumon', category: 'Poissons gras' },
+                    { name: 'Thon', category: 'Poissons gras' },
+                    { name: 'Maquereau', category: 'Poissons gras' },
+                    { name: 'Sardine', category: 'Poissons gras' },
+                    { name: 'Calamar', category: 'Céphalopodes' },
+                    { name: 'Poulpe', category: 'Céphalopodes', season: 'pic' },
+                    { name: 'Seiche', category: 'Céphalopodes' }
+                ]
+            },
+            'Viande': {
+                icon: '🥩',
+                count: 30,
+                filters: ['Tous', 'Viande rouge', 'Viande blanche', 'Volaille', 'Gibier'],
+                items: [
+                    { name: 'Bœuf', category: 'Viande rouge' },
+                    { name: 'Agneau', category: 'Viande rouge' },
+                    { name: 'Mouton', category: 'Viande rouge' },
+                    { name: 'Porc', category: 'Viande blanche' },
+                    { name: 'Veau', category: 'Viande blanche' },
+                    { name: 'Lapin', category: 'Viande blanche' },
+                    { name: 'Poulet', category: 'Volaille' },
+                    { name: 'Canard', category: 'Volaille' },
+                    { name: 'Dinde', category: 'Volaille' },
+                    { name: 'Pintade', category: 'Volaille' },
+                    { name: 'Oie', category: 'Volaille' },
+                    { name: 'Sanglier', category: 'Gibier' },
+                    { name: 'Chevreuil', category: 'Gibier' },
+                    { name: 'Cerf', category: 'Gibier' },
+                    { name: 'Biche', category: 'Gibier' }
+                ]
+            },
+            'Produits laitiers': {
+                icon: '🥛',
+                count: 29,
+                filters: ['Tous', 'Laits', 'Fromages', 'Yaourts', 'Crèmes', 'Beurres'],
+                items: [
+                    { name: 'Lait entier', category: 'Laits' },
+                    { name: 'Lait demi-écrémé', category: 'Laits' },
+                    { name: 'Lait écrémé', category: 'Laits' },
+                    { name: 'Camembert', category: 'Fromages' },
+                    { name: 'Comté', category: 'Fromages' },
+                    { name: 'Roquefort', category: 'Fromages' },
+                    { name: 'Brie', category: 'Fromages' },
+                    { name: 'Chèvre', category: 'Fromages' },
+                    { name: 'Emmental', category: 'Fromages' },
+                    { name: 'Mozzarella', category: 'Fromages', favorite: true },
+                    { name: 'Yaourt nature', category: 'Yaourts' },
+                    { name: 'Yaourt aux fruits', category: 'Yaourts' },
+                    { name: 'Fromage blanc', category: 'Yaourts' },
+                    { name: 'Crème fraîche', category: 'Crèmes' },
+                    { name: 'Crème liquide', category: 'Crèmes' },
+                    { name: 'Beurre doux', category: 'Beurres' },
+                    { name: 'Beurre salé', category: 'Beurres' }
+                ]
+            },
+            'Épicerie': {
+                icon: '🛒',
+                count: 122,
+                filters: ['Tous', 'Pâtes', 'Riz', 'Conserves', 'Épices', 'Huiles', 'Condiments'],
+                items: [
+                    { name: 'Spaghetti', category: 'Pâtes' },
+                    { name: 'Penne', category: 'Pâtes' },
+                    { name: 'Fusilli', category: 'Pâtes' },
+                    { name: 'Tagliatelles', category: 'Pâtes' },
+                    { name: 'Riz basmati', category: 'Riz' },
+                    { name: 'Riz thai', category: 'Riz' },
+                    { name: 'Riz complet', category: 'Riz' },
+                    { name: 'Tomates pelées', category: 'Conserves' },
+                    { name: 'Maïs', category: 'Conserves' },
+                    { name: 'Haricots verts', category: 'Conserves' },
+                    { name: 'Poivre noir', category: 'Épices' },
+                    { name: 'Sel', category: 'Épices' },
+                    { name: 'Paprika', category: 'Épices' },
+                    { name: 'Cumin', category: 'Épices' },
+                    { name: 'Huile d\'olive', category: 'Huiles', favorite: true },
+                    { name: 'Huile de tournesol', category: 'Huiles' },
+                    { name: 'Moutarde', category: 'Condiments' },
+                    { name: 'Ketchup', category: 'Condiments' },
+                    { name: 'Mayonnaise', category: 'Condiments' }
+                ]
+            },
+            'Mes produits': {
+                icon: '⭐',
+                count: 8,
+                filters: ['Tous', 'Favoris récents', 'Plus utilisés'],
+                items: [
+                    { name: 'Tomates cerises', category: 'Légumes fruits', favorite: true },
+                    { name: 'Basilic frais', category: 'Herbes', favorite: true },
+                    { name: 'Mozzarella', category: 'Fromages', favorite: true },
+                    { name: 'Huile d\'olive', category: 'Huiles', favorite: true },
+                    { name: 'Pâtes spaghetti', category: 'Pâtes', favorite: true },
+                    { name: 'Parmesan', category: 'Fromages', favorite: true },
+                    { name: 'Ail', category: 'Condiments', favorite: true },
+                    { name: 'Oignons', category: 'Légumes', favorite: true }
+                ]
+            }
+        };
+
+        function showCategory(categoryName) {
+            const data = categoryData[categoryName] || categoryData['Poisson'];
+            
+            document.getElementById('categoryIcon').textContent = data.icon;
+            document.getElementById('categoryTitle').textContent = categoryName;
+            document.getElementById('categoryCount').textContent = `${data.count} produits disponibles`;
+            
+            // Update filter chips
+            const filterBar = document.getElementById('filterBar');
+            filterBar.innerHTML = data.filters.map((filter, index) => 
+                `<div class="filter-chip ${index === 0 ? 'active' : ''}">${filter}</div>`
+            ).join('');
+            
+            // Generate ingredients list without icons
+            const ingredientsList = document.getElementById('ingredientsList');
+            ingredientsList.innerHTML = data.items.map(item => `
+                <div class="ingredient-item">
+                    <div class="ingredient-left">
+                        <div class="ingredient-info">
+                            <div class="ingredient-name">${item.name}</div>
+                            <div class="ingredient-category">${item.category}</div>
+                        </div>
+                    </div>
+                    <div class="ingredient-right">
+                        ${item.season ? `<span class="season-badge badge-${item.season}">${
+                            item.season === 'debut' ? 'Début' : 
+                            item.season === 'pic' ? 'Pic' : 'Fin'
+                        }</span>` : ''}
+                        <div class="action-buttons">
+                            <div class="btn-cart">🛒</div>
+                            <div class="btn-favorite ${item.favorite ? 'active' : ''}">❤️</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Switch views
+            document.getElementById('categoriesView').classList.remove('active');
+            document.getElementById('categoryDetailView').classList.add('active');
+        }
+
+        function showMainView() {
+            document.getElementById('categoryDetailView').classList.remove('active');
+            document.getElementById('categoriesView').classList.add('active');
+        }
+
+        // Add click handlers for favorite buttons and filter chips
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-favorite')) {
+                e.target.classList.toggle('active');
+            }
+            
+            if (e.target.classList.contains('filter-chip')) {
+                // Remove active from all chips
+                e.target.parentElement.querySelectorAll('.filter-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                });
+                // Add active to clicked chip
+                e.target.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

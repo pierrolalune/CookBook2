@@ -223,13 +223,15 @@ export const RecipesScreen: React.FC = () => {
     whatCanIMake.findRecipesWithSelection(selectedIngredientIds, matchThreshold, excludedIngredients);
   }, [loggedSetSearchMode, whatCanIMake]);
   
-  const handleResetSearch = useCallback(() => {
+  const handleResetSearch = useCallback(async () => {
     loggedSetSearchMode('basic');
     setShowMatchAnalysis(false);
     setSearchQuery('');
     setSelectedCategory('all');
     advancedSearch.actions.clearResults();
-  }, [advancedSearch.actions, loggedSetSearchMode]);
+    // Also reset the "What Can I Make" filter to clear selected/excluded ingredients
+    await whatCanIMake.resetToAutoMode();
+  }, [advancedSearch.actions, loggedSetSearchMode, whatCanIMake]);
 
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId as RecipeCategory | 'favoris' | 'all');

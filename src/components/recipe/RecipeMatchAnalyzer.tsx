@@ -148,16 +148,27 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
   };
 
   const renderRecipeIngredientsList = () => {
+    // Calculate dynamic max height based on number of ingredients
+    const ingredientCount = recipe.ingredients.length;
+    const itemHeight = 40; // Approximate height per ingredient item
+    const headerHeight = 35; // Height for section title
+    const maxDisplayItems = 8; // Maximum items to show before scrolling
+    const calculatedHeight = Math.min(ingredientCount * itemHeight + headerHeight, maxDisplayItems * itemHeight + headerHeight);
+    
     const maxHeight = ingredientsAnimatedHeight.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 200],
+      outputRange: [0, calculatedHeight],
     });
 
     return (
       <Animated.View style={[styles.recipeIngredientsContainer, { maxHeight }]}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.ingredientsSection}>
-            <Text style={styles.ingredientsSectionTitle}>Ingrédients de cette recette</Text>
+        <View style={styles.ingredientsSection}>
+          <Text style={styles.ingredientsSectionTitle}>Ingrédients de cette recette</Text>
+          <ScrollView 
+            style={[styles.ingredientsScrollView, { maxHeight: calculatedHeight - headerHeight }]}
+            showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
+          >
             {recipe.ingredients.map((recipeIngredient, index) => (
               <View key={`recipe-ingredient-${recipeIngredient.id}-${index}`} style={styles.recipeIngredientItem}>
                 <View style={styles.recipeIngredientInfo}>
@@ -176,8 +187,8 @@ export const RecipeMatchAnalyzer: React.FC<RecipeMatchAnalyzerProps> = ({
                 </View>
               </View>
             ))}
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </Animated.View>
     );
   };
@@ -588,6 +599,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
 
+  ingredientsScrollView: {
+    flexGrow: 0,
+    paddingRight: spacing.xs, // Space for scroll indicator
+  },
+
   ingredientsSectionTitle: {
     ...typography.styles.body,
     fontWeight: typography.weights.semibold,
@@ -597,6 +613,7 @@ const styles = StyleSheet.create({
 
   recipeIngredientItem: {
     marginBottom: spacing.sm,
+    paddingVertical: spacing.xs, // Add vertical padding for better touch targets
   },
 
   recipeIngredientInfo: {

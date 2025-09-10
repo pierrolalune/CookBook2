@@ -324,15 +324,16 @@ export const useWhatCanIMake = (
         ingredientIds.includes(ing.id)
       );
 
-      // If no ingredients selected but has exclusions, use all available ingredients for filtering
-      const searchIngredients = selectedIngredients.length > 0 
-        ? selectedIngredients 
-        : availableIngredients;
-
       if (selectedIngredients.length === 0 && excludedIngredientIds.length === 0) {
         setMakeableRecipes([]);
         return;
       }
+
+      // When we have selected ingredients (with or without exclusions), use only selected ingredients for matching
+      // When we have only exclusions, use all available ingredients
+      const searchIngredients = selectedIngredients.length > 0 
+        ? selectedIngredients 
+        : availableIngredients;
 
       // Use advanced search with ingredient count threshold and exclusions
       const results = RecipeSearchUtils.searchRecipes(
@@ -345,12 +346,9 @@ export const useWhatCanIMake = (
         }
       );
 
-      // Filter for recipes that meet the minimum ingredient count threshold
-      const filteredResults = selectedIngredients.length > 0 
-        ? results.filter(result => result.availableIngredients.length >= threshold)
-        : results; // If only excluding, don't filter by ingredient count
-
-      setMakeableRecipes(filteredResults);
+      // The RecipeSearchUtils.searchRecipes already handles the threshold filtering when useIngredientCount is true
+      // No need to filter again here
+      setMakeableRecipes(results);
     } catch (err) {
       setError(SecureErrorHandler.getUserFriendlyMessage(err as Error));
       SecureErrorHandler.logError(err as Error, { action: 'whatCanIMakeManual' });

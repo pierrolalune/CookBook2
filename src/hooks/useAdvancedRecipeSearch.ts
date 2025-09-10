@@ -307,7 +307,8 @@ export const useWhatCanIMake = (
   // Find recipes with manually selected ingredients
   const findRecipesWithSelection = useCallback(async (
     ingredientIds: string[],
-    threshold: number = 70
+    threshold: number = 1,
+    excludedIngredientIds: string[] = []
   ) => {
     try {
       setLoading(true);
@@ -326,16 +327,20 @@ export const useWhatCanIMake = (
         return;
       }
 
-      // Use advanced search with configurable threshold
+      // Use advanced search with ingredient count threshold and exclusions
       const results = RecipeSearchUtils.searchRecipes(
         recipes,
         selectedIngredients,
-        { matchThreshold: threshold }
+        { 
+          matchThreshold: threshold,
+          excludedIngredients: excludedIngredientIds,
+          useIngredientCount: true // New flag to use ingredient count instead of percentage
+        }
       );
 
-      // Filter for recipes that meet the threshold
+      // Filter for recipes that meet the minimum ingredient count threshold
       const filteredResults = results.filter(result => 
-        result.matchPercentage >= threshold
+        result.availableIngredients.length >= threshold
       );
 
       setMakeableRecipes(filteredResults);

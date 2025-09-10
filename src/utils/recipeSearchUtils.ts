@@ -35,9 +35,10 @@ export interface AdvancedSearchFilters {
   availableIngredients?: string[];
   seasonalOnly?: boolean;
   favoritesOnly?: boolean;
-  matchThreshold?: number; // 0-100, default 70
+  matchThreshold?: number; // 0-100, default 70 OR 1-5 if useIngredientCount is true
   allowSubstitutions?: boolean; // Whether to consider ingredient substitutions
   prioritizeSeasonalIngredients?: boolean; // Boost recipes with seasonal ingredients
+  useIngredientCount?: boolean; // Use ingredient count instead of percentage for threshold
 }
 
 export interface SearchSuggestion {
@@ -94,15 +95,26 @@ export class RecipeSearchUtils {
       const threshold = filters.matchThreshold || this.DEFAULT_MATCH_THRESHOLD;
       
       const thresholdResults = sortedResults.filter(result => {
-        // Smart filtering logic:
-        // 1. If they can make it completely (all required ingredients), always include
-        // 2. If match percentage meets threshold, include
-        // 3. If they have at least 1 ingredient and threshold is low (<=50), include
-        const meetsThreshold = result.matchPercentage >= threshold;
-        const hasAnyIngredients = result.availableIngredients.length > 0;
-        const lowThreshold = threshold <= 50;
-        
-        return result.canMake || meetsThreshold || (hasAnyIngredients && lowThreshold);
+        if (filters.useIngredientCount) {
+          // Ingredient count mode: filter by minimum number of matching ingredients
+          const minIngredientCount = threshold; // Use threshold as ingredient count (1-5)
+          const matchingIngredientsCount = result.availableIngredients.length;
+          
+          // Smart filtering logic for ingredient count:
+          // 1. If they can make it completely, always include
+          // 2. If matching ingredients count meets minimum, include
+          return result.canMake || matchingIngredientsCount >= minIngredientCount;
+        } else {
+          // Percentage mode (original logic)
+          // 1. If they can make it completely (all required ingredients), always include
+          // 2. If match percentage meets threshold, include
+          // 3. If they have at least 1 ingredient and threshold is low (<=50), include
+          const meetsThreshold = result.matchPercentage >= threshold;
+          const hasAnyIngredients = result.availableIngredients.length > 0;
+          const lowThreshold = threshold <= 50;
+          
+          return result.canMake || meetsThreshold || (hasAnyIngredients && lowThreshold);
+        }
       });
 
       // Cache results

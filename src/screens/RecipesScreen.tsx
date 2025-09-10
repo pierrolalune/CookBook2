@@ -216,11 +216,11 @@ export const RecipesScreen: React.FC = () => {
   }, []);
 
   // Handle ingredient selection from makeable modal
-  const handleMakeableSearch = useCallback((selectedIngredientIds: string[], matchThreshold: number) => {
+  const handleMakeableSearch = useCallback((selectedIngredientIds: string[], matchThreshold: number, excludedIngredients?: string[]) => {
     loggedSetSearchMode('makeable');
     setShowMatchAnalysis(true);
     // Use the enhanced hook with manual selection
-    whatCanIMake.findRecipesWithSelection(selectedIngredientIds, matchThreshold);
+    whatCanIMake.findRecipesWithSelection(selectedIngredientIds, matchThreshold, excludedIngredients);
   }, [loggedSetSearchMode, whatCanIMake]);
   
   const handleResetSearch = useCallback(() => {

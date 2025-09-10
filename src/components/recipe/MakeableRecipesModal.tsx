@@ -22,7 +22,7 @@ import { useIngredientSelectionHistory } from '../../hooks/useIngredientSelectio
 interface MakeableRecipesModalProps {
   visible: boolean;
   onClose: () => void;
-  onSearch: (selectedIngredients: string[], matchThreshold: number) => void;
+  onSearch: (selectedIngredients: string[], matchThreshold: number, excludedIngredients?: string[]) => void;
   availableIngredients: Ingredient[];
   initialSelectedIds?: string[];
 }
@@ -36,8 +36,9 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
 }) => {
   // State for selected ingredients
   const [selectedIngredientIds, setSelectedIngredientIds] = useState<string[]>(initialSelectedIds);
+  const [excludedIngredientIds, setExcludedIngredientIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [matchThreshold, setMatchThreshold] = useState(50); // More lenient default for ingredient-based search
+  const [matchThreshold, setMatchThreshold] = useState(1); // Minimum number of ingredients that must match
   
   // History management
   const selectionHistory = useIngredientSelectionHistory();
@@ -46,9 +47,18 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
   useEffect(() => {
     if (visible) {
       setSelectedIngredientIds(initialSelectedIds);
+      setExcludedIngredientIds([]);
       setSearchQuery('');
     }
   }, [visible, initialSelectedIds]);
+
+  // Adjust match threshold when selected ingredients change
+  useEffect(() => {
+    const maxThreshold = Math.min(5, selectedIngredientIds.length || 1);
+    if (matchThreshold > maxThreshold) {
+      setMatchThreshold(maxThreshold);
+    }
+  }, [selectedIngredientIds.length, matchThreshold]);
 
   // Filter ingredients based on search
   const filteredIngredients = useMemo(() => {
@@ -83,6 +93,22 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
       if (isSelected) {
         return prev.filter(id => id !== ingredientId);
       } else {
+        // Remove from excluded if adding to selected
+        setExcludedIngredientIds(excludePrev => excludePrev.filter(id => id !== ingredientId));
+        return [...prev, ingredientId];
+      }
+    });
+  }, []);
+
+  // Handle ingredient exclusion toggle
+  const handleIngredientExcludeToggle = useCallback((ingredientId: string) => {
+    setExcludedIngredientIds(prev => {
+      const isExcluded = prev.includes(ingredientId);
+      if (isExcluded) {
+        return prev.filter(id => id !== ingredientId);
+      } else {
+        // Remove from selected if adding to excluded
+        setSelectedIngredientIds(selectedPrev => selectedPrev.filter(id => id !== ingredientId));
         return [...prev, ingredientId];
       }
     });
@@ -101,6 +127,11 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
   // Handle clear all selected ingredients
   const handleClearAll = useCallback(() => {
     setSelectedIngredientIds([]);
+  }, []);
+
+  // Handle clear all excluded ingredients
+  const handleClearAllExcluded = useCallback(() => {
+    setExcludedIngredientIds([]);
   }, []);
 
 
@@ -128,9 +159,9 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
       // Don't block the search if history saving fails
       console.warn('Failed to save selection history:', error);
     }
-    onSearch(selectedIngredientIds, matchThreshold);
+    onSearch(selectedIngredientIds, matchThreshold, excludedIngredientIds);
     onClose();
-  }, [selectedIngredientIds, matchThreshold, availableIngredients, selectionHistory, onSearch, onClose]);
+  }, [selectedIngredientIds, matchThreshold, excludedIngredientIds, availableIngredients, selectionHistory, onSearch, onClose]);
 
 
   return (
@@ -189,33 +220,33 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
             {/* Match Threshold Slider */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
-                Seuil de correspondance: {matchThreshold}%
+                Seuil de correspondance: au moins {matchThreshold} ingrédient{matchThreshold > 1 ? 's' : ''}
               </Text>
               <Text style={styles.sectionDescription}>
-                Pourcentage minimum d'ingrédients pour afficher une recette
+                Nombre minimum d'ingrédients de votre sélection que la recette doit contenir
               </Text>
               <View style={styles.sliderContainer}>
-                <Text style={styles.sliderLabel}>10%</Text>
+                <Text style={styles.sliderLabel}>1</Text>
                 <Slider
                   style={styles.slider}
-                  minimumValue={10}
-                  maximumValue={100}
-                  step={5}
+                  minimumValue={1}
+                  maximumValue={Math.min(5, selectedIngredientIds.length || 1)}
+                  step={1}
                   value={matchThreshold}
                   onValueChange={setMatchThreshold}
                   minimumTrackTintColor={colors.primary}
                   maximumTrackTintColor={colors.border}
                 />
-                <Text style={styles.sliderLabel}>100%</Text>
+                <Text style={styles.sliderLabel}>{Math.min(5, selectedIngredientIds.length || 1)}</Text>
               </View>
               <Text style={styles.thresholdDescription}>
-                {matchThreshold === 100 
-                  ? "Uniquement les recettes que vous pouvez faire complètement"
-                  : matchThreshold >= 70
-                  ? "Recettes que vous pouvez presque faire"
-                  : matchThreshold >= 40
-                  ? "Recettes avec plusieurs ingrédients manquants"
-                  : "Toutes les recettes contenant au moins un ingrédient"}
+                {matchThreshold === 1
+                  ? "Toutes les recettes contenant au moins un de vos ingrédients"
+                  : matchThreshold <= 2
+                  ? "Recettes avec quelques ingrédients en commun"
+                  : matchThreshold <= 3
+                  ? "Recettes avec plusieurs ingrédients en commun"
+                  : "Recettes avec beaucoup d'ingrédients en commun"}
               </Text>
             </View>
 
@@ -257,6 +288,47 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
               </View>
             )}
 
+            {/* Excluded Ingredients List */}
+            {excludedIngredientIds.length > 0 && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>
+                    Ingrédients exclus ({excludedIngredientIds.length})
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.clearAllButton}
+                    onPress={handleClearAllExcluded}
+                  >
+                    <Ionicons name="trash-outline" size={16} color={colors.error} />
+                    <Text style={styles.clearAllButtonText}>Tout effacer</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.selectedIngredientsList}>
+                  {excludedIngredientIds.map(ingredientId => {
+                    const ingredient = availableIngredients.find(ing => ing.id === ingredientId);
+                    if (!ingredient) return null;
+                    
+                    return (
+                      <View key={ingredientId} style={[styles.selectedIngredientItem, styles.excludedIngredientItem]}>
+                        <Text style={[styles.selectedIngredientText, styles.excludedIngredientText]}>
+                          {ingredient.name}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => handleIngredientExcludeToggle(ingredientId)}
+                          style={styles.removeIngredientButton}
+                        >
+                          <Ionicons name="close" size={16} color={colors.error} />
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })}
+                </View>
+                <Text style={styles.exclusionNote}>
+                  ℹ️ Les recettes contenant ces ingrédients seront exclues des résultats
+                </Text>
+              </View>
+            )}
+
             {/* Search and Add Ingredients */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
@@ -278,42 +350,57 @@ export const MakeableRecipesModal: React.FC<MakeableRecipesModalProps> = ({
                 <View style={styles.searchResults}>
                   {filteredIngredients.slice(0, 10).map(ingredient => {
                     const isSelected = selectedIngredientIds.includes(ingredient.id);
+                    const isExcluded = excludedIngredientIds.includes(ingredient.id);
                     const isInSeason = SeasonalUtils.isIngredientInSeason(ingredient);
                     
                     return (
-                      <TouchableOpacity
-                        key={ingredient.id}
-                        style={[
-                          styles.searchResultItem,
-                          isSelected && styles.searchResultItemSelected
-                        ]}
-                        onPress={() => handleIngredientToggle(ingredient.id)}
-                        disabled={isSelected}
-                      >
-                        <View style={styles.searchResultContent}>
-                          <Text style={[
-                            styles.searchResultText,
-                            isSelected && styles.searchResultTextSelected
-                          ]}>
-                            {ingredient.name}
-                          </Text>
-                          <Text style={styles.searchResultCategory}>
-                            {ingredient.subcategory}
-                          </Text>
-                        </View>
-                        
-                        {isInSeason && (
-                          <View style={styles.seasonalIndicator}>
-                            <Ionicons name="leaf" size={12} color={colors.success} />
+                      <View key={ingredient.id} style={[
+                        styles.searchResultItem,
+                        isSelected && styles.searchResultItemSelected,
+                        isExcluded && styles.searchResultItemExcluded
+                      ]}>
+                        <TouchableOpacity
+                          style={styles.searchResultMainAction}
+                          onPress={() => handleIngredientToggle(ingredient.id)}
+                          disabled={isSelected || isExcluded}
+                        >
+                          <View style={styles.searchResultContent}>
+                            <Text style={[
+                              styles.searchResultText,
+                              isSelected && styles.searchResultTextSelected,
+                              isExcluded && styles.searchResultTextExcluded
+                            ]}>
+                              {ingredient.name}
+                            </Text>
+                            <Text style={styles.searchResultCategory}>
+                              {ingredient.subcategory}
+                            </Text>
                           </View>
-                        )}
+                          
+                          {isInSeason && (
+                            <View style={styles.seasonalIndicator}>
+                              <Ionicons name="leaf" size={12} color={colors.success} />
+                            </View>
+                          )}
+                          
+                          {isSelected ? (
+                            <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+                          ) : isExcluded ? (
+                            <Ionicons name="close-circle" size={20} color={colors.error} />
+                          ) : (
+                            <Ionicons name="add-circle-outline" size={20} color={colors.primary} />
+                          )}
+                        </TouchableOpacity>
                         
-                        {isSelected ? (
-                          <Ionicons name="checkmark-circle" size={20} color={colors.success} />
-                        ) : (
-                          <Ionicons name="add-circle-outline" size={20} color={colors.primary} />
+                        {!isSelected && !isExcluded && (
+                          <TouchableOpacity
+                            style={styles.excludeButton}
+                            onPress={() => handleIngredientExcludeToggle(ingredient.id)}
+                          >
+                            <Ionicons name="ban" size={16} color={colors.error} />
+                          </TouchableOpacity>
                         )}
-                      </TouchableOpacity>
+                      </View>
                     );
                   })}
                   
@@ -707,5 +794,45 @@ const styles = StyleSheet.create({
     ...typography.styles.caption,
     color: colors.error,
     fontWeight: typography.weights.medium,
+  },
+
+  excludedIngredientItem: {
+    backgroundColor: colors.errorLight,
+    borderColor: colors.error,
+  },
+
+  excludedIngredientText: {
+    color: colors.error,
+  },
+
+  exclusionNote: {
+    ...typography.styles.caption,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+
+  searchResultMainAction: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  searchResultItemExcluded: {
+    backgroundColor: colors.errorLight,
+    opacity: 0.6,
+  },
+
+  searchResultTextExcluded: {
+    color: colors.error,
+  },
+
+  excludeButton: {
+    padding: spacing.sm,
+    marginLeft: spacing.xs,
   },
 });

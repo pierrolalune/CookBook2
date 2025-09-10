@@ -67,8 +67,8 @@ export class RecipeSearchUtils {
     filters: AdvancedSearchFilters = {}
   ): RecipeMatchResult[] {
     try {
-      // Check cache first
-      const cacheKey = this.generateCacheKey(filters);
+      // Check cache first - include available ingredients in cache key
+      const cacheKey = this.generateCacheKey(filters, availableIngredients);
       const cached = this.searchCache.get(cacheKey);
       if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
         return cached.results;
@@ -516,8 +516,10 @@ export class RecipeSearchUtils {
   }
 
   // Generate cache key for search results
-  private static generateCacheKey(filters: AdvancedSearchFilters): string {
-    return JSON.stringify(filters);
+  private static generateCacheKey(filters: AdvancedSearchFilters, availableIngredients: Ingredient[]): string {
+    // Include both filters and available ingredient IDs in cache key
+    const ingredientIds = availableIngredients.map(ing => ing.id).sort();
+    return JSON.stringify({ filters, ingredientIds });
   }
 
   // Clear search cache

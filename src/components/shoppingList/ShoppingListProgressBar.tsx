@@ -177,7 +177,6 @@ const styles = StyleSheet.create({
 
   progressPercentage: {
     fontWeight: '700',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     color: '#764ba2',
   },
 

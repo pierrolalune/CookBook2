@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingrédients - Detail Redesign</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            background: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-left {
+            display: flex;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Category Header */
+        .header-category {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .back-button {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .category-header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .category-header-icon {
+            font-size: 48px;
+        }
+
+        .category-header-text h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .category-header-count {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #764ba2;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f5f7fa;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .filter-chip.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Ingredients List */
+        .ingredients-list {
+            padding: 0 20px 100px;
+        }
+
+        .ingredient-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ingredient-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .ingredient-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ingredient-emoji {
+            font-size: 32px;
+        }
+
+        .ingredient-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ingredient-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+
+        .ingredient-category {
+            font-size: 13px;
+            color: #95a5a6;
+        }
+
+        .ingredient-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cart {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-favorite {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-favorite.active {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* Modal Overlay - CENTERED */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* Ingredient Detail Modal - CENTERED */
+        .ingredient-modal {
+            background: white;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 380px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 30px 30px 0 0;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-ingredient-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: white;
+        }
+
+        .modal-ingredient-icon {
+            font-size: 64px;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+        }
+
+        .modal-ingredient-title h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .modal-ingredient-subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .modal-content {
+            padding: 25px;
+        }
+
+        /* Info Section */
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .info-title-icon {
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .season-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .season-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .season-month {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #95a5a6;
+            transition: all 0.3s ease;
+        }
+
+        .season-month.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .peak-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .peak-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e67e22;
+            color: white;
+        }
+
+        /* Units Pills */
+        .units-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .unit-pill {
+            padding: 12px 20px;
+            border-radius: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .unit-pill.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Action Buttons */
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 18px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            padding: 18px;
+            border-radius: 15px;
+            background: #f5f7fa;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary.favorite-active {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            border-radius: 25px 25px 0 0;
+            z-index: 10;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #95a5a6;
+        }
+
+        .nav-item.active {
+            color: #764ba2;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span>08:43</span>
+            </div>
+            <div class="status-right">
+                <span>📶</span>
+                <span>WiFi</span>
+                <span>🔋 59%</span>
+            </div>
+        </div>
+
+        <!-- Category Header -->
+        <div class="header-category">
+            <div class="back-button">←</div>
+            <div class="category-header-info">
+                <div class="category-header-icon">🍎</div>
+                <div class="category-header-text">
+                    <h2>Fruits</h2>
+                    <div class="category-header-count">71 produits disponibles</div>
+                </div>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-bar" placeholder="Rechercher un ingrédient...">
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-chip active">Tous</div>
+            <div class="filter-chip">Fruits à pépins</div>
+            <div class="filter-chip">Fruits à noyau</div>
+            <div class="filter-chip">Agrumes</div>
+            <div class="filter-chip">Baies</div>
+            <div class="filter-chip">Fruits exotiques</div>
+            <div class="filter-chip">Fruits secs</div>
+        </div>
+
+        <!-- Ingredients List -->
+        <div class="ingredients-list">
+            <div class="ingredient-item" onclick="openModal('Amande fraîche', '🌰', 'Fruits secs', true)">
+                <div class="ingredient-left">
+                    <div class="ingredient-emoji">🌰</div>
+                    <div class="ingredient-info">
+                        <div class="ingredient-name">Amande fraîche</div>
+                        <div class="ingredient-category">Fruits secs</div>
+                    </div>
+                </div>
+                <div class="ingredient-right">
+                    <div class="action-buttons">
+                        <div class="btn-cart" onclick="event.stopPropagation()">🛒</div>
+                        <div class="btn-favorite" onclick="event.stopPropagation(); this.classList.toggle('active')">❤️</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ingredient-item" onclick="openModal('Arbouse', '🥝', 'Baies', false)">
+                <div class="ingredient-left">
+                    <div class="ingredient-emoji">🥝</div>
+                    <div class="ingredient-info">
+                        <div class="ingredient-name">Arbouse</div>
+                        <div class="ingredient-category">Baies</div>
+                    </div>
+                </div>
+                <div class="ingredient-right">
+                    <div class="action-buttons">
+                        <div class="btn-cart" onclick="event.stopPropagation()">🛒</div>
+                        <div class="btn-favorite active" onclick="event.stopPropagation(); this.classList.toggle('active')">❤️</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ingredient-item" onclick="openModal('Avocat', '🥑', 'Fruits tropicaux', false)">
+                <div class="ingredient-left">
+                    <div class="ingredient-emoji">🥑</div>
+                    <div class="ingredient-info">
+                        <div class="ingredient-name">Avocat</div>
+                        <div class="ingredient-category">Fruits tropicaux</div>
+                    </div>
+                </div>
+                <div class="ingredient-right">
+                    <div class="action-buttons">
+                        <div class="btn-cart" onclick="event.stopPropagation()">🛒</div>
+                        <div class="btn-favorite" onclick="event.stopPropagation(); this.classList.toggle('active')">❤️</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ingredient-item" onclick="openModal('Banane', '🍌', 'Fruits exotiques', false)">
+                <div class="ingredient-left">
+                    <div class="ingredient-emoji">🍌</div>
+                    <div class="ingredient-info">
+                        <div class="ingredient-name">Banane</div>
+                        <div class="ingredient-category">Fruits exotiques</div>
+                    </div>
+                </div>
+                <div class="ingredient-right">
+                    <div class="action-buttons">
+                        <div class="btn-cart" onclick="event.stopPropagation()">🛒</div>
+                        <div class="btn-favorite" onclick="event.stopPropagation(); this.classList.toggle('active')">❤️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Ingredient Detail -->
+        <div class="modal-overlay" id="ingredientModal">
+            <div class="ingredient-modal">
+                <div class="modal-header">
+                    <div class="modal-close" onclick="closeModal()">✕</div>
+                    <div class="modal-ingredient-header">
+                        <div class="modal-ingredient-icon" id="modalIcon">🌰</div>
+                        <div class="modal-ingredient-title">
+                            <h3 id="modalTitle">Amande fraîche</h3>
+                            <div class="modal-ingredient-subtitle" id="modalSubtitle">Fruits secs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-content">
+                    <!-- Availability Section -->
+                    <div class="info-section" id="seasonSection">
+                        <div class="info-title">
+                            <span class="info-title-icon">📅</span>
+                            <span>Disponibilité</span>
+                        </div>
+                        <div class="season-info">
+                            <div class="season-timeline">
+                                <div class="season-month">Juil</div>
+                                <div class="season-month">Août</div>
+                                <div class="season-month active">Sept</div>
+                                <div class="season-month active">Oct</div>
+                                <div class="season-month">Nov</div>
+                            </div>
+                            <div class="peak-indicator">
+                                <span class="peak-badge">🔥 Pic de saison</span>
+                                <span style="color: #667eea; font-weight: 600;">Septembre</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Year Round Section -->
+                    <div class="info-section" id="allYearSection" style="display: none;">
+                        <div class="info-title">
+                            <span class="info-title-icon">📅</span>
+                            <span>Disponibilité</span>
+                        </div>
+                        <div style="background: #f8f9fa; border-radius: 15px; padding: 20px; text-align: center;">
+                            <span style="font-size: 18px; color: #667eea; font-weight: 600;">Toute l'année</span>
+                        </div>
+                    </div>
+
+                    <!-- Units Section -->
+                    <div class="info-section">
+                        <div class="info-title">
+                            <span class="info-title-icon">⚖️</span>
+                            <span>Unités disponibles</span>
+                        </div>
+                        <div class="units-container" id="unitsContainer">
+                            <div class="unit-pill selected">kg</div>
+                            <div class="unit-pill">g</div>
+                            <div class="unit-pill">sachet</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="modal-actions">
+                        <button class="btn-secondary" onclick="toggleFavorite(this)">
+                            <span>❤️</span>
+                        </button>
+                        <button class="btn-primary">
+                            <span>🛒</span>
+                            <span>Ajouter au panier</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-items">
+                <div class="nav-item active">
+                    <span class="nav-icon">🥘</span>
+                    <span class="nav-label">Ingrédients</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-label">Recettes</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Listes</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Paramètres</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(name, icon, category, hasSeason) {
+            document.getElementById('modalTitle').textContent = name;
+            document.getElementById('modalIcon').textContent = icon;
+            document.getElementById('modalSubtitle').textContent = category;
+            
+            // Show/hide season sections based on ingredient
+            if (hasSeason) {
+                document.getElementById('seasonSection').style.display = 'block';
+                document.getElementById('allYearSection').style.display = 'none';
+            } else {
+                document.getElementById('seasonSection').style.display = 'none';
+                document.getElementById('allYearSection').style.display = 'block';
+            }
+            
+            // Update units based on ingredient
+            const unitsContainer = document.getElementById('unitsContainer');
+            if (name === 'Amande fraîche') {
+                unitsContainer.innerHTML = `
+                    <div class="unit-pill selected">kg</div>
+                    <div class="unit-pill">g</div>
+                    <div class="unit-pill">sachet</div>
+                `;
+            } else if (name === 'Avocat') {
+                unitsContainer.innerHTML = `
+                    <div class="unit-pill selected">pièce</div>
+                    <div class="unit-pill">kg</div>
+                `;
+            } else {
+                unitsContainer.innerHTML = `
+                    <div class="unit-pill selected">kg</div>
+                    <div class="unit-pill">pièce</div>
+                `;
+            }
+            
+            // Re-attach unit pill listeners
+            attachUnitPillListeners();
+            
+            document.getElementById('ingredientModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('ingredientModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleFavorite(button) {
+            button.classList.toggle('favorite-active');
+        }
+
+        function attachUnitPillListeners() {
+            document.querySelectorAll('.unit-pill').forEach(pill => {
+                pill.addEventListener('click', function() {
+                    document.querySelectorAll('.unit-pill').forEach(p => p.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+        }
+
+        // Initial attachment
+        attachUnitPillListeners();
+
+        // Handle filter chip selection
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('ingredientModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

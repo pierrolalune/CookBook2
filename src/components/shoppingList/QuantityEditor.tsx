@@ -165,7 +165,7 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
           onChangeText={handleQuantityInputChange}
           keyboardType="numeric"
           selectTextOnFocus
-          disabled={disabled}
+          editable={!disabled}
         />
       </View>
 

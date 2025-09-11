@@ -119,8 +119,8 @@ export const ModernShoppingListCard: React.FC<ModernShoppingListCardProps> = ({
           {/* Progress Bar */}
           <View style={styles.progressSection}>
             <ShoppingListProgressBar
-              completed={stats.completedCount}
-              total={stats.totalCount}
+              completed={stats.completedItems}
+              total={stats.totalItems}
               showLabel={true}
               showPercentage={true}
               size="small"
@@ -132,7 +132,7 @@ export const ModernShoppingListCard: React.FC<ModernShoppingListCardProps> = ({
             <View style={styles.metaItem}>
               <Text style={styles.metaIcon}>⏱</Text>
               <Text style={styles.metaText}>
-                {Math.round(timeEstimate)} min
+                {timeEstimate.estimatedTimeText}
               </Text>
             </View>
 

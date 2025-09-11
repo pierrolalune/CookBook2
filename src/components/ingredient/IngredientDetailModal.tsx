@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ingredient } from '../../types';
 import { colors, spacing, typography, commonStyles } from '../../styles';
 import { SeasonalUtils } from '../../utils/seasonalUtils';
+import { AddToShoppingListModal } from '../shoppingList/AddToShoppingListModal';
 
 interface IngredientDetailModalProps {
   ingredient: Ingredient | null;
@@ -34,6 +35,7 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
   const [selectedUnit, setSelectedUnit] = useState<string>('');
   const [scaleAnim] = useState(new Animated.Value(0));
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [shoppingListModalVisible, setShoppingListModalVisible] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -102,10 +104,7 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
   };
 
   const handleAddToCart = () => {
-    if (onAddToCart && selectedUnit) {
-      onAddToCart(ingredient, selectedUnit);
-      onClose();
-    }
+    setShoppingListModalVisible(true);
   };
 
   const handleToggleFavorite = () => {
@@ -281,6 +280,14 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
             <View style={styles.bottomPadding} />
           </ScrollView>
         </Animated.View>
+
+        {/* Add to Shopping List Modal */}
+        <AddToShoppingListModal
+          visible={shoppingListModalVisible}
+          onClose={() => setShoppingListModalVisible(false)}
+          ingredient={ingredient}
+          mode="ingredient"
+        />
       </Animated.View>
     </Modal>
   );

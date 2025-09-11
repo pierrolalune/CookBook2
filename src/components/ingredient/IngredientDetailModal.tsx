@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ingredient } from '../../types';
 import { colors, spacing, typography, commonStyles } from '../../styles';
 import { SeasonalUtils } from '../../utils/seasonalUtils';
@@ -16,13 +18,51 @@ interface IngredientDetailModalProps {
   ingredient: Ingredient | null;
   visible: boolean;
   onClose: () => void;
+  onAddToCart?: (ingredient: Ingredient, unit: string) => void;
+  onToggleFavorite?: (ingredient: Ingredient) => void;
+  isFavorite?: boolean;
 }
 
 export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
   ingredient,
   visible,
   onClose,
+  onAddToCart,
+  onToggleFavorite,
+  isFavorite = false,
 }) => {
+  const [selectedUnit, setSelectedUnit] = useState<string>('');
+  const [scaleAnim] = useState(new Animated.Value(0));
+  const [fadeAnim] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    if (visible) {
+      // Set default unit when modal opens
+      if (ingredient?.units && ingredient.units.length > 0) {
+        setSelectedUnit(ingredient.units[0]);
+      }
+      
+      // Animate modal entrance
+      Animated.parallel([
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // Reset animations
+      scaleAnim.setValue(0);
+      fadeAnim.setValue(0);
+    }
+  }, [visible, ingredient]);
+
   if (!ingredient) return null;
 
   const seasonalInfo = SeasonalUtils.getSeasonalInfo(ingredient);
@@ -39,35 +79,65 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
     return categoryIcons[category] || '📋';
   };
 
-  const getAvailabilityIcon = (): string => {
-    if (!ingredient.seasonal) return '🗓️';
+  const getMonthsDisplay = () => {
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const currentMonth = new Date().getMonth();
+    
+    if (!ingredient.seasonal || !ingredient.seasonal.months || ingredient.seasonal.months.length === 0) {
+      return null;
+    }
 
-    const status = SeasonalUtils.getDetailedSeasonStatus(ingredient);
-    const statusIcons = {
-      'beginning-of-season': '🌱',
-      'peak-season': '🔥',
-      'end-of-season': '🍂',
-      'in-season': '✅',
-      'out-of-season': '❌',
-      'year-round': '🗓️'
-    };
-
-    return statusIcons[status] || '🗓️';
+    return months.map((month, index) => {
+      const isActive = ingredient.seasonal?.months.includes(index + 1);
+      const isPeak = ingredient.seasonal?.peak_months?.includes(index + 1);
+      const isCurrent = index === currentMonth;
+      
+      return {
+        name: month,
+        isActive,
+        isPeak,
+        isCurrent,
+      };
+    });
   };
+
+  const handleAddToCart = () => {
+    if (onAddToCart && selectedUnit) {
+      onAddToCart(ingredient, selectedUnit);
+      onClose();
+    }
+  };
+
+  const handleToggleFavorite = () => {
+    if (onToggleFavorite) {
+      onToggleFavorite(ingredient);
+    }
+  };
+
+  const monthsDisplay = getMonthsDisplay();
 
   return (
     <Modal
       visible={visible}
       transparent={true}
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={styles.categoryIcon}>
+      <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+        <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleAnim }] }]}>
+          {/* Modern Gradient Header */}
+          <LinearGradient
+            colors={['#667eea', '#764ba2']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.header}
+          >
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.headerContent}>
+              <Text style={styles.ingredientIcon}>
                 {getCategoryIcon(ingredient.category)}
               </Text>
               <View style={styles.headerText}>
@@ -75,10 +145,7 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
                 <Text style={styles.subcategory}>{ingredient.subcategory}</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>✕</Text>
-            </TouchableOpacity>
-          </View>
+          </LinearGradient>
 
           <ScrollView
             style={styles.content}
@@ -88,28 +155,51 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
             {/* Seasonal Information */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionIcon}>{getAvailabilityIcon()}</Text>
+                <Text style={styles.sectionIcon}>📅</Text>
                 <Text style={styles.sectionTitle}>Disponibilité</Text>
               </View>
               <View style={styles.sectionContent}>
-                <Text style={styles.availabilityText}>{seasonalInfo.availability}</Text>
-
-                {seasonalInfo.peakPeriod && (
-                  <View style={styles.peakSeasonContainer}>
-                    <Text style={styles.peakSeasonLabel}>Pic de saison</Text>
-                    <Text style={styles.peakSeasonText}>{seasonalInfo.peakPeriod}</Text>
+                {ingredient.seasonal && monthsDisplay ? (
+                  <View style={styles.seasonInfo}>
+                    <View style={styles.seasonTimeline}>
+                      {monthsDisplay.map((month, index) => (
+                        <View
+                          key={index}
+                          style={[
+                            styles.seasonMonth,
+                            month.isActive && styles.seasonMonthActive,
+                          ]}
+                        >
+                          <Text style={[
+                            styles.seasonMonthText,
+                            month.isActive && styles.seasonMonthActiveText,
+                          ]}>
+                            {month.name}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                    
+                    {ingredient.seasonal?.peak_months && ingredient.seasonal.peak_months.length > 0 && (
+                      <View style={styles.peakIndicator}>
+                        <View style={styles.peakBadge}>
+                          <Text style={styles.peakBadgeText}>🔥 Pic de saison</Text>
+                        </View>
+                        <Text style={styles.peakMonthText}>
+                          {seasonalInfo.peakPeriod || 'Période optimale'}
+                        </Text>
+                      </View>
+                    )}
                   </View>
-                )}
-
-                {seasonalInfo.currentStatus && ingredient.seasonal && (
-                  <View style={styles.currentStatusContainer}>
-                    <Text style={styles.currentStatusText}>{seasonalInfo.currentStatus}</Text>
+                ) : (
+                  <View style={styles.allYearContainer}>
+                    <Text style={styles.allYearText}>Toute l'année</Text>
                   </View>
                 )}
               </View>
             </View>
 
-            {/* Units */}
+            {/* Units Section */}
             {ingredient.units && ingredient.units.length > 0 && (
               <View style={styles.section}>
                 <View style={styles.sectionHeader}>
@@ -119,9 +209,21 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
                 <View style={styles.sectionContent}>
                   <View style={styles.unitsContainer}>
                     {ingredient.units.map((unit, index) => (
-                      <View key={index} style={styles.unitTag}>
-                        <Text style={styles.unitText}>{unit}</Text>
-                      </View>
+                      <TouchableOpacity
+                        key={index}
+                        style={[
+                          styles.unitPill,
+                          selectedUnit === unit && styles.unitPillSelected,
+                        ]}
+                        onPress={() => setSelectedUnit(unit)}
+                      >
+                        <Text style={[
+                          styles.unitPillText,
+                          selectedUnit === unit && styles.unitPillSelectedText,
+                        ]}>
+                          {unit}
+                        </Text>
+                      </TouchableOpacity>
                     ))}
                   </View>
                 </View>
@@ -141,51 +243,45 @@ export const IngredientDetailModal: React.FC<IngredientDetailModalProps> = ({
               </View>
             )}
 
-            {/* Notes */}
-            {ingredient.notes && ingredient.notes.trim() && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionIcon}>💡</Text>
-                  <Text style={styles.sectionTitle}>Notes</Text>
-                </View>
-                <View style={styles.sectionContent}>
-                  <Text style={styles.notesText}>{ingredient.notes}</Text>
-                </View>
-              </View>
-            )}
+            {/* Action Buttons */}
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[
+                  styles.favoriteButton,
+                  isFavorite && styles.favoriteButtonActive,
+                ]}
+                onPress={handleToggleFavorite}
+              >
+                <Text style={[
+                  styles.favoriteButtonIcon,
+                  isFavorite && styles.favoriteButtonIconActive,
+                ]}>
+                  ❤️
+                </Text>
+              </TouchableOpacity>
 
-            {/* Tags */}
-            {ingredient.tags && ingredient.tags.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionIcon}>🏷️</Text>
-                  <Text style={styles.sectionTitle}>Tags</Text>
-                </View>
-                <View style={styles.sectionContent}>
-                  <View style={styles.tagsContainer}>
-                    {ingredient.tags.map((tag, index) => (
-                      <View key={index} style={styles.tag}>
-                        <Text style={styles.tagText}>{tag}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              </View>
-            )}
-
-            {/* User Created Badge */}
-            {ingredient.isUserCreated && (
-              <View style={styles.userCreatedBadge}>
-                <Text style={styles.userCreatedIcon}>⭐</Text>
-                <Text style={styles.userCreatedText}>Votre création personnelle</Text>
-              </View>
-            )}
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={handleAddToCart}
+                disabled={!selectedUnit}
+              >
+                <LinearGradient
+                  colors={['#667eea', '#764ba2']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.primaryButtonGradient}
+                >
+                  <Text style={styles.primaryButtonIcon}>🛒</Text>
+                  <Text style={styles.primaryButtonText}>Ajouter au panier</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
 
             {/* Bottom padding */}
             <View style={styles.bottomPadding} />
           </ScrollView>
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
     </Modal>
   );
 };
@@ -195,43 +291,67 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: spacing.md,
+    padding: 20,
   },
 
   modalContainer: {
-    backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.xl,
-    width: screenWidth - spacing.md * 2,
-    maxHeight: screenHeight * 0.8,
-    ...commonStyles.shadowLarge,
-    alignSelf: 'center',
-    minHeight: screenHeight * 0.50,
+    backgroundColor: '#ffffff',
+    borderRadius: 30,
+    width: '100%',
+    maxWidth: 380,
+    minHeight: 600,
+    maxHeight: screenHeight * 0.9,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 20,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 60,
+    elevation: 15,
+    overflow: 'hidden',
   },
 
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-    borderTopLeftRadius: spacing.borderRadius.xl,
-    borderTopRightRadius: spacing.borderRadius.xl,
-    backgroundColor: colors.primaryLight,
+    padding: 25,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    position: 'relative',
   },
 
-  headerLeft: {
-    flexDirection: 'row',
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    width: 32,
+    height: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 16,
     alignItems: 'center',
-    flex: 1,
+    justifyContent: 'center',
+    zIndex: 10,
   },
 
-  categoryIcon: {
-    fontSize: 28,
-    marginRight: spacing.sm,
+  closeButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+
+  ingredientIcon: {
+    fontSize: 64,
+    textShadowColor: 'rgba(0,0,0,0.2)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 10,
   },
 
   headerText: {
@@ -239,186 +359,233 @@ const styles = StyleSheet.create({
   },
 
   ingredientName: {
-    ...typography.styles.h2,
-    color: colors.primary,
-    fontWeight: typography.weights.bold,
-    marginBottom: 2,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 5,
   },
 
   subcategory: {
-    ...typography.styles.caption,
-    color: colors.textSecondary,
-    fontWeight: typography.weights.medium,
-  },
-
-  closeButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.backgroundDark,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: spacing.sm,
-  },
-
-  closeButtonText: {
-    ...typography.styles.body,
-    color: colors.textSecondary,
-    fontWeight: typography.weights.bold,
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
   },
 
   content: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
 
   scrollContent: {
-    flexGrow: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
 
   section: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    marginBottom: 20,
   },
 
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    gap: 10,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2c3e50',
+    marginBottom: 12,
+    paddingHorizontal: 25,
   },
 
   sectionIcon: {
-    fontSize: 18,
-    marginRight: spacing.xs,
+    fontSize: 20,
+    color: '#667eea',
   },
 
   sectionTitle: {
-    ...typography.styles.body,
-    fontWeight: typography.weights.semibold,
-    color: colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2c3e50',
   },
 
   sectionContent: {
-    paddingLeft: spacing.lg + spacing.xs + 18, // Align with title text
-    minHeight: 30, // Ensure minimum height for content
+    paddingHorizontal: 25,
   },
 
-  availabilityText: {
-    ...typography.styles.body,
-    color: colors.textPrimary,
-    fontWeight: typography.weights.medium,
-    marginBottom: spacing.xs,
+  // Seasonal Information Styles
+  seasonInfo: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
   },
 
-  peakSeasonContainer: {
+  seasonTimeline: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+    paddingHorizontal: 5,
+  },
+
+  seasonMonth: {
+    minWidth: 32,
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+    marginVertical: 2,
+    marginHorizontal: 1,
+    borderRadius: 6,
+  },
+
+  seasonMonthActive: {
+    backgroundColor: '#667eea',
+  },
+
+  seasonMonthText: {
+    fontSize: 11,
+    color: '#95a5a6',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+
+  seasonMonthActiveText: {
+    color: '#ffffff',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+
+  peakIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: spacing.xs,
+    gap: 10,
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
   },
 
-  peakSeasonLabel: {
-    ...typography.styles.small,
-    color: colors.textSecondary,
-    marginRight: spacing.sm,
+  peakBadge: {
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: '#e67e22',
   },
 
-  peakSeasonText: {
-    ...typography.styles.small,
-    color: colors.warning,
-    fontWeight: typography.weights.semibold,
+  peakBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#ffffff',
   },
 
-  currentStatusContainer: {
-    marginTop: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    backgroundColor: colors.primaryLight,
-    borderRadius: spacing.borderRadius.md,
-    alignSelf: 'flex-start',
+  peakMonthText: {
+    color: '#667eea',
+    fontWeight: '600',
+    fontSize: 14,
   },
 
-  currentStatusText: {
-    ...typography.styles.small,
-    color: colors.primary,
-    fontWeight: typography.weights.semibold,
+  allYearContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 15,
+    padding: 20,
+    alignItems: 'center',
   },
 
+  allYearText: {
+    fontSize: 18,
+    color: '#667eea',
+    fontWeight: '600',
+  },
+
+  // Units Section Styles
   unitsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.xs,
+    gap: 10,
   },
 
-  unitTag: {
-    backgroundColor: colors.backgroundDark,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: spacing.borderRadius.md,
+  unitPill: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    backgroundColor: '#ffffff',
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
   },
 
-  unitText: {
-    ...typography.styles.small,
-    color: colors.textSecondary,
-    fontWeight: typography.weights.medium,
+  unitPillSelected: {
+    backgroundColor: '#667eea',
+    borderColor: 'transparent',
+  },
+
+  unitPillText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2c3e50',
+  },
+
+  unitPillSelectedText: {
+    color: '#ffffff',
   },
 
   descriptionText: {
-    ...typography.styles.body,
-    color: colors.textPrimary,
-    lineHeight: 20,
+    fontSize: 16,
+    color: '#2c3e50',
+    lineHeight: 24,
   },
 
-  notesText: {
-    ...typography.styles.body,
-    color: colors.textSecondary,
-    lineHeight: 20,
-    fontStyle: 'italic',
-  },
-
-  tagsContainer: {
+  // Action Buttons
+  modalActions: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
+    gap: 15,
+    marginTop: 30,
+    paddingHorizontal: 25,
   },
 
-  tag: {
-    backgroundColor: colors.primaryLight,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: spacing.borderRadius.xl,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-
-  tagText: {
-    ...typography.styles.small,
-    color: colors.primary,
-    fontWeight: typography.weights.medium,
-  },
-
-  userCreatedBadge: {
-    margin: spacing.md,
-    padding: spacing.sm,
-    backgroundColor: colors.favoriteLight,
-    borderRadius: spacing.borderRadius.lg,
-    flexDirection: 'row',
+  favoriteButton: {
+    padding: 18,
+    borderRadius: 15,
+    backgroundColor: '#f5f7fa',
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  userCreatedIcon: {
-    fontSize: 18,
-    marginRight: spacing.sm,
+  favoriteButtonActive: {
+    backgroundColor: '#ff6b6b',
   },
 
-  userCreatedText: {
-    ...typography.styles.body,
-    color: colors.favorite,
-    fontWeight: typography.weights.semibold,
+  favoriteButtonIcon: {
+    fontSize: 16,
+  },
+
+  favoriteButtonIconActive: {
+    color: '#ffffff',
+  },
+
+  primaryButton: {
+    flex: 1,
+    borderRadius: 15,
+    overflow: 'hidden',
+  },
+
+  primaryButtonGradient: {
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+
+  primaryButtonIcon: {
+    fontSize: 16,
+  },
+
+  primaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
   },
 
   bottomPadding: {
-    height: spacing.md,
+    height: 25,
   },
 });

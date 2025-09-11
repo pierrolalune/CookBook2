@@ -8,15 +8,18 @@ import {
   TouchableOpacity,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Animated
 } from 'react-native';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { CreateRecipeInput, RecipeCategory, RecipeDifficulty, Ingredient } from '../types';
 import { colors, spacing, typography, commonStyles } from '../styles';
 import { useRecipes } from '../hooks/useRecipes';
 import { useRecipeIngredients, RecipeIngredientItem } from '../hooks/useRecipeIngredients';
 import { useRecipePhotos } from '../hooks/useRecipePhotos';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
+import { GradientHeader } from '../components/common/GradientHeader';
 import { IngredientSelectorModal } from '../components/recipe/IngredientSelectorModal';
 import { RecipePhotoManager } from '../components/recipe/RecipePhotoManager';
 
@@ -207,242 +210,278 @@ export const AddRecipeScreen: React.FC = () => {
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Nouvelle Recette</Text>
-          <TouchableOpacity
-            style={[styles.saveButton, saving && styles.savingButton]}
-            onPress={handleSaveRecipe}
-            disabled={saving}
-          >
-            <Text style={styles.saveButtonText}>
-              {saving ? 'Sauvegarde...' : 'Sauvegarder'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {/* Modern Gradient Header */}
+        <GradientHeader
+          title="Nouvelle Recette"
+          showBackButton
+          onBackPress={() => router.back()}
+          rightAction={
+            <TouchableOpacity
+              style={[styles.saveButton, saving && styles.savingButton]}
+              onPress={handleSaveRecipe}
+              disabled={saving}
+            >
+              <Text style={styles.saveButtonText}>
+                {saving ? '⏳' : '💾'} {saving ? 'Sauvegarde...' : 'Sauvegarder'}
+              </Text>
+            </TouchableOpacity>
+          }
+        />
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Basic Info Section */}
-          <View style={styles.section}>
+          {/* Basic Info Card */}
+          <View style={styles.card}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
+            />
+            <View style={styles.cardContent}>
             
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Nom de la recette *</Text>
-              <TextInput
-                style={styles.input}
-                value={recipeName}
-                onChangeText={setRecipeName}
-                placeholder="Ex: Tarte aux pommes maison"
-                placeholderTextColor={colors.textLight}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Description</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={recipeDescription}
-                onChangeText={setRecipeDescription}
-                placeholder="Décrivez votre recette..."
-                placeholderTextColor={colors.textLight}
-                multiline
-                numberOfLines={3}
-              />
-            </View>
-
-            {/* Category Selection */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Catégorie *</Text>
-              <View style={styles.optionsRow}>
-                {categories.map((cat) => (
-                  <TouchableOpacity
-                    key={cat.value}
-                    style={[
-                      styles.optionButton,
-                      category === cat.value && styles.selectedOption
-                    ]}
-                    onPress={() => setCategory(cat.value)}
-                  >
-                    <Text style={styles.optionIcon}>{cat.icon}</Text>
-                    <Text style={[
-                      styles.optionText,
-                      category === cat.value && styles.selectedOptionText
-                    ]}>
-                      {cat.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-
-            {/* Time and Servings */}
-            <View style={styles.timeRow}>
-              <View style={styles.timeGroup}>
-                <Text style={styles.label}>Préparation (min)</Text>
+              <View style={styles.compactInputGroup}>
+                <Text style={styles.compactLabel}>🍽️ Nom de la recette *</Text>
                 <TextInput
-                  style={styles.timeInput}
-                  value={prepTime}
-                  onChangeText={setPrepTime}
-                  placeholder="30"
+                  style={styles.compactInput}
+                  value={recipeName}
+                  onChangeText={setRecipeName}
+                  placeholder="Ex: Tarte aux pommes maison"
                   placeholderTextColor={colors.textLight}
-                  keyboardType="numeric"
                 />
               </View>
-              
-              <View style={styles.timeGroup}>
-                <Text style={styles.label}>Cuisson (min)</Text>
+
+              <View style={styles.compactInputGroup}>
+                <Text style={styles.compactLabel}>📝 Description</Text>
                 <TextInput
-                  style={styles.timeInput}
-                  value={cookTime}
-                  onChangeText={setCookTime}
-                  placeholder="45"
-                  placeholderTextColor={colors.textLight}
-                  keyboardType="numeric"
-                />
-              </View>
-              
-              <View style={styles.timeGroup}>
-                <Text style={styles.label}>Portions</Text>
-                <TextInput
-                  style={styles.timeInput}
-                  value={servings}
-                  onChangeText={setServings}
-                  placeholder="4"
-                  placeholderTextColor={colors.textLight}
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
-          </View>
-
-          {/* Ingredients Section */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>
-                Ingrédients ({selectedIngredients.length})
-              </Text>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => setShowIngredientModal(true)}
-              >
-                <Text style={styles.addButtonText}>+ Ajouter</Text>
-              </TouchableOpacity>
-            </View>
-
-            {selectedIngredients.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>
-                  Aucun ingrédient ajouté
-                </Text>
-                <TouchableOpacity
-                  style={styles.emptyStateButton}
-                  onPress={() => setShowIngredientModal(true)}
-                >
-                  <Text style={styles.emptyStateButtonText}>
-                    Ajouter le premier ingrédient
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              selectedIngredients.map((ingredient, index) => (
-                <View key={ingredient.tempId} style={styles.ingredientItem}>
-                  <View style={styles.ingredientInfo}>
-                    <Text style={styles.ingredientName}>
-                      {ingredient.ingredient?.name || 'Ingrédient inconnu'}
-                    </Text>
-                    <Text style={styles.ingredientQuantity}>
-                      {ingredient.quantity} {ingredient.unit}
-                      {ingredient.optional && (
-                        <Text style={styles.optionalText}> (optionnel)</Text>
-                      )}
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.removeIngredientButton}
-                    onPress={() => handleRemoveIngredient(ingredient.tempId!)}
-                  >
-                    <Text style={styles.removeIngredientText}>×</Text>
-                  </TouchableOpacity>
-                </View>
-              ))
-            )}
-          </View>
-
-          {/* Instructions Section */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Instructions</Text>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={handleAddInstruction}
-              >
-                <Text style={styles.addButtonText}>+ Étape</Text>
-              </TouchableOpacity>
-            </View>
-
-            {instructions.map((instruction, index) => (
-              <View key={index} style={styles.instructionItem}>
-                <View style={styles.instructionHeader}>
-                  <Text style={styles.stepNumber}>Étape {index + 1}</Text>
-                  {instructions.length > 1 && (
-                    <TouchableOpacity
-                      style={styles.removeInstructionButton}
-                      onPress={() => handleRemoveInstruction(index)}
-                    >
-                      <Text style={styles.removeInstructionText}>×</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-                <TextInput
-                  style={[styles.input, styles.instructionInput]}
-                  value={instruction.instruction}
-                  onChangeText={(text) => handleUpdateInstruction(index, text)}
-                  placeholder={`Décrivez l'étape ${index + 1}...`}
+                  style={[styles.compactInput, styles.compactTextArea]}
+                  value={recipeDescription}
+                  onChangeText={setRecipeDescription}
+                  placeholder="Décrivez votre recette..."
                   placeholderTextColor={colors.textLight}
                   multiline
+                  numberOfLines={2}
                 />
               </View>
-            ))}
+
+              {/* Category Pills */}
+              <View style={styles.compactInputGroup}>
+                <Text style={styles.compactLabel}>🍽️ Catégorie *</Text>
+                <View style={styles.pillsRow}>
+                  {categories.map((cat) => (
+                    <TouchableOpacity
+                      key={cat.value}
+                      style={[
+                        styles.categoryPill,
+                        category === cat.value && styles.selectedCategoryPill
+                      ]}
+                      onPress={() => setCategory(cat.value)}
+                    >
+                      <Text style={[
+                        styles.pillText,
+                        category === cat.value && styles.selectedPillText
+                      ]}>
+                        {cat.icon} {cat.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+
+              {/* Time and Servings Pills */}
+              <View style={styles.compactTimeRow}>
+                <View style={styles.compactTimeGroup}>
+                  <Text style={styles.timePillEmoji}>👨‍🍳</Text>
+                  <TextInput
+                    style={styles.compactTimeInput}
+                    value={prepTime}
+                    onChangeText={setPrepTime}
+                    placeholder="30"
+                    placeholderTextColor={colors.textLight}
+                    keyboardType="numeric"
+                  />
+                  <Text style={styles.timeUnit}>min</Text>
+                </View>
+              
+                <View style={styles.compactTimeGroup}>
+                  <Text style={styles.timePillEmoji}>🔥</Text>
+                  <TextInput
+                    style={styles.compactTimeInput}
+                    value={cookTime}
+                    onChangeText={setCookTime}
+                    placeholder="45"
+                    placeholderTextColor={colors.textLight}
+                    keyboardType="numeric"
+                  />
+                  <Text style={styles.timeUnit}>min</Text>
+                </View>
+              
+                <View style={styles.compactTimeGroup}>
+                  <Text style={styles.timePillEmoji}>👥</Text>
+                  <TextInput
+                    style={styles.compactTimeInput}
+                    value={servings}
+                    onChangeText={setServings}
+                    placeholder="4"
+                    placeholderTextColor={colors.textLight}
+                    keyboardType="numeric"
+                  />
+                  <Text style={styles.timeUnit}>pers</Text>
+                </View>
+              </View>
+            </View>
           </View>
 
-          {/* Photos and Difficulty Section */}
-          <View style={styles.section}>
-            <RecipePhotoManager
-              recipeId={tempRecipeId}
-              editable={true}
-              height={180}
-              maxPhotos={5}
-              showTitle={true}
-              onPhotosChange={setPhotos}
+          {/* Ingredients Card */}
+          <View style={styles.card}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
             />
-            
-            {/* Difficulty Selection */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Difficulté</Text>
-              <View style={styles.optionsRow}>
-                {difficulties.map((diff) => (
+            <View style={styles.cardContent}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>
+                  🧄 Ingrédients ({selectedIngredients.length})
+                </Text>
+                <TouchableOpacity
+                  style={styles.compactAddButton}
+                  onPress={() => setShowIngredientModal(true)}
+                >
+                  <Text style={styles.compactAddButtonText}>+ Ajouter</Text>
+                </TouchableOpacity>
+              </View>
+
+              {selectedIngredients.length === 0 ? (
+                <View style={styles.compactEmptyState}>
+                  <Text style={styles.compactEmptyStateText}>
+                    Aucun ingrédient ajouté
+                  </Text>
                   <TouchableOpacity
-                    key={diff.value}
-                    style={[
-                      styles.optionButton,
-                      difficulty === diff.value && styles.selectedOption
-                    ]}
-                    onPress={() => setDifficulty(difficulty === diff.value ? '' : diff.value)}
+                    style={styles.compactEmptyStateButton}
+                    onPress={() => setShowIngredientModal(true)}
                   >
-                    <Text style={[
-                      styles.optionText,
-                      difficulty === diff.value && styles.selectedOptionText
-                    ]}>
-                      {diff.label}
+                    <Text style={styles.compactEmptyStateButtonText}>
+                      Ajouter le premier ingrédient
                     </Text>
                   </TouchableOpacity>
-                ))}
+                </View>
+              ) : (
+                selectedIngredients.map((ingredient, index) => (
+                  <View key={ingredient.tempId} style={styles.compactIngredientItem}>
+                    <View style={styles.compactIngredientInfo}>
+                      <Text style={styles.compactIngredientName}>
+                        {ingredient.ingredient?.name || 'Ingrédient inconnu'}
+                      </Text>
+                      <Text style={styles.compactIngredientQuantity}>
+                        {ingredient.quantity} {ingredient.unit}
+                        {ingredient.optional && (
+                          <Text style={styles.compactOptionalText}> (opt.)</Text>
+                        )}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.compactRemoveButton}
+                      onPress={() => handleRemoveIngredient(ingredient.tempId!)}
+                    >
+                      <Text style={styles.compactRemoveButtonText}>🚮</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))
+              )}
+            </View>
+          </View>
+
+          {/* Instructions Card */}
+          <View style={styles.card}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
+            />
+            <View style={styles.cardContent}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>
+                  👨‍🍳 Instructions ({instructions.length})
+                </Text>
+                <TouchableOpacity
+                  style={styles.compactAddButton}
+                  onPress={handleAddInstruction}
+                >
+                  <Text style={styles.compactAddButtonText}>+ Étape</Text>
+                </TouchableOpacity>
+              </View>
+
+              {instructions.map((instruction, index) => (
+                <View key={index} style={styles.compactInstructionItem}>
+                  <View style={styles.compactInstructionHeader}>
+                    <View style={styles.stepNumberBadge}>
+                      <Text style={styles.stepNumberText}>{index + 1}</Text>
+                    </View>
+                    {instructions.length > 1 && (
+                      <TouchableOpacity
+                        style={styles.compactRemoveButton}
+                        onPress={() => handleRemoveInstruction(index)}
+                      >
+                        <Text style={styles.compactRemoveButtonText}>🚮</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                  <TextInput
+                    style={styles.compactInstructionInput}
+                    value={instruction.instruction}
+                    onChangeText={(text) => handleUpdateInstruction(index, text)}
+                    placeholder={`Décrivez l'étape ${index + 1}...`}
+                    placeholderTextColor={colors.textLight}
+                    multiline
+                  />
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* Photos and Difficulty Card */}
+          <View style={styles.card}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
+            />
+            <View style={styles.cardContent}>
+              <RecipePhotoManager
+                recipeId={tempRecipeId}
+                editable={true}
+                height={150}
+                maxPhotos={5}
+                showTitle={true}
+                onPhotosChange={setPhotos}
+              />
+              
+              {/* Difficulty Pills */}
+              <View style={styles.compactInputGroup}>
+                <Text style={styles.compactLabel}>⭐ Difficulté</Text>
+                <View style={styles.pillsRow}>
+                  {difficulties.map((diff) => (
+                    <TouchableOpacity
+                      key={diff.value}
+                      style={[
+                        styles.difficultyPill,
+                        difficulty === diff.value && styles.selectedDifficultyPill
+                      ]}
+                      onPress={() => setDifficulty(difficulty === diff.value ? '' : diff.value)}
+                    >
+                      <Text style={[
+                        styles.pillText,
+                        difficulty === diff.value && styles.selectedPillText
+                      ]}>
+                        {diff.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
@@ -468,39 +507,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-
-  backButton: {
-    padding: spacing.sm,
-    marginLeft: -spacing.sm,
-  },
-
-  backButtonText: {
-    fontSize: 24,
-    color: colors.primary,
-  },
-
-  title: {
-    ...typography.styles.h2,
-    fontWeight: typography.weights.semibold,
-    color: colors.textPrimary,
-    flex: 1,
-    textAlign: 'center',
-  },
-
   saveButton: {
     backgroundColor: colors.primary,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: spacing.borderRadius.md,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
 
   savingButton: {
@@ -508,7 +519,7 @@ const styles = StyleSheet.create({
   },
 
   saveButtonText: {
-    ...typography.styles.body,
+    fontSize: 13,
     color: colors.textWhite,
     fontWeight: typography.weights.semibold,
   },
@@ -517,229 +528,275 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  section: {
-    padding: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.md,
-  },
-
-  sectionTitle: {
-    ...typography.styles.h3,
-    fontWeight: typography.weights.semibold,
-    color: colors.textPrimary,
-  },
-
-  addButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: spacing.borderRadius.md,
-  },
-
-  addButtonText: {
-    ...typography.styles.small,
-    color: colors.textWhite,
-    fontWeight: typography.weights.semibold,
-  },
-
-  inputGroup: {
-    marginBottom: spacing.md,
-  },
-
-  label: {
-    ...typography.styles.body,
-    fontWeight: typography.weights.medium,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-
-  input: {
+  // Modern Card Styles
+  card: {
     backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    fontSize: 16,
-    color: colors.textPrimary,
-    borderWidth: 1,
-    borderColor: colors.border,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.xs,
+    borderRadius: 12,
+    overflow: 'hidden',
+    ...colors.shadow.small,
+    position: 'relative',
   },
 
-  textArea: {
-    height: 80,
+  gradientAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    zIndex: 1,
+  },
+
+  cardContent: {
+    padding: 12,
+  },
+
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: typography.weights.bold,
+    color: colors.textPrimary,
+  },
+
+  // Compact Form Elements
+  compactInputGroup: {
+    marginBottom: 8,
+  },
+
+  compactLabel: {
+    fontSize: 12,
+    fontWeight: typography.weights.semibold,
+    color: colors.textPrimary,
+    marginBottom: 4,
+  },
+
+  compactInput: {
+    backgroundColor: colors.background,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    fontSize: 13,
+    color: colors.textPrimary,
+    borderWidth: 0.5,
+    borderColor: colors.borderLight,
+  },
+
+  compactTextArea: {
+    height: 50,
     textAlignVertical: 'top',
   },
 
-  optionsRow: {
+  // Pills and Selection Styles
+  pillsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: 6,
   },
 
-  optionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundLight,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: spacing.borderRadius.md,
+  categoryPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
   },
 
-  selectedOption: {
+  selectedCategoryPill: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
   },
 
-  optionIcon: {
-    fontSize: 16,
-    marginRight: spacing.xs,
+  difficultyPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
 
-  optionText: {
-    ...typography.styles.body,
+  selectedDifficultyPill: {
+    backgroundColor: '#f39c12',
+    borderColor: '#f39c12',
+  },
+
+  pillText: {
+    fontSize: 11,
     color: colors.textPrimary,
+    fontWeight: typography.weights.medium,
   },
 
-  selectedOptionText: {
+  selectedPillText: {
     color: colors.textWhite,
   },
 
-  timeRow: {
+  // Compact Time Input
+  compactTimeRow: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: 8,
+    marginTop: 8,
   },
 
-  timeGroup: {
-    flex: 1,
-  },
-
-  timeInput: {
-    backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    fontSize: 16,
-    color: colors.textPrimary,
-    borderWidth: 1,
-    borderColor: colors.border,
-    textAlign: 'center',
-  },
-
-  emptyState: {
+  compactTimeGroup: {
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: spacing.xl,
-    backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.md,
+    backgroundColor: colors.background,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+    gap: 4,
   },
 
-  emptyStateText: {
-    ...typography.styles.body,
-    color: colors.textLight,
-    marginBottom: spacing.md,
+  timePillEmoji: {
+    fontSize: 14,
+  },
+
+  compactTimeInput: {
+    fontSize: 12,
+    color: colors.textPrimary,
+    width: 30,
     textAlign: 'center',
+    fontWeight: typography.weights.semibold,
   },
 
-  emptyStateButton: {
+  timeUnit: {
+    fontSize: 11,
+    color: colors.textSecondary,
+  },
+
+  // Compact Add Button
+  compactAddButton: {
     backgroundColor: colors.primary,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: spacing.borderRadius.md,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
 
-  emptyStateButtonText: {
-    ...typography.styles.body,
+  compactAddButtonText: {
+    fontSize: 11,
     color: colors.textWhite,
     fontWeight: typography.weights.semibold,
   },
 
-  ingredientItem: {
-    flexDirection: 'row',
+  // Compact Empty State
+  compactEmptyState: {
     alignItems: 'center',
-    backgroundColor: colors.backgroundLight,
-    padding: spacing.md,
-    borderRadius: spacing.borderRadius.md,
-    marginBottom: spacing.sm,
+    padding: 16,
+    backgroundColor: colors.background,
+    borderRadius: 8,
   },
 
-  ingredientInfo: {
+  compactEmptyStateText: {
+    fontSize: 12,
+    color: colors.textLight,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+
+  compactEmptyStateButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+
+  compactEmptyStateButtonText: {
+    fontSize: 12,
+    color: colors.textWhite,
+    fontWeight: typography.weights.semibold,
+  },
+
+  // Compact Ingredient Item
+  compactIngredientItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginBottom: 4,
+    borderWidth: 0.5,
+    borderColor: colors.borderLight,
+  },
+
+  compactIngredientInfo: {
     flex: 1,
   },
 
-  ingredientName: {
-    ...typography.styles.body,
+  compactIngredientName: {
+    fontSize: 12,
     fontWeight: typography.weights.medium,
     color: colors.textPrimary,
-    marginBottom: 2,
+    marginBottom: 1,
   },
 
-  ingredientQuantity: {
-    ...typography.styles.small,
+  compactIngredientQuantity: {
+    fontSize: 10,
     color: colors.textSecondary,
   },
 
-  optionalText: {
+  compactOptionalText: {
     fontStyle: 'italic',
     color: colors.textLight,
   },
 
-  removeIngredientButton: {
-    backgroundColor: colors.error,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+  // Compact Instruction Item
+  compactInstructionItem: {
+    marginBottom: 8,
   },
 
-  removeIngredientText: {
-    color: colors.textWhite,
-    fontSize: 16,
-    fontWeight: typography.weights.bold,
-  },
-
-  instructionItem: {
-    marginBottom: spacing.md,
-  },
-
-  instructionHeader: {
+  compactInstructionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.xs,
+    marginBottom: 4,
   },
 
-  stepNumber: {
-    ...typography.styles.body,
-    fontWeight: typography.weights.semibold,
-    color: colors.primary,
-  },
-
-  removeInstructionButton: {
-    backgroundColor: colors.error,
+  stepNumberBadge: {
     width: 20,
     height: 20,
     borderRadius: 10,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  removeInstructionText: {
-    color: colors.textWhite,
-    fontSize: 14,
+  stepNumberText: {
+    fontSize: 11,
     fontWeight: typography.weights.bold,
+    color: colors.textWhite,
   },
 
-  instructionInput: {
-    minHeight: 60,
+  compactInstructionInput: {
+    backgroundColor: colors.background,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    fontSize: 12,
+    color: colors.textPrimary,
+    borderWidth: 0.5,
+    borderColor: colors.borderLight,
+    minHeight: 40,
     textAlignVertical: 'top',
+  },
+
+  // Compact Remove Button
+  compactRemoveButton: {
+    padding: 4,
+  },
+
+  compactRemoveButtonText: {
+    fontSize: 14,
   },
 
   bottomSpacer: {

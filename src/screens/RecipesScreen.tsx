@@ -744,13 +744,13 @@ const styles = StyleSheet.create({
   },
 
   listContent: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
+    paddingHorizontal: 12, // Much smaller horizontal padding
+    paddingTop: 4, // Very small top padding
     paddingBottom: 100, // Space for floating button
   },
 
   categorySection: {
-    marginBottom: spacing.lg,
+    marginBottom: 8, // Very small margin between sections
   },
 
   categoryHeader: {

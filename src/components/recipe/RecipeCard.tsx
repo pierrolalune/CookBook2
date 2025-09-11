@@ -314,10 +314,10 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.backgroundLight,
-    borderRadius: 20, // Increased from default lg
-    marginBottom: spacing.lg,
+    borderRadius: 12, // Much smaller radius
+    marginBottom: 8, // Very small margin between cards
     overflow: 'hidden',
-    ...colors.shadow.medium, // Enhanced shadow
+    ...colors.shadow.small,
   },
 
   gradientAccent: {
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
 
   infoContainer: {
-    padding: 20, // Increased padding like mockup
+    padding: 12, // Much smaller padding
   },
 
   headerContainer: {
@@ -359,31 +359,32 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 18, // Increased from h3
-    fontWeight: typography.weights.bold, // Increased weight
+    fontSize: 15, // Smaller title
+    fontWeight: typography.weights.bold,
     color: colors.textPrimary,
     flex: 1,
     marginRight: spacing.sm,
-    marginBottom: spacing.xs,
+    marginBottom: 2, // Very small margin
+    lineHeight: 18,
   },
 
   description: {
-    fontSize: 14,
-    color: '#7f8c8d', // More muted gray like mockup
-    marginBottom: spacing.md,
-    lineHeight: 19.6, // 1.4 line height
+    fontSize: 12, // Much smaller
+    color: '#7f8c8d',
+    marginBottom: 6, // Very small margin
+    lineHeight: 16,
   },
 
-  // New metadata styling
+  // New metadata styling (very compact)
   metadataContainer: {
-    marginTop: spacing.sm,
+    marginTop: 4, // Very small margin
   },
 
   metadataRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
-    gap: 20, // Consistent spacing like mockup
+    marginBottom: 6, // Very small margin
+    gap: 12, // Smaller gap
   },
 
   metadataItem: {
@@ -393,34 +394,34 @@ const styles = StyleSheet.create({
   },
 
   metadataIcon: {
-    fontSize: 14,
+    fontSize: 12, // Smaller icons
   },
 
   metadataText: {
-    fontSize: 14,
-    color: '#7f8c8d', // Matching description color
+    fontSize: 11, // Much smaller text
+    color: '#7f8c8d',
   },
 
-  // New tags styling (matching mockup)
+  // New tags styling (very compact)
   tagsContainer: {
     flexDirection: 'row',
-    gap: spacing.xs,
+    gap: 6, // Very small gap between tags
   },
 
   categoryTag: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15, // More rounded like mockup
+    paddingHorizontal: 8, // Much smaller padding
+    paddingVertical: 3, // Very small padding
+    borderRadius: 10, // Smaller radius
   },
 
   difficultyTag: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15, // More rounded like mockup
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
   },
 
   tagText: {
-    fontSize: 12,
+    fontSize: 10, // Very small tag text
     fontWeight: typography.weights.semibold,
     color: colors.textWhite,
   },
@@ -428,16 +429,16 @@ const styles = StyleSheet.create({
   actionButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    gap: 4, // Very small gap
   },
 
   actionButton: {
-    padding: spacing.xs,
+    padding: 4, // Much smaller padding
     borderRadius: spacing.borderRadius.sm,
   },
 
   actionIcon: {
-    fontSize: 18,
+    fontSize: 14, // Smaller icons
   },
 
   // Selection mode styles

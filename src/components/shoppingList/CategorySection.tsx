@@ -40,7 +40,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(initialExpanded);
   const [animation] = useState(new Animated.Value(initialExpanded ? 1 : 0));
-  const [hasEditingItem, setHasEditingItem] = useState(false);
+  const [openDropdownItems, setOpenDropdownItems] = useState<Set<string>>(new Set());
 
   const toggleExpanded = () => {
     const toValue = expanded ? 0 : 1;
@@ -66,13 +66,27 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
   const categoryDisplayName = ShoppingListUtils.getCategoryDisplayName(category);
   const categoryIcon = CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS] || CATEGORY_ICONS.autres;
 
+  const handleItemDropdownToggle = (itemId: string, isOpen: boolean) => {
+    setOpenDropdownItems(prev => {
+      const newSet = new Set(prev);
+      if (isOpen) {
+        newSet.add(itemId);
+      } else {
+        newSet.delete(itemId);
+      }
+      return newSet;
+    });
+  };
+
+  const hasOpenDropdown = openDropdownItems.size > 0;
+
   // Don't render if no items match search
   if (filteredItems.length === 0) {
     return null;
   }
 
   return (
-    <View style={[styles.container, hasEditingItem && styles.elevatedContainer]}>
+    <View style={[styles.container, hasOpenDropdown && styles.elevatedContainer]}>
       <TouchableOpacity 
         style={styles.header}
         onPress={toggleExpanded}
@@ -139,6 +153,7 @@ const CategorySectionComponent: React.FC<CategorySectionProps> = ({
                 onUpdateQuantity={onUpdateItemQuantity ? (quantity, unit) => onUpdateItemQuantity(item, quantity, unit) : undefined}
                 onPress={onItemPress ? () => onItemPress(item) : undefined}
                 onLongPress={onItemLongPress ? () => onItemLongPress(item) : undefined}
+                onDropdownToggle={(isOpen) => handleItemDropdownToggle(item.id, isOpen)}
                 isLastInCategory={index === array.length - 1}
                 searchQuery={searchQuery}
               />
@@ -172,13 +187,13 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   elevatedContainer: {
-    elevation: 10,
-    zIndex: 10,
+    zIndex: 1000,
+    elevation: 15,
   },
   header: {
     backgroundColor: 'rgba(102, 126, 234, 0.05)',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -191,44 +206,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryIcon: {
-    fontSize: 28,
-    marginRight: 12,
+    fontSize: 22,
+    marginRight: 10,
   },
   categoryInfo: {
     flex: 1,
   },
   categoryTitle: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
     color: '#2c3e50',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   itemCount: {
-    fontSize: 13,
+    fontSize: 11,
     color: '#95a5a6',
     fontWeight: '500',
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   progressPercentage: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: '#764ba2',
-    minWidth: 35,
+    minWidth: 30,
     textAlign: 'right',
   },
   chevron: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#95a5a6',
-    paddingHorizontal: 5,
+    paddingHorizontal: 4,
   },
   itemsContainer: {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
     overflow: 'visible',
+    zIndex: 1,
   },
 });

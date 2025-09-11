@@ -13,6 +13,7 @@ interface ShoppingListItemCardProps {
   onPress?: () => void;
   onLongPress?: () => void;
   onDelete?: () => void;
+  onDropdownToggle?: (isOpen: boolean) => void;
   isLastInCategory?: boolean;
   searchQuery?: string;
   style?: any;
@@ -25,6 +26,7 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
   onPress,
   onLongPress,
   onDelete,
+  onDropdownToggle: parentDropdownToggle,
   isLastInCategory = false,
   searchQuery = '',
   style
@@ -33,6 +35,7 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
   const [editUnit, setEditUnit] = useState(item.unit || '');
   const [showUnitDropdown, setShowUnitDropdown] = useState(false);
   const [isEditingQuantity, setIsEditingQuantity] = useState(false);
+  const [hasOpenDropdown, setHasOpenDropdown] = useState(false);
 
   const handleQuantityPress = () => {
     if (onUpdateQuantity && !item.isCompleted) {
@@ -68,11 +71,17 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
 
   const availableUnits = item.availableUnits || ['pièce', 'kg', 'g', 'L', 'ml'];
 
+  const handleDropdownToggle = (isOpen: boolean) => {
+    setHasOpenDropdown(isOpen);
+    parentDropdownToggle?.(isOpen);
+  };
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
         item.isCompleted && styles.completedContainer,
+        hasOpenDropdown && styles.elevatedContainer,
         style
       ]}
       onPress={onPress}
@@ -115,6 +124,7 @@ const ShoppingListItemCardComponent: React.FC<ShoppingListItemCardProps> = ({
                     onUpdateQuantity(item.quantity || 1, unit);
                   }
                 }}
+                onDropdownToggle={handleDropdownToggle}
                 disabled={item.isCompleted}
                 compact={true}
               />
@@ -144,17 +154,18 @@ export const ShoppingListItemCard: React.FC<ShoppingListItemCardProps> = (props)
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fafbfc',
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    marginVertical: 2,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginVertical: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#e8ecef',
-    minHeight: 80,
+    minHeight: 70,
     overflow: 'visible',
+    zIndex: 1,
   },
 
   completedContainer: {
@@ -162,15 +173,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f2f5',
   },
 
+  elevatedContainer: {
+    zIndex: 1000,
+    elevation: 15,
+  },
+
   checkboxContainer: {
-    marginRight: 12,
+    marginRight: 10,
     flexShrink: 0,
-    marginTop: 10,
+    marginTop: 8,
   },
 
   itemContent: {
     flex: 1,
-    marginRight: 12,
+    marginRight: 8,
   },
 
   itemInfo: {
@@ -178,11 +194,11 @@ const styles = StyleSheet.create({
   },
 
   itemName: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
     color: '#2c3e50',
     marginBottom: 1,
-    minHeight: 18,
+    minHeight: 16,
   },
 
   completedItemName: {
@@ -201,9 +217,8 @@ const styles = StyleSheet.create({
   },
 
   quantityDisplayContainer: {
-    marginTop: 4,
-    marginBottom: 2,
+    marginTop: 2,
+    marginBottom: 1,
     alignSelf: 'flex-start',
-    
   },
 });

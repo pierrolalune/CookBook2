@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInput,
   StyleSheet,
   Animated,
+  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing } from '../../styles';
@@ -16,6 +17,7 @@ interface QuantityEditorProps {
   units: string[];
   onQuantityChange: (quantity: number) => void;
   onUnitChange: (unit: string) => void;
+  onDropdownToggle?: (isOpen: boolean) => void;
   disabled?: boolean;
   step?: number;
   minValue?: number;
@@ -28,6 +30,7 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
   units,
   onQuantityChange,
   onUnitChange,
+  onDropdownToggle,
   disabled = false,
   step = 1,
   minValue = 0,
@@ -36,6 +39,8 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
   const [showUnitPicker, setShowUnitPicker] = useState(false);
   const [scaleAnimMinus] = useState(new Animated.Value(1));
   const [scaleAnimPlus] = useState(new Animated.Value(1));
+  const [dropdownPosition, setDropdownPosition] = useState<'below' | 'above'>('below');
+  const containerRef = useRef<View>(null);
 
   const handleIncrement = () => {
     if (disabled) return;
@@ -93,13 +98,46 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
     return value % 1 === 0 ? value.toString() : value.toFixed(1);
   };
 
+  const calculateDropdownPosition = () => {
+    if (containerRef.current) {
+      containerRef.current.measureInWindow((x, y, width, height) => {
+        const screenHeight = Dimensions.get('window').height;
+        const dropdownHeight = units.length * 48 + 10; // Approximate height
+        const spaceBelow = screenHeight - (y + height);
+        const spaceAbove = y;
+        
+        // Position above if there's not enough space below and there's more space above
+        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+          setDropdownPosition('above');
+        } else {
+          setDropdownPosition('below');
+        }
+      });
+    }
+  };
+
+  const handleUnitSelectorPress = () => {
+    if (disabled) return;
+    
+    const newShowState = !showUnitPicker;
+    
+    if (newShowState) {
+      calculateDropdownPosition();
+    }
+    
+    setShowUnitPicker(newShowState);
+    onDropdownToggle?.(newShowState);
+  };
+
   return (
-    <View style={[
-      styles.container, 
-      compact && styles.compactContainer, 
-      disabled && styles.disabled,
-      showUnitPicker && styles.elevatedContainer
-    ]}>
+    <View 
+      ref={containerRef}
+      style={[
+        styles.container, 
+        compact && styles.compactContainer, 
+        disabled && styles.disabled,
+        showUnitPicker && styles.elevatedContainer
+      ]}>
       {/* Minus Button */}
       <Animated.View style={{ transform: [{ scale: scaleAnimMinus }] }}>
         <TouchableOpacity
@@ -153,7 +191,7 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
       {/* Unit Selector */}
       <TouchableOpacity
         style={styles.unitSelector}
-        onPress={() => setShowUnitPicker(!showUnitPicker)}
+        onPress={handleUnitSelectorPress}
         disabled={disabled}
         activeOpacity={0.7}
       >
@@ -163,7 +201,10 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
 
       {/* Unit Picker Dropdown */}
       {showUnitPicker && (
-        <View style={styles.unitPicker}>
+        <View style={[
+          styles.unitPicker,
+          dropdownPosition === 'above' && styles.unitPickerAbove
+        ]}>
           {units.map((unitOption) => (
             <TouchableOpacity
               key={unitOption}
@@ -174,6 +215,7 @@ export const QuantityEditor: React.FC<QuantityEditorProps> = ({
               onPress={() => {
                 onUnitChange(unitOption);
                 setShowUnitPicker(false);
+                onDropdownToggle?.(false);
               }}
             >
               <Text style={[
@@ -308,10 +350,17 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 10,
-    elevation: 15,
-    zIndex: 1001,
+    elevation: 20,
+    zIndex: 9999,
     minWidth: 120,
     marginTop: 5,
+  },
+
+  unitPickerAbove: {
+    top: undefined,
+    bottom: '100%',
+    marginTop: 0,
+    marginBottom: 5,
   },
 
   unitOption: {

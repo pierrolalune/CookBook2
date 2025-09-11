@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
 
   categoriesContainer: {
     paddingHorizontal: 0,
-    paddingBottom: 30,
+    paddingBottom: 120, // Increased padding to prevent dropdowns from being cut off
   },
 
   loadingContainer: {

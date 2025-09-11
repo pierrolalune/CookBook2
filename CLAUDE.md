@@ -9,6 +9,7 @@ CookBookP is a React Native application built with Expo and TypeScript for manag
 ## 🏗️ Architecture
 
 ### Tech Stack
+
 - **Framework**: React Native with Expo
 - **Language**: TypeScript
 - **Database**: SQLite with expo-sqlite
@@ -82,19 +83,19 @@ graph TD
     A[Screens] --> B[Custom Hooks]
     B --> C[Repositories]
     C --> D[SQLite Database]
-    
+
     B --> E[Utils]
     E --> F[ValidationUtils]
     E --> G[SeasonalUtils]
     E --> H[SecureErrorHandler]
     E --> I[PhotoManager]
     E --> J[RecipeExporter]
-    
+
     A --> K[Components]
     K --> L[ErrorBoundary]
     K --> M[Recipe Components]
     K --> N[Ingredient Components]
-    
+
     C --> O[Database Schema]
     O --> P[ingredients table]
     O --> Q[favorites table]
@@ -107,383 +108,90 @@ graph TD
 ### Component Architecture
 
 1. **Screens** (`src/screens/`)
+   
    - Top-level route components
    - Wrapped in `ScreenErrorBoundary` for error isolation
    - Handle navigation and screen-level state
 
 2. **Custom Hooks** (`src/hooks/`)
+   
    - Business logic abstraction
    - State management with React hooks
    - Repository pattern integration
 
 3. **Components** (`src/components/`)
+   
    - Reusable UI building blocks
    - Wrapped in `ErrorBoundary` where appropriate
    - Pure presentation components
 
 4. **Repositories** (`src/repositories/`)
+   
    - Data access abstraction
    - SQL query management
    - Input validation integration
-
-### Database Architecture
-
-**SQLite Schema:**
-```sql
--- Ingredients table
-CREATE TABLE ingredients (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
-  category TEXT NOT NULL,
-  subcategory TEXT NOT NULL,
-  units TEXT NOT NULL,              -- JSON array
-  seasonal_months TEXT,             -- JSON array (nullable)
-  seasonal_peak_months TEXT,        -- JSON array (nullable)
-  seasonal_season TEXT,             -- String (nullable)
-  is_user_created INTEGER DEFAULT 0, -- Boolean as integer
-  description TEXT,
-  tags TEXT,                        -- JSON array (nullable)
-  notes TEXT,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
--- Favorites table
-CREATE TABLE favorites (
-  id TEXT PRIMARY KEY,
-  ingredient_id TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  FOREIGN KEY (ingredient_id) REFERENCES ingredients (id) ON DELETE CASCADE
-);
-
--- Recipes table
-CREATE TABLE recipes (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  description TEXT,
-  prep_time INTEGER,                -- minutes
-  cook_time INTEGER,                -- minutes
-  servings INTEGER,
-  difficulty TEXT,                   -- 'facile', 'moyen', 'difficile'
-  category TEXT NOT NULL,            -- 'entrees', 'plats', 'desserts'
-  photo_uri TEXT,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
--- Recipe ingredients junction table
-CREATE TABLE recipe_ingredients (
-  id TEXT PRIMARY KEY,
-  recipe_id TEXT NOT NULL,
-  ingredient_id TEXT NOT NULL,
-  quantity REAL NOT NULL,
-  unit TEXT NOT NULL,
-  optional INTEGER DEFAULT 0,        -- Boolean as integer
-  order_index INTEGER DEFAULT 0,
-  created_at TEXT NOT NULL,
-  FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE,
-  FOREIGN KEY (ingredient_id) REFERENCES ingredients (id)
-);
-
--- Recipe instructions table
-CREATE TABLE recipe_instructions (
-  id TEXT PRIMARY KEY,
-  recipe_id TEXT NOT NULL,
-  step_number INTEGER NOT NULL,
-  instruction TEXT NOT NULL,
-  duration INTEGER,                  -- minutes (optional)
-  estimated_time INTEGER,            -- minutes (optional)
-  temperature INTEGER,               -- celsius (optional)
-  notes TEXT,                        -- additional notes (optional)
-  created_at TEXT NOT NULL,
-  FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
-);
-
--- Recipe usage tracking
-CREATE TABLE recipe_usage (
-  id TEXT PRIMARY KEY,
-  recipe_id TEXT NOT NULL,
-  used_at TEXT NOT NULL,
-  FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
-);
-
--- Recipe photos table
-CREATE TABLE recipe_photos (
-  id TEXT PRIMARY KEY,
-  recipe_id TEXT NOT NULL,
-  photo_uri TEXT NOT NULL,
-  order_index INTEGER DEFAULT 0,
-  created_at TEXT NOT NULL,
-  FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
-);
-```
 
 ### Security Architecture
 
 **Multi-layered security approach:**
 
 1. **Input Validation Layer** (`ValidationUtils`)
+   
    - All user inputs sanitized and validated
    - UUID validation for database IDs
    - Search query sanitization
 
 2. **Database Security Layer**
+   
    - Parameterized queries exclusively
    - No SQL string concatenation
    - Type-safe database operations
 
 3. **Error Handling Layer** (`SecureErrorHandler`)
+   
    - Sensitive information redaction
    - User-friendly error messages
    - Development vs production error logging
 
 4. **Component Security Layer** (`ErrorBoundary`)
+   
    - React error boundary implementation
    - Graceful error recovery
    - Error isolation and reporting
 
-
 ## 📱 Features & Implementation
 
-### 📤 **Recipe Sharing System** (NEW)
+### 📤 Check the file : FEATURE.md in Docs
 
-#### **Overview**
-The recipe sharing system provides native device integration for sharing recipes via WhatsApp, SMS, Email, and other apps. Built with Expo-compatible libraries for seamless integration.
 
-#### **Key Features**
-- **Native Integration**: Uses device's native sharing capabilities
-- **Multiple Formats**: Text and PDF export formats
-- **Bulk Sharing**: Share multiple recipes as concatenated collections
-- **Smart File Naming**: Uses recipe names instead of UUIDs
-- **Professional PDFs**: Styled layouts with proper formatting
-- **Expo Compatible**: Works with managed Expo workflow
-
-#### **Architecture**
-
-**ShareModal Component:**
-```typescript
-interface ShareModalProps {
-  visible: boolean;
-  onClose: () => void;
-  recipe?: Recipe;
-  recipes?: Recipe[];
-  mode?: 'single' | 'multiple';
-}
-```
-
-**RecipeExporter Class:**
-- `shareRecipe(recipe, format)` - Share single recipe
-- `shareMultipleRecipes(recipes, format)` - Share recipe collection
-- `exportToPDF(recipe)` - Generate PDF with expo-print
-- `exportToText(recipe)` - Generate formatted text
-
-**File Naming Strategy:**
-- Single: `Tarte_aux_pommes.pdf`
-- Two recipes: `Coq_au_Vin_et_Ratatouille.pdf`
-- Multiple: `Collection_5_recettes.pdf`
-
-#### **Implementation Details**
-
-**PDF Generation:**
-```typescript
-// Uses expo-print for Expo compatibility
-const { uri } = await Print.printToFileAsync({
-  html: htmlContent,
-  width: 595, // A4 width
-  height: 842, // A4 height
-});
-
-// Copy to desired location with proper name
-await FileSystem.copyAsync({
-  from: uri,
-  to: finalPath
-});
-```
-
-**Native Sharing:**
-```typescript
-// Uses expo-sharing for device integration
-await Sharing.shareAsync(filePath, {
-  mimeType: 'application/pdf',
-  dialogTitle: `Partager la recette: ${recipe.name}`,
-  UTI: 'com.adobe.pdf'
-});
-```
-
-**Multiple Recipe Concatenation:**
-- Creates unified PDF with collection header
-- Each recipe on separate page section
-- Professional styling throughout
-- Proper page breaks between recipes
-
-#### **User Experience**
-
-**ShareModal Features:**
-- **Centered Design**: Modal appears in center of screen
-- **Fade Animation**: Smooth appearance transition
-- **Loading States**: Shows progress during export/share
-- **Error Handling**: User-friendly error messages
-- **Touch Feedback**: Visual response to user interactions
-
-**Sharing Options:**
-1. **📱 Partager en texte** - Share via messaging apps
-2. **📄 Partager en PDF** - Share professional PDF
-
-### Core Features Implemented
-
-#### 🥕 **Ingredient Management**
-- **CRUD Operations**: Create, Read, Update, Delete ingredients
-- **Categories**: Fruits, Légumes, Viande, Produits laitiers, Épicerie, Pêche
-- **Search & Filter**: Real-time search with category filtering
-- **User-Created Ingredients**: Personal ingredient additions
-- **Bulk Import**: XML data loading capability
-
-**Implementation:**
-- `IngredientRepository` for data operations
-- `useIngredients` hook for state management
-- `IngredientsScreen` for main interface
-- `AddIngredientScreen` for ingredient creation
-
-#### ❤️ **Favorites System**
-- **Toggle Favorites**: Heart icon for quick favoriting
-- **Favorites Category**: Dedicated view for favorite ingredients
-- **Persistence**: SQLite storage for favorites
-- **Count Tracking**: Live favorite counts in UI
-
-**Implementation:**
-- `FavoritesRepository` for data operations
-- `useFavorites` hook for state management
-- Heart toggle in `IngredientCard` component
-
-#### 🌿 **Seasonal Intelligence**
-- **Seasonal Awareness**: Month-based seasonal data
-- **Peak Seasons**: Highlight peak availability periods
-- **Current Season Filter**: "Produits de saison" category
-- **Visual Indicators**: Seasonal badges on ingredients
-
-**Implementation:**
-- `SeasonalUtils` for seasonal calculations
-- `useSeasonalIngredients` hook for state management
-- Seasonal badges in UI components
-
-#### 🔍 **Search & Navigation**
-- **Real-time Search**: Instant ingredient filtering
-- **Category Chips**: Quick category switching
-- **Collapsible Sections**: Organized ingredient display
-- **Expo Router**: Type-safe navigation system
-
-**Implementation:**
-- `SearchBar` component with debounced search
-- `CategoryChips` for category filtering
-- `CategorySection` with expand/collapse functionality
-
-#### 🍽️ **Recipe Management** (NEW)
-- **Recipe CRUD**: Create, read, update, delete recipes
-- **Multi-ingredient Support**: Link multiple ingredients with quantities
-- **Step-by-step Instructions**: Ordered cooking instructions with timing
-- **Difficulty Levels**: Facile, Moyen, Difficile
-- **Categories**: Entrées, Plats, Desserts
-- **Prep & Cook Times**: Track preparation and cooking duration
-- **Servings Management**: Adjustable portion sizes
-- **Recipe Duplication**: Clone existing recipes
-- **Usage Tracking**: Track when recipes are used
-
-**Implementation:**
-- `RecipeRepository` for data operations
-- `useRecipes` hook for state management
-- `RecipesScreen` for recipe listing
-- `AddRecipeScreen` for recipe creation
-- `RecipeDetailScreen` for viewing recipes
-- `EditRecipeScreen` for recipe updates
-
-#### ❤️ **Recipe Favorites System** (NEW)
-- **Recipe Favorites**: Heart toggle for marking favorite recipes
-- **Favorites Filter**: Dedicated "Favoris" category with live count
-- **Separate from Ingredient Favorites**: Independent favorites system
-- **Optimistic Updates**: Immediate UI response with database sync
-- **Performance Optimized**: Fast in-memory updates for instant UI feedback
-- **Real-time Updates**: Hearts and filters update without delays
-- **Persistent Storage**: SQLite storage with foreign key constraints
-
-**Implementation:**
-- `RecipeFavoritesRepository` for data operations
-- `useRecipeFavorites` hook with callback system for real-time updates
-- `updateRecipeFavoriteStatus` method for fast in-memory updates
-- Updated `RecipeCard` with functional heart (❤️/🤍) and callback prop
-- Enhanced `RecipesScreen` with favorites filter and optimized refresh strategy
-- Updated `Recipe` interface with `isFavorite` field
-
-#### 📸 **Photo Management**
-- **Multiple Photos per Recipe**: Up to 10 photos per recipe
-- **Camera Integration**: Take photos directly
-- **Gallery Selection**: Choose from photo library
-- **Photo Carousel**: Swipeable photo viewing
-- **Photo Reordering**: Organize photo display order
-- **File Management**: Automatic cleanup on deletion
-
-**Implementation:**
-- `PhotoManager` utility class
-- `useRecipePhotos` hook for state management
-- `RecipePhotoManager` component
-- `PhotoCarousel` for display
-- expo-image-picker integration
-- expo-file-system for storage
-
-#### 📤 **Recipe Sharing & Export**
-- **Native Sharing Integration**: Share via WhatsApp, SMS, Email, and other device apps
-- **Multiple Export Formats**: Professional PDF and Text formats
-- **Single Recipe Sharing**: Share individual recipes with proper file naming
-- **Bulk Recipe Sharing**: Concatenated collections of multiple recipes
-- **Professional PDF Generation**: Formatted recipe cards with styling
-- **Expo-Compatible**: Uses expo-print and expo-sharing for full compatibility
-
-**Dependencies:**
-- `expo-print` v14.1.4 - PDF generation
-- `expo-sharing` v13.1.5 - Native device sharing
-- `expo-file-system` - File management and storage
-
-**Implementation:**
-- `RecipeExporter` utility class with expo-print integration
-- `useRecipeSharing` hook for state management
-- `ShareModal` component with centered design
-- Professional HTML templates for PDF styling
-- Smart file naming with recipe-based names
-
-#### 🛒 **Advanced Recipe Features**
-- **Ingredient Selector Modal**: Smart ingredient selection
-- **Quantity Management**: Precise measurements with units
-- **Optional Ingredients**: Mark ingredients as optional
-- **Instruction Enhancements**: 
-  - Estimated time per step
-  - Temperature settings
-  - Additional notes
-- **Recipe Search**: Search by name, ingredient, or category
-- **Bulk Operations**: Select and manage multiple recipes
-- **Recipe Statistics**: Usage tracking and analytics
 
 ### UI Components Architecture
 
 #### **Common Components** (`src/components/common/`)
 
 1. **`ErrorBoundary.tsx`**
+   
    - Generic error boundary with fallback UI
    - `ScreenErrorBoundary` for screen-level errors
    - `withErrorBoundary` HOC for component wrapping
    - Development vs production error display
 
 2. **`SearchBar.tsx`**
+   
    - Debounced search input
    - Clear functionality
    - Accessibility support
    - Custom styling
 
 3. **`CategoryChips.tsx`**
+   
    - Horizontal scrollable category filters
    - Active state management
    - Count badges for each category
    - Touch-friendly design
 
 4. **`FloatingAddButton.tsx`**
+   
    - Fixed position action button
    - Navigation to add screen
    - Material Design styling
@@ -491,12 +199,14 @@ await Sharing.shareAsync(filePath, {
 #### **Ingredient Components** (`src/components/ingredient/`)
 
 1. **`IngredientCard.tsx`**
+   
    - Individual ingredient display
    - Heart toggle for favorites
    - Seasonal badges
    - Touch feedback and navigation
 
 2. **`CategorySection.tsx`**
+   
    - Collapsible ingredient sections
    - Animated expand/collapse
    - Empty state handling
@@ -505,6 +215,7 @@ await Sharing.shareAsync(filePath, {
 #### **Recipe Components** (`src/components/recipe/`)
 
 1. **`RecipeCard.tsx`**
+   
    - Recipe list item display
    - Photo thumbnail
    - Difficulty and time indicators
@@ -512,6 +223,7 @@ await Sharing.shareAsync(filePath, {
    - Touch navigation to detail
 
 2. **`RecipeForm.tsx`**
+   
    - Complete recipe creation/edit form
    - Dynamic ingredient management
    - Step-by-step instruction builder
@@ -519,6 +231,7 @@ await Sharing.shareAsync(filePath, {
    - Photo integration
 
 3. **`RecipePhotoManager.tsx`**
+   
    - Multiple photo upload (up to 10)
    - Camera and gallery integration
    - Photo reordering
@@ -526,12 +239,14 @@ await Sharing.shareAsync(filePath, {
    - Thumbnail previews
 
 4. **`PhotoCarousel.tsx`**
+   
    - Swipeable photo viewing
    - Full-screen mode
    - Image loading states
    - Pinch-to-zoom support
 
 5. **`IngredientSelectorModal.tsx`**
+   
    - Smart ingredient search
    - Category filtering
    - Quantity and unit input
@@ -539,6 +254,7 @@ await Sharing.shareAsync(filePath, {
    - Recent ingredients section
 
 6. **`ShareModal.tsx`**
+   
    - Centered modal design with fade animation
    - Text and PDF sharing options
    - Single and multiple recipe modes
@@ -550,6 +266,7 @@ await Sharing.shareAsync(filePath, {
 #### **Custom Hooks Architecture**
 
 1. **`useIngredients`** - Ingredient state management
+   
    ```typescript
    const { 
      ingredients, 
@@ -566,6 +283,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 2. **`useFavorites`** - Ingredient favorites state management
+   
    ```typescript
    const { 
      favoriteIds, 
@@ -580,6 +298,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 3. **`useRecipeFavorites`** - Recipe favorites state management
+   
    ```typescript
    const { 
      favoriteIds, 
@@ -602,6 +321,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 4. **`useSeasonalIngredients`** - Seasonal logic
+   
    ```typescript
    const { 
      seasonalData: {
@@ -619,6 +339,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 5. **`useRecipes`** - Recipe state management
+   
    ```typescript
    const { 
      recipes, 
@@ -638,6 +359,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 6. **`useRecipeIngredients`** - Recipe-ingredient linking
+   
    ```typescript
    const { 
      selectedIngredients,
@@ -654,6 +376,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 7. **`useRecipePhotos`** - Photo management
+   
    ```typescript
    const { 
      photos,
@@ -668,6 +391,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 8. **`useRecipeSharing`** - Export and sharing
+   
    ```typescript
    const { 
      loading,
@@ -689,17 +413,20 @@ await Sharing.shareAsync(filePath, {
 #### **Repository Pattern**
 
 1. **`IngredientRepository`**
+   
    - Type-safe CRUD operations
    - Parameterized SQL queries
    - Input validation integration
    - Bulk operations support
 
 2. **`FavoritesRepository`**
+   
    - Ingredient favorite management operations
    - Relationship handling with ingredients
    - Efficient favorite checking
 
 3. **`RecipeFavoritesRepository`**
+   
    - Recipe favorite management operations
    - Separate from ingredient favorites
    - Parameterized SQL queries for security
@@ -707,6 +434,7 @@ await Sharing.shareAsync(filePath, {
    - Recipe-specific favorite checking
 
 4. **`RecipeRepository`**
+   
    - Complete recipe CRUD operations
    - Transaction-based creation/updates
    - Complex joins for recipe loading
@@ -726,18 +454,21 @@ await Sharing.shareAsync(filePath, {
 ### Security Implementation
 
 #### **Input Validation** (`ValidationUtils`)
+
 - **Sanitization**: Remove dangerous characters
 - **Length validation**: Prevent buffer overflows
 - **Format validation**: UUID, email, etc.
 - **Type validation**: Ensure correct data types
 
 #### **Error Handling** (`SecureErrorHandler`)
+
 - **Information leakage prevention**: Sanitize error messages
 - **User-friendly messages**: Convert technical errors
 - **Development logging**: Detailed errors in dev mode
 - **Production safety**: Minimal error exposure
 
 #### **SQL Security**
+
 - **Parameterized queries only**: No string concatenation
 - **Input sanitization**: All user inputs validated
 - **Type safety**: TypeScript interfaces for queries
@@ -766,6 +497,7 @@ await Sharing.shareAsync(filePath, {
 ### Security Implementation Guidelines
 
 1. **Database Operations**
+   
    ```typescript
    // ❌ NEVER DO THIS
    const query = `SELECT * FROM ingredients WHERE name = '${userInput}'`;
@@ -776,6 +508,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 2. **Input Validation**
+   
    ```typescript
    // ❌ NEVER DO THIS
    const ingredient = await repository.create(rawInput);
@@ -788,6 +521,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 3. **Error Handling**
+   
    ```typescript
    // ❌ NEVER DO THIS
    } catch (error) {
@@ -806,6 +540,7 @@ await Sharing.shareAsync(filePath, {
    ```
 
 4. **Component Error Boundaries**
+   
    ```typescript
    // ❌ NEVER DO THIS
    export const MyScreen = () => {
@@ -829,21 +564,25 @@ await Sharing.shareAsync(filePath, {
 ### Anti-Overengineering Guidelines
 
 1. **KISS (Keep It Simple, Stupid)**
+   
    - Solve the immediate problem, not hypothetical future problems
    - Choose the simplest solution that works correctly
    - Avoid premature abstraction
 
 2. **YAGNI (You Aren't Gonna Need It)**
+   
    - Don't build features until they're actually needed
    - Remove unused code immediately
    - Focus on current requirements, not speculative ones
 
 3. **DRY Pragmatically**
+   
    - Only abstract after 3+ repetitions
    - Prefer duplication over wrong abstraction
    - Consider maintenance cost vs abstraction benefit
 
 4. **Favor Composition Over Inheritance**
+   
    - Use hooks and functions instead of complex class hierarchies
    - Keep component composition simple and flat
    - Avoid deep nesting of abstractions
@@ -851,6 +590,7 @@ await Sharing.shareAsync(filePath, {
 ### 📝 Project State Documentation Rule
 
 **MANDATORY**: Update `PROJECT_STATE.md` whenever you:
+
 - Complete a new feature or major functionality
 - Fix critical bugs or issues
 - Add new hooks, services, or repositories
@@ -859,6 +599,7 @@ await Sharing.shareAsync(filePath, {
 - Encounter blocking issues
 
 The `PROJECT_STATE.md` file must always reflect the current state of the project, including:
+
 - What's working and what's not
 - Known issues and blockers
 - Implementation status of all features
@@ -868,21 +609,25 @@ The `PROJECT_STATE.md` file must always reflect the current state of the project
 ### Implementation Standards
 
 1. **File Organization**
+   
    - One main export per file
    - Co-locate related code
    - Avoid deep folder nesting (max 3 levels)
 
 2. **Function Design**
+   
    - Functions should do one thing well
    - Max 20 lines per function (prefer 10-15)
    - Avoid more than 3 parameters
 
 3. **Component Design**
+   
    - Keep components under 150 lines
    - Extract custom hooks for complex logic
    - Props should be obvious and minimal
 
 4. **Error Handling**
+   
    - Fail fast and explicitly
    - Use simple try/catch blocks
    - Don't swallow errors silently
@@ -890,6 +635,7 @@ The `PROJECT_STATE.md` file must always reflect the current state of the project
 ### Decision Framework
 
 When adding new code, ask:
+
 1. **Is this solving a real, current problem?**
 2. **Can this be done simpler?**
 3. **Will this be easy to understand in 6 months?**
@@ -898,6 +644,7 @@ When adding new code, ask:
 ### Code Review Checklist
 
 **Security Checklist (MANDATORY):**
+
 - [ ] No SQL string concatenation with user input
 - [ ] All user inputs validated with validation utils
 - [ ] All 'any' types replaced with proper interfaces
@@ -907,6 +654,7 @@ When adding new code, ask:
 - [ ] TypeScript compilation passes: `npx tsc --noEmit`
 
 **Code Quality Checklist:**
+
 - [ ] No premature optimization
 - [ ] No speculative features
 - [ ] Simple, readable code
@@ -914,6 +662,7 @@ When adding new code, ask:
 - [ ] Direct problem solving
 
 **Documentation Checklist:**
+
 - [ ] PROJECT_STATE.md updated with current implementation status
 - [ ] New features documented in PROJECT_STATE.md
 - [ ] Known issues and blockers documented
@@ -962,6 +711,7 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
 ### 🎉 **Completed Features**
 
 #### **Core Functionality** ✅
+
 - [x] SQLite database setup with proper schema
 - [x] Ingredient CRUD operations with repository pattern
 - [x] Favorites system with persistence
@@ -1002,6 +752,7 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
   - [x] Comprehensive documentation and API reference
 
 #### **UI/UX Implementation** ✅
+
 - [x] Main ingredients screen with collapsible sections
 - [x] Add ingredient form with seasonal awareness
 - [x] Search bar with debounced input
@@ -1023,6 +774,7 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
   - [x] Professional PDF layouts with HTML styling
 
 #### **Security & Quality** ✅
+
 - [x] Input validation and sanitization (`ValidationUtils`)
 - [x] Secure error handling (`SecureErrorHandler`)
 - [x] Parameterized SQL queries (no string concatenation)
@@ -1032,6 +784,7 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
 - [x] Code quality and security documentation
 
 #### **Architecture & Organization** ✅
+
 - [x] Clean architecture with separation of concerns
 - [x] Custom hooks for state management
 - [x] Repository pattern for data access
@@ -1044,9 +797,11 @@ A validation script (`scripts/check-no-mocks.sh`) automatically checks for mock 
 #### **Custom Hooks** (`src/hooks/`)
 
 ##### **`useIngredients.ts`** - Ingredient State Management
+
 **Purpose**: Manages ingredient data, loading states, and CRUD operations
 
 **State:**
+
 ```typescript
 interface IngredientsState {
   ingredients: Ingredient[];
@@ -1056,6 +811,7 @@ interface IngredientsState {
 ```
 
 **Actions:**
+
 - `loadIngredients()`: Fetch all ingredients from database
 - `createIngredient(input: CreateIngredientInput)`: Add new ingredient
 - `updateIngredient(input: UpdateIngredientInput)`: Update existing ingredient
@@ -1064,6 +820,7 @@ interface IngredientsState {
 - `refreshIngredients()`: Reload ingredients data
 
 **Usage Pattern:**
+
 ```typescript
 const { ingredients, loading, error, actions } = useIngredients();
 
@@ -1079,9 +836,11 @@ const handleCreate = async (ingredientData) => {
 ```
 
 ##### **`useFavorites.ts`** - Favorites State Management
+
 **Purpose**: Manages favorite ingredients with optimistic updates
 
 **State:**
+
 ```typescript
 interface FavoritesState {
   favoriteIds: string[];
@@ -1091,6 +850,7 @@ interface FavoritesState {
 ```
 
 **Actions:**
+
 - `loadFavorites()`: Load favorite IDs from database
 - `toggleFavorite(ingredientId: string)`: Toggle favorite status
 - `addFavorite(ingredientId: string)`: Add to favorites
@@ -1099,14 +859,17 @@ interface FavoritesState {
 - `clearFavorites()`: Remove all favorites
 
 **Key Features:**
+
 - **Optimistic Updates**: UI updates immediately, syncs with database
 - **Error Recovery**: Reverts optimistic updates on database errors
 - **Batch Operations**: Efficient bulk favorite operations
 
 ##### **`useSeasonalIngredients.ts`** - Seasonal Logic Management
+
 **Purpose**: Provides seasonal intelligence and filtering capabilities
 
 **State:**
+
 ```typescript
 interface SeasonalData {
   currentSeason: string;
@@ -1117,20 +880,24 @@ interface SeasonalData {
 ```
 
 **Actions:**
+
 - `isIngredientInSeason(ingredient: Ingredient)`: Check if ingredient is seasonal now
 - `getUpcomingSeasonalIngredients(ingredients: Ingredient[])`: Get next month's seasonal items
 - `getCurrentSeasonName()`: Get current season name in French
 - `updateCurrentMonth()`: Manual month update (for testing)
 
 **Seasonal Logic:**
+
 - **Auto-updates**: Checks current month every minute
 - **Peak Season Detection**: Identifies peak availability periods
 - **Upcoming Ingredients**: Shows ingredients coming into season next month
 
 ##### **`useRecipes.ts`** - Recipe State Management
+
 **Purpose**: Manages recipe data, loading states, and CRUD operations
 
 **State:**
+
 ```typescript
 interface RecipesState {
   recipes: Recipe[];
@@ -1140,6 +907,7 @@ interface RecipesState {
 ```
 
 **Actions:**
+
 - `loadRecipes()`: Fetch all recipes from database
 - `createRecipe(input: CreateRecipeInput)`: Add new recipe
 - `updateRecipe(input: UpdateRecipeInput)`: Update existing recipe
@@ -1150,9 +918,11 @@ interface RecipesState {
 - `recordUsage(recipeId: string)`: Track recipe usage
 
 ##### **`useRecipeIngredients.ts`** - Recipe Ingredient Management
+
 **Purpose**: Manages ingredient selection and quantities for recipes
 
 **State:**
+
 ```typescript
 interface RecipeIngredientItem {
   ingredient: Ingredient;
@@ -1164,6 +934,7 @@ interface RecipeIngredientItem {
 ```
 
 **Actions:**
+
 - `addIngredient(ingredient, quantity, unit)`: Add ingredient to recipe
 - `removeIngredient(ingredientId)`: Remove from recipe
 - `updateQuantity(ingredientId, quantity)`: Update amount
@@ -1173,18 +944,22 @@ interface RecipeIngredientItem {
 - `clearIngredients()`: Remove all ingredients
 
 ##### **`useRecipePhotos.ts`** - Photo Management
+
 **Purpose**: Handles recipe photo uploads and management
 
 **Actions:**
+
 - `loadPhotos(recipeId)`: Load photos for recipe
 - `addPhoto(recipeId, uri)`: Upload new photo
 - `deletePhoto(recipeId, photoId)`: Remove photo
 - `reorderPhotos(recipeId, photoIds)`: Change photo order
 
 ##### **`useRecipeSharing.ts`** - Export & Sharing
+
 **Purpose**: Manages recipe export and sharing functionality
 
 **Actions:**
+
 - `exportToPDF(recipe)`: Generate PDF document
 - `exportToText(recipe)`: Create text format
 - `exportToJSON(recipe)`: Export as JSON data
@@ -1195,18 +970,20 @@ interface RecipeIngredientItem {
 #### **Utilities** (`src/utils/`)
 
 ##### **`validation.ts`** - Input Validation & Sanitization
+
 **Purpose**: Secure input validation preventing injection attacks
 
 **Key Classes:**
+
 ```typescript
 export class ValidationUtils {
   // String validation with security rules
   static validateString(value: string, rules: ValidationRules): ValidationResult
-  
+
   // Ingredient-specific validations
   static validateIngredientName(name: string): ValidationResult
   static validateCreateIngredientInput(input: CreateIngredientInput): ValidationResult
-  
+
   // Security utilities
   static sanitizeSearchQuery(query: string): string
   static isValidUUID(uuid: string): boolean
@@ -1214,6 +991,7 @@ export class ValidationUtils {
 ```
 
 **Security Features:**
+
 - **XSS Prevention**: Removes dangerous HTML/script tags
 - **SQL Injection Prevention**: Sanitizes special characters
 - **Length Validation**: Prevents buffer overflow attacks
@@ -1221,20 +999,22 @@ export class ValidationUtils {
 - **Character Whitelisting**: Only allows safe character sets
 
 ##### **`errorHandler.ts`** - Secure Error Management
+
 **Purpose**: Prevents sensitive information leakage in error messages
 
 **Key Classes:**
+
 ```typescript
 export class SecureErrorHandler {
   // Sanitize error messages
   static sanitizeErrorMessage(error: Error | string): string
-  
+
   // User-friendly error conversion
   static getUserFriendlyMessage(error: Error | string): string
-  
+
   // Secure logging
   static logError(error: Error | string, context?: ErrorContext): void
-  
+
   // Specialized error handlers
   static handleDatabaseError(error: Error, operation: string, resource?: string): never
   static handleValidationError(message: string, field?: string): never
@@ -1242,25 +1022,28 @@ export class SecureErrorHandler {
 ```
 
 **Security Features:**
+
 - **Information Redaction**: Removes sensitive patterns (passwords, tokens, SQL)
 - **Context Sanitization**: Safe error context logging
 - **Development vs Production**: Different error detail levels
 - **Stack Trace Cleaning**: Removes file paths in production
 
 ##### **`seasonalUtils.ts`** - Seasonal Calculations
+
 **Purpose**: French seasonal ingredient intelligence
 
 **Key Classes:**
+
 ```typescript
 export class SeasonalUtils {
   // Date utilities
   static getCurrentMonth(): number
   static getCurrentSeason(): string
-  
+
   // Seasonal filtering
   static getSeasonalIngredients(ingredients: Ingredient[]): Ingredient[]
   static isIngredientInSeason(ingredient: Ingredient): boolean
-  
+
   // Season mapping
   static getSeasonName(season: string): string
   static getSeasonForMonth(month: number): string
@@ -1268,56 +1051,63 @@ export class SeasonalUtils {
 ```
 
 **Features:**
+
 - **French Seasons**: Maps months to French seasonal periods
 - **Peak Season Logic**: Identifies optimal harvest/availability periods
 - **Upcoming Predictions**: Calculates next month's seasonal items
 - **Multi-season Support**: Handles ingredients spanning multiple seasons
 
 ##### **`xmlParser.ts`** - Data Import Utilities
+
 **Purpose**: XML ingredient data parsing and import
 
 **Key Classes:**
+
 ```typescript
 export class XMLDataLoader {
   // Data loading
   static async loadIngredientData(): Promise<Ingredient[]>
-  
+
   // XML parsing
   private static parseXMLToIngredients(xmlData: string): Ingredient[]
-  
+
   // Data transformation
   private static transformToIngredient(xmlNode: any): Ingredient
 }
 ```
 
 **Features:**
+
 - **XML to TypeScript**: Converts XML ingredient data to typed objects
 - **Data Validation**: Ensures imported data meets schema requirements
 - **Bulk Import**: Efficient database insertion for large datasets
 - **Error Handling**: Robust parsing with detailed error reporting
 
 ##### **`photoManager.ts`** - Photo Management Utilities
+
 **Purpose**: Handles photo capture, selection, and file management
 
 **Key Classes:**
+
 ```typescript
 export class PhotoManager {
   // Photo capture
   static async takePhoto(options?: PhotoPickerOptions): Promise<PhotoInfo | null>
-  
+
   // Gallery selection
   static async pickFromGallery(options?: PhotoPickerOptions): Promise<PhotoInfo | null>
-  
+
   // File management
   static async deletePhoto(uri: string): Promise<void>
   static async getPhotoInfo(uri: string): Promise<PhotoInfo>
-  
+
   // Permissions
   static async requestPermissions(): Promise<boolean>
 }
 ```
 
 **Features:**
+
 - **Camera Integration**: Direct photo capture
 - **Gallery Access**: Photo library selection
 - **Permission Handling**: Camera and library permissions
@@ -1325,28 +1115,31 @@ export class PhotoManager {
 - **Image Validation**: Format and size checking
 
 ##### **`recipeExporter.ts`** - Recipe Export Utilities
+
 **Purpose**: Generates various export formats for recipes
 
 **Key Classes:**
+
 ```typescript
 export class RecipeExporter {
   // Export formats
   static async exportToPDF(recipe: Recipe, options?: ExportOptions): Promise<string>
   static async exportToText(recipe: Recipe): Promise<string>
   static async exportToJSON(recipe: Recipe): Promise<string>
-  
+
   // Shopping list
   static async generateShoppingList(recipes: Recipe[]): Promise<ShoppingList>
-  
+
   // Bulk operations
   static async bulkExport(recipes: Recipe[], format: ExportFormat): Promise<string[]>
-  
+
   // HTML generation
   private static generateRecipeHTML(recipe: Recipe): string
 }
 ```
 
 **Features:**
+
 - **PDF Generation**: Professional recipe cards with styling
 - **Text Export**: Plain text format for sharing
 - **JSON Export**: Structured data export
@@ -1357,11 +1150,12 @@ export class RecipeExporter {
 #### **Hook & Utility Integration Patterns**
 
 **Repository + Hook Pattern:**
+
 ```typescript
 // Hook calls repository, handles state
 const useIngredients = () => {
   const repository = new IngredientRepository();
-  
+
   const loadIngredients = async () => {
     const ingredients = await repository.findAll();
     // Update state...
@@ -1370,6 +1164,7 @@ const useIngredients = () => {
 ```
 
 **Validation Integration:**
+
 ```typescript
 // Repository validates before database operations
 async create(input: CreateIngredientInput) {
@@ -1382,6 +1177,7 @@ async create(input: CreateIngredientInput) {
 ```
 
 **Error Handling Integration:**
+
 ```typescript
 // Hooks catch and handle repository errors
 try {
@@ -1397,10 +1193,12 @@ try {
 The project includes extensive documentation for all features and systems:
 
 #### **Core Documentation**
+
 - **[README.md](./README.md)** - Project overview with quick start guide and feature highlights
 - **[PROJECT_STATE.md](./PROJECT_STATE.md)** - Current implementation status and known issues
 
-#### **Feature Documentation** 
+#### **Feature Documentation**
+
 - **[Ingredient Search System](./docs/INGREDIENT_SEARCH.md)** - Complete guide to the intelligent ingredient-based recipe search
 - **[API Reference](./docs/API_REFERENCE.md)** - Detailed API documentation for all components, hooks, and utilities
 - **[Algorithm Documentation](./docs/ALGORITHM_DOCUMENTATION.md)** - In-depth explanation of search algorithms and mathematical models
@@ -1408,6 +1206,7 @@ The project includes extensive documentation for all features and systems:
 - **[Development Guide](./docs/DEVELOPMENT_GUIDE.md)** - AI-assisted development methodology and best practices
 
 #### **Documentation Highlights**
+
 - **Complete API Coverage**: All TypeScript interfaces, component props, and hook return values
 - **Algorithm Deep Dive**: Mathematical models, performance analysis, and optimization techniques  
 - **Real-World Examples**: Weekly meal planning, pantry cleanup, dietary restrictions
@@ -1428,6 +1227,7 @@ The project includes extensive documentation for all features and systems:
 ### 🚀 **Ready for Production**
 
 The CookBookP application is **production-ready** with:
+
 - ✅ Secure database operations (ingredients + recipes)
 - ✅ Comprehensive error handling
 - ✅ Type-safe codebase (0 compilation errors)

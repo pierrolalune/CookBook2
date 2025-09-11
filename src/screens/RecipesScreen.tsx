@@ -8,8 +8,8 @@ import {
   RefreshControl,
   Alert
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Recipe, RecipeCategory } from '../types';
 import { colors, spacing, typography } from '../styles';
@@ -18,7 +18,7 @@ import { useRecipeBulkSharing } from '../hooks/useRecipeSharing';
 import { useRecipeFavorites } from '../hooks/useRecipeFavorites';
 import { useAdvancedRecipeSearch, useWhatCanIMake } from '../hooks/useAdvancedRecipeSearch';
 import { useIngredients } from '../hooks/useIngredients';
-import { SearchBar } from '../components/common/SearchBar';
+import { GradientHeader } from '../components/common/GradientHeader';
 import { CategoryChips } from '../components/common/CategoryChips';
 import { FloatingAddButton } from '../components/common/FloatingAddButton';
 import { RecipeCard } from '../components/recipe/RecipeCard';
@@ -38,7 +38,6 @@ interface RecipeCategoryChip {
 }
 
 export const RecipesScreen: React.FC = () => {
-  const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<RecipeCategory | 'favoris' | 'all'>('all');
   const [refreshing, setRefreshing] = useState(false);
@@ -86,32 +85,66 @@ export const RecipesScreen: React.FC = () => {
     refreshCategories();
   }, [actions, refreshCategories]);
 
-  // Create category chips
-  const categoryChips: RecipeCategoryChip[] = useMemo(() => {
-    const categoryIcons = {
-      favoris: '❤️',
-      entree: '🥗',
-      plats: '🍽️', 
-      dessert: '🍰',
-      all: '📋'
-    };
-    
-    const chips: RecipeCategoryChip[] = [
-      { id: 'all', label: 'Toutes', icon: categoryIcons.all, value: 'all' }
+  // Create main category pills for the gradient header (avoid duplicate favoris)
+  const mainFilterPills = useMemo(() => {
+    const pills = [
+      { id: 'all', label: 'Toutes', icon: '📋' }
     ];
-
+    
+    // Add categories from the hook (which includes favoris)
     categories.forEach(cat => {
-      chips.push({
+      const categoryIcons = {
+        favoris: '❤️',
+        entree: '🥗',
+        plats: '🍽️', 
+        dessert: '🍰'
+      };
+      
+      pills.push({
         id: cat.category,
         label: cat.label,
-        icon: categoryIcons[cat.category as keyof typeof categoryIcons] || '📝',
-        count: cat.count,
-        value: cat.category
+        icon: categoryIcons[cat.category as keyof typeof categoryIcons] || '📝'
       });
     });
-
-    return chips;
+    
+    return pills;
   }, [categories]);
+  
+  // Create secondary pills for advanced search
+  const secondaryPills = useMemo(() => {
+    const pills = [];
+    
+    // Advanced search pill
+    pills.push({
+      id: 'advanced',
+      label: 'Recherche avancée',
+      icon: '🔍'
+    });
+    
+    // What can I make pill
+    if (availableIngredients.length > 0) {
+      pills.push({
+        id: 'makeable',
+        label: whatCanIMake.isManualMode 
+          ? (whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0 
+             ? 'Exclusions' 
+             : 'Mes ingrédients')
+          : 'Réalisable',
+        icon: whatCanIMake.isManualMode ? '🍽️' : '✅'
+      });
+    }
+    
+    // Reset button when advanced modes are active
+    if (searchMode !== 'basic') {
+      pills.push({
+        id: 'reset',
+        label: 'Effacer',
+        icon: '❌'
+      });
+    }
+    
+    return pills;
+  }, [availableIngredients.length, whatCanIMake.isManualMode, whatCanIMake.selectedIngredientIds.length, whatCanIMake.excludedIngredientIds.length, searchMode]);
 
   // Enhanced filtering logic with advanced search support
   const filteredRecipes = useMemo(() => {
@@ -235,13 +268,21 @@ export const RecipesScreen: React.FC = () => {
 
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId as RecipeCategory | 'favoris' | 'all');
-    // Temporarily disable automatic reset to basic search
-    // if (searchMode !== 'basic') {
-    //   loggedSetSearchMode('basic');
-    //   setShowMatchAnalysis(false);
-    //   advancedSearch.actions.clearResults();
-    // }
-  }, [searchMode, advancedSearch.actions, loggedSetSearchMode]);
+  }, []);
+  
+  const handleMainFilterPill = useCallback((pillId: string) => {
+    handleCategorySelect(pillId);
+  }, [handleCategorySelect]);
+  
+  const handleSecondaryPill = useCallback((pillId: string) => {
+    if (pillId === 'advanced') {
+      setAdvancedSearchVisible(true);
+    } else if (pillId === 'makeable') {
+      handleWhatCanIMake();
+    } else if (pillId === 'reset') {
+      handleResetSearch();
+    }
+  }, [handleWhatCanIMake, handleResetSearch]);
 
   const handleRecipePress = useCallback((recipe: Recipe) => {
     if (selectionMode) {
@@ -482,185 +523,101 @@ export const RecipesScreen: React.FC = () => {
 
   return (
     <ScreenErrorBoundary>
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.content}>
-        {/* Header */}
-        <View style={styles.header}>
-          {selectionMode ? (
-            <>
-              <View style={styles.selectionHeader}>
-                <TouchableOpacity
-                  style={styles.cancelSelectionButton}
-                  onPress={toggleSelectionMode}
-                >
-                  <Text style={styles.cancelSelectionText}>Annuler</Text>
-                </TouchableOpacity>
-                
-                <Text style={styles.selectionTitle}>
-                  {bulkSharing.selectedCount} sélectionnée{bulkSharing.selectedCount > 1 ? 's' : ''}
-                </Text>
-                
-                <TouchableOpacity
-                  style={styles.selectAllButton}
-                  onPress={handleSelectAll}
-                >
-                  <Text style={styles.selectAllText}>Tout</Text>
-                </TouchableOpacity>
-              </View>
+      <View style={styles.container}>
+        {selectionMode ? (
+          // Selection Mode Header
+          <View style={styles.selectionModeHeader}>
+            <View style={styles.selectionHeader}>
+              <TouchableOpacity
+                style={styles.cancelSelectionButton}
+                onPress={toggleSelectionMode}
+              >
+                <Text style={styles.cancelSelectionText}>Annuler</Text>
+              </TouchableOpacity>
               
-              {bulkSharing.selectedCount > 0 && (
-                <View style={styles.selectionActions}>
-                  <TouchableOpacity
-                    style={[styles.selectionActionButton, styles.singleActionButton]}
-                    onPress={handleBulkShare}
-                  >
-                    <Text style={styles.selectionActionText}>📤 Partager</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </>
-          ) : (
-            <>
-              <View style={[styles.titleRow, { justifyContent: 'flex-end' }]}>
-                <TouchableOpacity
-                  style={styles.selectionModeButton}
-                  onPress={toggleSelectionMode}
-                >
-                  <Text style={styles.selectionModeText}>Sélectionner</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-        </View>
-
-        {/* Search and Filters Section */}
-        <View style={styles.searchAndFiltersSection}>
-          <View style={styles.searchContainer}>
-            <SearchBar
-              value={searchQuery}
-              onChangeText={handleSearch}
-              placeholder="Rechercher une recette..."
-            />
+              <Text style={styles.selectionTitle}>
+                {bulkSharing.selectedCount} sélectionnée{bulkSharing.selectedCount > 1 ? 's' : ''}
+              </Text>
+              
+              <TouchableOpacity
+                style={styles.selectAllButton}
+                onPress={handleSelectAll}
+              >
+                <Text style={styles.selectAllText}>Tout</Text>
+              </TouchableOpacity>
+            </View>
             
-            {/* Advanced search buttons */}
-            <View style={styles.advancedSearchButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.advancedButton,
-                  searchMode === 'advanced' && styles.advancedButtonActive
-                ]}
-                onPress={() => setAdvancedSearchVisible(true)}
-              >
-                <Ionicons 
-                  name="options" 
-                  size={16} 
-                  color={searchMode === 'advanced' ? colors.textWhite : colors.primary} 
-                />
-                <Text style={[
-                  styles.advancedButtonText,
-                  searchMode === 'advanced' && styles.advancedButtonTextActive
-                ]}>Avancé</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={[
-                  styles.advancedButton,
-                  searchMode === 'makeable' && styles.advancedButtonActive
-                ]}
-                onPress={handleWhatCanIMake}
-                disabled={availableIngredients.length === 0}
-              >
-                <Ionicons 
-                  name={whatCanIMake.isManualMode ? "restaurant" : "checkmark-circle"} 
-                  size={16} 
-                  color={searchMode === 'makeable' ? colors.textWhite : colors.success} 
-                />
-                <Text style={[
-                  styles.advancedButtonText,
-                  searchMode === 'makeable' && styles.advancedButtonTextActive,
-                  availableIngredients.length === 0 && styles.disabledText
-                ]}>
-                  {whatCanIMake.isManualMode 
-                    ? (whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0 
-                       ? 'Exclusions' 
-                       : 'Mes ingrédients')
-                    : 'Réalisable'}
-                </Text>
-                {whatCanIMake.isManualMode && ((whatCanIMake.selectedIngredientIds.length > 0 || whatCanIMake.excludedIngredientIds.length > 0) || searchMode === 'makeable') && (
-                  <View style={styles.selectionCountBadge}>
-                    <Text style={styles.selectionCountText}>
-                      {whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0
-                        ? whatCanIMake.excludedIngredientIds.length
-                        : whatCanIMake.selectedIngredientIds.length}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-              
-              {searchMode !== 'basic' && (
+            {bulkSharing.selectedCount > 0 && (
+              <View style={styles.selectionActions}>
                 <TouchableOpacity
-                  style={styles.resetButton}
+                  style={[styles.selectionActionButton, styles.singleActionButton]}
+                  onPress={handleBulkShare}
+                >
+                  <Text style={styles.selectionActionText}>📤 Partager</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        ) : (
+          // Modern Gradient Header with Secondary Pills
+          <GradientHeader
+            title="Mes Recettes"
+            searchValue={searchQuery}
+            onSearchChange={handleSearch}
+            onSearch={handleSearch}
+            searchPlaceholder="Rechercher une recette..."
+            pills={mainFilterPills}
+            activePillId={selectedCategory}
+            onPillPress={handleMainFilterPill}
+            secondaryPills={secondaryPills}
+            activeSecondaryPillId={searchMode === 'basic' ? undefined : searchMode}
+            onSecondaryPillPress={handleSecondaryPill}
+          />
+        )}
+        
+        {/* Search Status Section - only show when not in basic mode */}
+        {!selectionMode && searchMode !== 'basic' && (
+          <View style={styles.searchStatusSection}>
+            {searchMode === 'advanced' && (
+              <View style={styles.statusItem}>
+                <Ionicons name="search" size={16} color={colors.primary} />
+                <Text style={styles.statusText}>
+                  {advancedSearch.state.loading ? 'Recherche avancée en cours...' : 
+                   `${advancedSearch.state.totalResults} résultat${advancedSearch.state.totalResults !== 1 ? 's' : ''} trouvé${advancedSearch.state.totalResults !== 1 ? 's' : ''}`
+                  }
+                </Text>
+                <TouchableOpacity
+                  style={styles.resetStatusButton}
                   onPress={handleResetSearch}
                 >
                   <Ionicons name="close" size={16} color={colors.textSecondary} />
                   <Text style={styles.resetButtonText}>Effacer</Text>
                 </TouchableOpacity>
-              )}
-            </View>
-          </View>
-          
-          {/* Search status indicator */}
-          {searchMode !== 'basic' && (
-            <View style={styles.searchStatus}>
-              {searchMode === 'advanced' && (
-                <View style={styles.statusItem}>
-                  <Ionicons name="search" size={14} color={colors.primary} />
-                  <Text style={styles.statusText}>
-                    {advancedSearch.state.loading ? 'Recherche...' : 
-                     `${advancedSearch.state.totalResults} résultat${advancedSearch.state.totalResults > 1 ? 's' : ''} trouvé${advancedSearch.state.totalResults > 1 ? 's' : ''}`
-                    }
-                  </Text>
-                </View>
-              )}
-              
-              {searchMode === 'makeable' && (
-                <View style={styles.statusItem}>
-                  <Ionicons name="restaurant" size={14} color={colors.success} />
-                  <Text style={styles.statusText}>
-                    {whatCanIMake.loading ? 'Analyse...' : 
-                     // Check if we're in exclusion-only mode
-                     whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0
-                       ? `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable > 1 ? 's' : ''} sans ingrédients exclus`
-                       : `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable > 1 ? 's' : ''} réalisable${whatCanIMake.totalMakeable > 1 ? 's' : ''}`
-                    }
-                  </Text>
-                </View>
-              )}
-              
-              {showMatchAnalysis && (
+              </View>
+            )}
+            
+            {searchMode === 'makeable' && (
+              <View style={styles.statusItem}>
+                <Ionicons name="restaurant" size={16} color={colors.success} />
+                <Text style={styles.statusText}>
+                  {whatCanIMake.loading ? 'Analyse des ingrédients...' : 
+                   whatCanIMake.selectedIngredientIds.length === 0 && whatCanIMake.excludedIngredientIds.length > 0
+                     ? `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable !== 1 ? 's' : ''} sans ingrédients exclus`
+                     : `${whatCanIMake.totalMakeable} recette${whatCanIMake.totalMakeable !== 1 ? 's' : ''} réalisable${whatCanIMake.totalMakeable !== 1 ? 's' : ''}`
+                  }
+                </Text>
                 <TouchableOpacity
-                  style={styles.toggleAnalysisButton}
-                  onPress={() => setShowMatchAnalysis(!showMatchAnalysis)}
+                  style={styles.resetStatusButton}
+                  onPress={handleResetSearch}
                 >
-                  <Text style={styles.toggleAnalysisText}>
-                    {showMatchAnalysis ? 'Masquer analyse' : 'Afficher analyse'}
-                  </Text>
+                  <Ionicons name="close" size={16} color={colors.textSecondary} />
+                  <Text style={styles.resetButtonText}>Effacer</Text>
                 </TouchableOpacity>
-              )}
-            </View>
-          )}
-
-          {searchMode === 'basic' && (
-            <View style={styles.filtersContainer}>
-              <CategoryChips
-                categories={categoryChips}
-                selectedCategory={selectedCategory}
-                onCategorySelect={handleCategorySelect}
-                loading={categoriesLoading}
-              />
-            </View>
-          )}
-        </View>
+              </View>
+            )}
+          </View>
+        )
+        }
 
         {/* Recipes List */}
         <View style={styles.content}>
@@ -715,7 +672,6 @@ export const RecipesScreen: React.FC = () => {
           initialSelectedIds={whatCanIMake.selectedIngredientIds}
           initialExcludedIds={whatCanIMake.excludedIngredientIds}
         />
-        </View>
       </View>
     </ScreenErrorBoundary>
   );
@@ -727,154 +683,60 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
-  header: {
+  // Selection Mode Header Styles
+  selectionModeHeader: {
+    backgroundColor: colors.backgroundLight,
+    paddingTop: spacing.xl,
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
+    paddingBottom: spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
 
-  title: {
-    ...typography.styles.h1,
-    fontWeight: typography.weights.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-
-  subtitle: {
-    ...typography.styles.body,
-    color: colors.textSecondary,
-  },
-
-  searchAndFiltersSection: {
+  // Search Status Section
+  searchStatusSection: {
     backgroundColor: colors.backgroundLight,
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.sm,
     borderRadius: spacing.borderRadius.lg,
     padding: spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    ...colors.shadow.small,
   },
 
-  searchContainer: {
-    marginBottom: spacing.md,
-  },
-
-  filtersContainer: {
-    // Container now just holds the CategoryChips
-  },
-  
-  // Advanced search styles
-  advancedSearchButtons: {
+  statusItem: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginTop: spacing.sm,
     alignItems: 'center',
+    gap: spacing.sm,
   },
-  
-  advancedButton: {
+
+  statusText: {
+    ...typography.styles.body,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.medium,
+    flex: 1,
+  },
+
+  resetStatusButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
     borderRadius: spacing.borderRadius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.background,
-    gap: spacing.xs,
-  },
-  
-  advancedButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  
-  advancedButtonText: {
-    ...typography.styles.small,
-    color: colors.primary,
-    fontWeight: typography.weights.medium,
-  },
-  
-  advancedButtonTextActive: {
-    color: colors.textWhite,
-  },
-  
-  disabledText: {
-    opacity: 0.5,
-  },
-  
-  resetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.xs,
-    paddingHorizontal: spacing.sm,
-    borderRadius: spacing.borderRadius.lg,
     backgroundColor: colors.backgroundLight,
     borderWidth: 1,
     borderColor: colors.border,
-  },
-  
-  resetButtonText: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
-    marginLeft: spacing.xs,
-    fontWeight: typography.weights.medium,
-  },
-  
-  selectionCountBadge: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 6,
-  },
-  
-  selectionCountText: {
-    fontSize: typography.sizes.xs,
-    color: colors.textWhite,
-    fontWeight: typography.weights.bold,
-  },
-  
-  searchStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    marginTop: spacing.sm,
-  },
-  
-  statusItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: spacing.xs,
   },
-  
-  statusText: {
+
+  resetButtonText: {
     ...typography.styles.small,
     color: colors.textSecondary,
     fontWeight: typography.weights.medium,
   },
-  
-  toggleAnalysisButton: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
-  },
-  
-  toggleAnalysisText: {
-    ...typography.styles.small,
-    color: colors.primary,
-    fontWeight: typography.weights.medium,
-  },
+
+
+  // Selection Toggle Container
 
 
   content: {
@@ -883,6 +745,7 @@ const styles = StyleSheet.create({
 
   listContent: {
     paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
     paddingBottom: 100, // Space for floating button
   },
 
@@ -990,28 +853,6 @@ const styles = StyleSheet.create({
   },
 
   // Selection mode styles
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-  titleContainer: {
-    flex: 1,
-  },
-
-  selectionModeButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: spacing.borderRadius.md,
-  },
-
-  selectionModeText: {
-    ...typography.styles.small,
-    color: colors.textWhite,
-    fontWeight: typography.weights.semibold,
-  },
 
   selectionHeader: {
     flexDirection: 'row',

@@ -8,6 +8,7 @@ import {
   Alert,
   Image
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Recipe, RecipeCategory, RecipeDifficulty } from '../../types';
 import { colors, spacing, typography, commonStyles } from '../../styles';
@@ -40,8 +41,23 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
 }) => {
   const { actions: favoriteActions } = useRecipeFavorites({ onFavoriteChange });
   const [heartScale] = React.useState(new Animated.Value(1));
+  const [cardScale] = React.useState(new Animated.Value(1));
 
   const handlePress = () => {
+    // Subtle press animation
+    Animated.sequence([
+      Animated.timing(cardScale, {
+        toValue: 0.98,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
     onPress?.(recipe);
   };
 
@@ -97,23 +113,23 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     const categoryConfig = {
       entree: {
         text: '🥗 Entrée',
-        color: colors.success
+        color: '#2ecc71' // Green like mockup
       },
       plats: {
         text: '🍽️ Plat',
-        color: colors.primary
+        color: '#3498db' // Blue like mockup
       },
       dessert: {
         text: '🍰 Dessert',
-        color: colors.accent
+        color: '#e91e63' // Pink like mockup
       }
     };
 
     const config = categoryConfig[recipe.category];
     
     return (
-      <View style={[styles.badge, { backgroundColor: config.color }]}>
-        <Text style={styles.badgeText}>{config.text}</Text>
+      <View style={[styles.categoryTag, { backgroundColor: config.color }]}>
+        <Text style={styles.tagText}>{config.text}</Text>
       </View>
     );
   };
@@ -124,23 +140,23 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     const difficultyConfig = {
       facile: {
         text: '⭐ Facile',
-        color: colors.success
+        color: '#f39c12' // Orange like mockup
       },
       moyen: {
         text: '⭐⭐ Moyen',
-        color: colors.warning
+        color: '#ff9800' // Yellow/Orange like mockup
       },
       difficile: {
         text: '⭐⭐⭐ Difficile',
-        color: colors.error
+        color: '#e74c3c' // Red like mockup
       }
     };
 
     const config = difficultyConfig[recipe.difficulty];
     
     return (
-      <View style={[styles.badge, styles.difficultyBadge, { backgroundColor: config.color }]}>
-        <Text style={styles.badgeText}>{config.text}</Text>
+      <View style={[styles.difficultyTag, { backgroundColor: config.color }]}>
+        <Text style={styles.tagText}>{config.text}</Text>
       </View>
     );
   };
@@ -163,12 +179,20 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
   const cardStyle = compact ? styles.compactCard : styles.card;
 
   return (
-    <TouchableOpacity
-      style={[cardStyle, selectionMode && styles.selectionCard, selected && styles.selectedCard]}
-      onPress={handlePress}
-      onLongPress={handleLongPress}
-      activeOpacity={0.7}
-    >
+    <Animated.View style={{ transform: [{ scale: cardScale }] }}>
+      <TouchableOpacity
+        style={[cardStyle, selectionMode && styles.selectionCard, selected && styles.selectedCard]}
+        onPress={handlePress}
+        onLongPress={handleLongPress}
+        activeOpacity={0.9} // Reduced for more subtle effect
+      >
+      {/* Gradient Accent Stripe */}
+      <LinearGradient
+        colors={['#667eea', '#764ba2']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.gradientAccent}
+      />
       {/* Selection Checkbox */}
       {selectionMode && (
         <View style={styles.selectionCheckbox}>
@@ -249,45 +273,60 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
           </Text>
         )}
 
-        {/* Recipe Details */}
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailsRow}>
+        {/* Recipe Metadata - Improved Layout */}
+        <View style={styles.metadataContainer}>
+          <View style={styles.metadataRow}>
             {/* Time Info */}
             {getTotalTime() > 0 && (
-              <Text style={styles.timeText}>
-                ⏱️ {formatTime(getTotalTime())}
-              </Text>
+              <View style={styles.metadataItem}>
+                <Text style={styles.metadataIcon}>⏱️</Text>
+                <Text style={styles.metadataText}>{formatTime(getTotalTime())}</Text>
+              </View>
             )}
 
             {/* Servings */}
             {recipe.servings && (
-              <Text style={styles.servingsText}>
-                👥 {recipe.servings} pers.
-              </Text>
+              <View style={styles.metadataItem}>
+                <Text style={styles.metadataIcon}>👥</Text>
+                <Text style={styles.metadataText}>{recipe.servings} pers.</Text>
+              </View>
             )}
 
             {/* Ingredient Count */}
-            <Text style={styles.ingredientCount}>
-              🥘 {recipe.ingredients.length} ingrédients
-            </Text>
+            <View style={styles.metadataItem}>
+              <Text style={styles.metadataIcon}>🥗</Text>
+              <Text style={styles.metadataText}>{recipe.ingredients.length} ingrédients</Text>
+            </View>
           </View>
 
-          {/* Badges Row */}
-          <View style={styles.badgesContainer}>
+          {/* Tags Row */}
+          <View style={styles.tagsContainer}>
             {getCategoryBadge()}
             {getDifficultyBadge()}
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    ...commonStyles.card,
-    marginBottom: spacing.cardMargin,
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 20, // Increased from default lg
+    marginBottom: spacing.lg,
     overflow: 'hidden',
+    ...colors.shadow.medium, // Enhanced shadow
+  },
+
+  gradientAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+    zIndex: 1,
   },
 
   compactCard: {
@@ -309,7 +348,7 @@ const styles = StyleSheet.create({
   },
 
   infoContainer: {
-    padding: spacing.md,
+    padding: 20, // Increased padding like mockup
   },
 
   headerContainer: {
@@ -320,70 +359,70 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    ...typography.styles.h3,
-    fontWeight: typography.weights.semibold,
+    fontSize: 18, // Increased from h3
+    fontWeight: typography.weights.bold, // Increased weight
     color: colors.textPrimary,
     flex: 1,
     marginRight: spacing.sm,
+    marginBottom: spacing.xs,
   },
 
   description: {
-    ...typography.styles.body,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
-    lineHeight: 20,
+    fontSize: 14,
+    color: '#7f8c8d', // More muted gray like mockup
+    marginBottom: spacing.md,
+    lineHeight: 19.6, // 1.4 line height
   },
 
-  detailsContainer: {
+  // New metadata styling
+  metadataContainer: {
     marginTop: spacing.sm,
   },
 
-  detailsRow: {
+  metadataRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
-    flexWrap: 'wrap',
+    marginBottom: spacing.md,
+    gap: 20, // Consistent spacing like mockup
   },
 
-  timeText: {
-    ...typography.styles.small,
-    color: colors.textLight,
-    marginRight: spacing.md,
-  },
-
-  servingsText: {
-    ...typography.styles.small,
-    color: colors.textLight,
-    marginRight: spacing.md,
-  },
-
-  ingredientCount: {
-    ...typography.styles.small,
-    color: colors.textLight,
-  },
-
-  badgesContainer: {
+  metadataItem: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 6,
+  },
+
+  metadataIcon: {
+    fontSize: 14,
+  },
+
+  metadataText: {
+    fontSize: 14,
+    color: '#7f8c8d', // Matching description color
+  },
+
+  // New tags styling (matching mockup)
+  tagsContainer: {
+    flexDirection: 'row',
     gap: spacing.xs,
   },
 
-  badge: {
-    backgroundColor: colors.primary,
-    borderRadius: spacing.borderRadius.xl,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
+  categoryTag: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15, // More rounded like mockup
   },
 
-  difficultyBadge: {
-    // Additional styling for difficulty badge if needed
+  difficultyTag: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15, // More rounded like mockup
   },
 
-  badgeText: {
-    ...typography.styles.small,
+  tagText: {
+    fontSize: 12,
     fontWeight: typography.weights.semibold,
     color: colors.textWhite,
-    fontSize: 11,
   },
 
   actionButtons: {

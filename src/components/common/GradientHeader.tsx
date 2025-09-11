@@ -26,6 +26,9 @@ interface GradientHeaderProps {
   pills?: FilterPill[];
   activePillId?: string;
   onPillPress?: (pillId: string) => void;
+  secondaryPills?: FilterPill[];
+  activeSecondaryPillId?: string;
+  onSecondaryPillPress?: (pillId: string) => void;
   showBackButton?: boolean;
   onBackPress?: () => void;
   categoryIcon?: string;
@@ -41,6 +44,9 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
   pills = [],
   activePillId,
   onPillPress,
+  secondaryPills = [],
+  activeSecondaryPillId,
+  onSecondaryPillPress,
   showBackButton = false,
   onBackPress,
   categoryIcon,
@@ -117,6 +123,39 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
     );
   };
 
+  const renderSecondaryPills = () => {
+    if (secondaryPills.length === 0) return null;
+
+    return (
+      <View style={styles.secondaryPillsContainer}>
+        <Animated.ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.pillsContent}
+        >
+          {secondaryPills.map((pill) => (
+            <TouchableOpacity
+              key={pill.id}
+              style={[
+                styles.secondaryPill,
+                activeSecondaryPillId === pill.id && styles.secondaryPillActive
+              ]}
+              onPress={() => onSecondaryPillPress?.(pill.id)}
+              activeOpacity={0.7}
+            >
+              <Text style={[
+                styles.secondaryPillText,
+                activeSecondaryPillId === pill.id && styles.secondaryPillTextActive
+              ]}>
+                {pill.icon} {pill.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </Animated.ScrollView>
+      </View>
+    );
+  };
+
   return (
     <LinearGradient
       colors={colors.primaryGradient}
@@ -131,6 +170,8 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
       {renderSearchBar()}
       
       {renderFilterPills()}
+      
+      {renderSecondaryPills()}
     </LinearGradient>
   );
 };
@@ -233,5 +274,39 @@ const styles = StyleSheet.create({
   pillTextActive: {
     color: colors.primaryDark,
     fontWeight: '600',
+  },
+
+  // Secondary pills styles
+  secondaryPillsContainer: {
+    marginHorizontal: -spacing.lg, // Extend to edges
+    marginTop: spacing.sm,
+  },
+
+  secondaryPill: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: spacing.borderRadius.md,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+    marginRight: spacing.sm,
+  },
+
+  secondaryPillActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: 'rgba(255, 255, 255, 1)',
+  },
+
+  secondaryPillText: {
+    fontSize: 12,
+    color: colors.textWhite,
+    fontWeight: '500',
+    opacity: 0.9,
+  },
+
+  secondaryPillTextActive: {
+    color: colors.primaryDark,
+    fontWeight: '600',
+    opacity: 1,
   },
 });

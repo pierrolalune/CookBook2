@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import { colors, spacing, typography } from '../styles';
 import { useRecipes } from '../hooks/useRecipes';
 import { useRecipeSharing } from '../hooks/useRecipeSharing';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
+import { GradientHeader } from '../components/common/GradientHeader';
 import { RecipeIngredientsSection } from '../components/recipe/RecipeIngredientsSection';
 import { RecipeInstructionsList } from '../components/recipe/RecipeInstructionsList';
 import { PhotoCarousel } from '../components/recipe/PhotoCarousel';
@@ -36,6 +37,13 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
   const [fadeAnim] = useState(new Animated.Value(0));
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [shoppingListModalVisible, setShoppingListModalVisible] = useState(false);
+  
+  // Action pills for the header
+  const actionPills = useMemo(() => [
+    { id: 'shopping', label: 'Liste de courses', icon: '🛒' },
+    { id: 'share', label: 'Partager', icon: '📤' },
+    { id: 'actions', label: 'Actions', icon: '⋮' }
+  ], []);
 
   const { actions: recipeActions } = useRecipes();
   const sharing = useRecipeSharing();
@@ -154,6 +162,31 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
     if (!recipe) return;
     setShoppingListModalVisible(true);
   }, [recipe]);
+  
+  const handleActionPill = useCallback((pillId: string) => {
+    if (!recipe) return;
+    
+    switch (pillId) {
+      case 'shopping':
+        handleAddToShoppingList();
+        break;
+      case 'share':
+        handleShare();
+        break;
+      case 'actions':
+        Alert.alert(
+          'Actions',
+          'Que souhaitez-vous faire ?',
+          [
+            { text: 'Modifier', onPress: handleEdit },
+            { text: 'Dupliquer', onPress: handleDuplicate },
+            { text: 'Supprimer', style: 'destructive', onPress: handleDelete },
+            { text: 'Annuler', style: 'cancel' }
+          ]
+        );
+        break;
+    }
+  }, [recipe, handleAddToShoppingList, handleShare, handleEdit, handleDuplicate, handleDelete]);
 
 
   const handleServingsChange = useCallback((newServings: number) => {
@@ -229,40 +262,14 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
   return (
     <ScreenErrorBoundary>
       <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.actionButton} onPress={handleAddToShoppingList}>
-              <Text style={styles.actionButtonText}>🛒</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-              <Text style={styles.actionButtonText}>📤</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionButton} onPress={() => {
-              Alert.alert(
-                'Actions',
-                'Que souhaitez-vous faire ?',
-                [
-                  { text: 'Modifier', onPress: handleEdit },
-                  { text: 'Dupliquer', onPress: handleDuplicate },
-                  { text: 'Supprimer', style: 'destructive', onPress: handleDelete },
-                  { text: 'Annuler', style: 'cancel' }
-                ]
-              );
-            }}>
-              <Text style={styles.actionButtonText}>⋮</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {/* Modern Gradient Header */}
+        <GradientHeader
+          title={recipe.name}
+          showBackButton
+          onBackPress={() => router.back()}
+          pills={actionPills}
+          onPillPress={handleActionPill}
+        />
 
         <Animated.ScrollView 
           style={[styles.content, { opacity: fadeAnim }]}
@@ -273,8 +280,8 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
             <View style={styles.photoSection}>
               <PhotoCarousel
                 photos={[recipe.photoUri]}
-                height={250}
-                borderRadius={0}
+                height={200}
+                borderRadius={spacing.borderRadius.lg}
                 showIndicators={true}
                 editable={false}
               />
@@ -283,8 +290,6 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
 
           {/* Recipe Info */}
           <View style={styles.infoSection}>
-            <Text style={styles.recipeName}>{recipe.name}</Text>
-            
             {recipe.description && (
               <Text style={styles.recipeDescription}>{recipe.description}</Text>
             )}
@@ -419,44 +424,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-
-  backButton: {
-    padding: spacing.sm,
-    marginLeft: -spacing.sm,
-  },
-
-  backButtonText: {
-    fontSize: 24,
-    color: colors.primary,
-  },
-
-  headerActions: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-
-  actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.backgroundLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  actionButtonText: {
-    fontSize: 18,
-  },
-
   content: {
     flex: 1,
   },
@@ -516,26 +483,23 @@ const styles = StyleSheet.create({
   },
 
   photoSection: {
-    backgroundColor: colors.backgroundLight,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: colors.background,
   },
 
   infoSection: {
     padding: spacing.lg,
   },
 
-  recipeName: {
-    ...typography.styles.h1,
-    fontWeight: typography.weights.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-    lineHeight: 32,
-  },
 
   recipeDescription: {
-    ...typography.styles.body,
+    ...typography.styles.h3,
     color: colors.textSecondary,
-    lineHeight: 22,
+    lineHeight: 24,
     marginBottom: spacing.lg,
+    fontWeight: typography.weights.medium,
+    fontStyle: 'italic',
   },
 
   statsContainer: {
@@ -599,11 +563,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: colors.border,
+    ...colors.shadow.small,
   },
 
   modeToggleActive: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
+    ...colors.shadow.medium,
   },
 
   modeToggleText: {
@@ -625,12 +591,18 @@ const styles = StyleSheet.create({
 
   sectionContainer: {
     marginBottom: spacing.lg,
+    backgroundColor: colors.backgroundLight,
+    marginHorizontal: spacing.lg,
+    borderRadius: spacing.borderRadius.lg,
+    ...colors.shadow.small,
   },
 
   sectionHeader: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     backgroundColor: colors.backgroundLight,
+    borderTopLeftRadius: spacing.borderRadius.lg,
+    borderTopRightRadius: spacing.borderRadius.lg,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
@@ -643,6 +615,8 @@ const styles = StyleSheet.create({
 
   sectionContent: {
     padding: spacing.lg,
+    borderBottomLeftRadius: spacing.borderRadius.lg,
+    borderBottomRightRadius: spacing.borderRadius.lg,
   },
 
   bottomSpacer: {

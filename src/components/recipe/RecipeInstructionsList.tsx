@@ -77,18 +77,16 @@ const InstructionItem: React.FC<InstructionItemProps> = ({
         isCompleted && styles.completedInstruction,
         !interactive && styles.nonInteractive
       ]}
-      onPress={onPress}
-      activeOpacity={interactive ? 0.7 : 1}
-      disabled={!interactive}
+      onPress={interactive ? handleToggleComplete : onPress}
+      activeOpacity={0.7}
+      disabled={false}
     >
       {/* Step Number / Checkbox */}
-      <TouchableOpacity
+      <View
         style={[
           styles.stepNumber,
           isCompleted && styles.completedStepNumber
         ]}
-        onPress={handleToggleComplete}
-        disabled={!interactive}
       >
         {interactive && isCompleted ? (
           <Animated.Text
@@ -107,7 +105,7 @@ const InstructionItem: React.FC<InstructionItemProps> = ({
             {instruction.stepNumber}
           </Text>
         )}
-      </TouchableOpacity>
+      </View>
 
       {/* Instruction Content */}
       <View style={styles.instructionContent}>
@@ -227,50 +225,46 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    paddingVertical: spacing.sm,
+    paddingVertical: 2,
   },
 
   progressHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: spacing.md,
+    padding: spacing.xs,
     backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.md,
-    marginBottom: spacing.sm,
+    borderRadius: spacing.borderRadius.sm,
+    marginBottom: spacing.xs,
   },
 
   progressText: {
-    ...typography.styles.body,
+    fontSize: 12,
     fontWeight: typography.weights.medium,
     color: colors.textPrimary,
   },
 
   resetButton: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     backgroundColor: colors.textLight,
     borderRadius: spacing.borderRadius.sm,
   },
 
   resetButtonText: {
-    ...typography.styles.small,
+    fontSize: 10,
     color: colors.textWhite,
     fontWeight: typography.weights.medium,
   },
 
   instructionContainer: {
     flexDirection: 'row',
-    padding: spacing.md,
+    padding: 8,
     backgroundColor: colors.background,
-    borderRadius: spacing.borderRadius.md,
-    borderLeftWidth: 3,
+    borderRadius: 8,
+    borderLeftWidth: 2,
     borderLeftColor: colors.primary,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    marginBottom: 4,
   },
 
   completedInstruction: {
@@ -284,13 +278,13 @@ const styles = StyleSheet.create({
   },
 
   stepNumber: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginRight: 8,
     flexShrink: 0,
   },
 
@@ -299,7 +293,7 @@ const styles = StyleSheet.create({
   },
 
   stepNumberText: {
-    ...typography.styles.body,
+    fontSize: 12,
     fontWeight: typography.weights.bold,
     color: colors.textWhite,
   },
@@ -309,10 +303,9 @@ const styles = StyleSheet.create({
   },
 
   checkmark: {
-    ...typography.styles.body,
     fontWeight: typography.weights.bold,
     color: colors.textWhite,
-    fontSize: 18,
+    fontSize: 14,
   },
 
   instructionContent: {
@@ -321,10 +314,10 @@ const styles = StyleSheet.create({
   },
 
   instructionText: {
-    ...typography.styles.body,
+    fontSize: 13,
     color: colors.textPrimary,
-    lineHeight: 22,
-    marginBottom: spacing.xs,
+    lineHeight: 18,
+    marginBottom: 2,
   },
 
   completedInstructionText: {
@@ -335,10 +328,10 @@ const styles = StyleSheet.create({
   durationBadge: {
     alignSelf: 'flex-start',
     backgroundColor: colors.accent,
-    borderRadius: spacing.borderRadius.xl,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    marginTop: spacing.xs,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginTop: 2,
   },
 
   completedBadge: {
@@ -346,14 +339,13 @@ const styles = StyleSheet.create({
   },
 
   durationText: {
-    ...typography.styles.small,
     color: colors.textWhite,
     fontWeight: typography.weights.medium,
-    fontSize: 11,
+    fontSize: 10,
   },
 
   separator: {
-    height: spacing.sm,
+    height: 0,
   },
 
   emptyContainer: {
@@ -370,14 +362,14 @@ const styles = StyleSheet.create({
 
   completionContainer: {
     backgroundColor: colors.success,
-    padding: spacing.md,
-    borderRadius: spacing.borderRadius.md,
+    padding: 8,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: spacing.sm,
+    marginTop: 8,
   },
 
   completionText: {
-    ...typography.styles.body,
+    fontSize: 12,
     color: colors.textWhite,
     fontWeight: typography.weights.semibold,
     textAlign: 'center',

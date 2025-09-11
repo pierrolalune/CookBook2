@@ -16,6 +16,7 @@ import { useRecipes } from '../hooks/useRecipes';
 import { useRecipeSharing } from '../hooks/useRecipeSharing';
 import { ScreenErrorBoundary } from '../components/common/ErrorBoundary';
 import { GradientHeader } from '../components/common/GradientHeader';
+import { LinearGradient } from 'expo-linear-gradient';
 import { RecipeIngredientsSection } from '../components/recipe/RecipeIngredientsSection';
 import { RecipeInstructionsList } from '../components/recipe/RecipeInstructionsList';
 import { PhotoCarousel } from '../components/recipe/PhotoCarousel';
@@ -32,7 +33,6 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [interactiveMode, setInteractiveMode] = useState(false);
   const [currentServings, setCurrentServings] = useState(4);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [shareModalVisible, setShareModalVisible] = useState(false);
@@ -193,9 +193,6 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
     setCurrentServings(newServings);
   }, []);
 
-  const toggleInteractiveMode = useCallback(() => {
-    setInteractiveMode(prev => !prev);
-  }, []);
 
   const formatTime = (minutes?: number) => {
     if (!minutes) return null;
@@ -214,28 +211,46 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
     return prepTime + cookTime;
   };
 
-  const getDifficultyDisplay = () => {
+  const getDifficultyBadge = () => {
     if (!recipe?.difficulty) return null;
     
-    const difficulties = {
-      facile: '⭐ Facile',
-      moyen: '⭐⭐ Moyen',
-      difficile: '⭐⭐⭐ Difficile'
+    const difficultyConfig = {
+      facile: {
+        text: '⭐ Facile',
+        color: '#f39c12' // Orange
+      },
+      moyen: {
+        text: '⭐⭐ Moyen', 
+        color: '#ff9800' // Yellow/Orange
+      },
+      difficile: {
+        text: '⭐⭐⭐ Difficile',
+        color: '#e74c3c' // Red
+      }
     };
     
-    return difficulties[recipe.difficulty];
+    return difficultyConfig[recipe.difficulty];
   };
 
-  const getCategoryDisplay = () => {
+  const getCategoryBadge = () => {
     if (!recipe) return null;
     
-    const categories = {
-      entree: '🥗 Entrée',
-      plats: '🍽️ Plat',
-      dessert: '🍰 Dessert'
+    const categoryConfig = {
+      entree: {
+        text: '🥗 Entrée',
+        color: '#2ecc71' // Green
+      },
+      plats: {
+        text: '🍽️ Plat',
+        color: '#3498db' // Blue
+      },
+      dessert: {
+        text: '🍰 Dessert',
+        color: '#e91e63' // Pink
+      }
     };
     
-    return categories[recipe.category];
+    return categoryConfig[recipe.category];
   };
 
   if (loading) {
@@ -288,81 +303,96 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
             </View>
           )}
 
-          {/* Recipe Info */}
-          <View style={styles.infoSection}>
-            {recipe.description && (
-              <Text style={styles.recipeDescription}>{recipe.description}</Text>
-            )}
+          {/* Recipe Info Card */}
+          <View style={styles.infoCard}>
+            {/* Gradient Accent */}
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
+            />
+            
+            <View style={styles.cardContent}>
+              {recipe.description && (
+                <Text style={styles.recipeDescription}>{recipe.description}</Text>
+              )}
 
-            {/* Recipe Stats */}
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Text style={styles.statIcon}>⏱️</Text>
-                <Text style={styles.statText}>
-                  {getTotalTime() ? formatTime(getTotalTime()!) : 'Non spécifié'}
-                </Text>
+              {/* Recipe Metadata */}
+              <View style={styles.metadataContainer}>
+                <View style={styles.metadataRow}>
+                  <View style={styles.metadataItem}>
+                    <Text style={styles.metadataIcon}>⏱️</Text>
+                    <Text style={styles.metadataText}>
+                      {getTotalTime() ? formatTime(getTotalTime()!) : 'Non spécifié'}
+                    </Text>
+                  </View>
+
+                  <View style={styles.metadataItem}>
+                    <Text style={styles.metadataIcon}>👥</Text>
+                    <Text style={styles.metadataText}>
+                      {recipe.servings || currentServings} pers.
+                    </Text>
+                  </View>
+
+                  <View style={styles.metadataItem}>
+                    <Text style={styles.metadataIcon}>🥗</Text>
+                    <Text style={styles.metadataText}>
+                      {recipe.ingredients.length} ingrédients
+                    </Text>
+                  </View>
+                </View>
               </View>
 
-              <View style={styles.statItem}>
-                <Text style={styles.statIcon}>👥</Text>
-                <Text style={styles.statText}>
-                  {recipe.servings || currentServings} pers.
-                </Text>
+              {/* Tags Row */}
+              <View style={styles.tagsContainer}>
+                {getCategoryBadge() && (
+                  <View style={[styles.tag, { backgroundColor: getCategoryBadge()!.color }]}>
+                    <Text style={styles.tagText}>{getCategoryBadge()!.text}</Text>
+                  </View>
+                )}
+                {getDifficultyBadge() && (
+                  <View style={[styles.tag, { backgroundColor: getDifficultyBadge()!.color }]}>
+                    <Text style={styles.tagText}>{getDifficultyBadge()!.text}</Text>
+                  </View>
+                )}
               </View>
 
-              {recipe.difficulty && (
-                <View style={styles.statItem}>
-                  <Text style={styles.statText}>{getDifficultyDisplay()}</Text>
+              {/* Compact Time Pills */}
+              {(recipe.prepTime || recipe.cookTime) && (
+                <View style={styles.timePillsContainer}>
+                  {recipe.prepTime && (
+                    <View style={styles.timePill}>
+                      <Text style={styles.timePillEmoji}>👨‍🍳</Text>
+                      <Text style={styles.timePillValue}>{formatTime(recipe.prepTime)}</Text>
+                    </View>
+                  )}
+                  {recipe.cookTime && (
+                    <View style={styles.timePill}>
+                      <Text style={styles.timePillEmoji}>🔥</Text>
+                      <Text style={styles.timePillValue}>{formatTime(recipe.cookTime)}</Text>
+                    </View>
+                  )}
+                  {getTotalTime() && (
+                    <View style={[styles.timePill, styles.totalTimePill]}>
+                      <Text style={styles.timePillEmoji}>⏱️</Text>
+                      <Text style={styles.timePillValue}>{formatTime(getTotalTime()!)}</Text>
+                    </View>
+                  )}
                 </View>
               )}
-              
-              <View style={styles.statItem}>
-                <Text style={styles.statText}>{getCategoryDisplay()}</Text>
-              </View>
             </View>
-
-            {/* Time Breakdown */}
-            {(recipe.prepTime || recipe.cookTime) && (
-              <View style={styles.timeBreakdown}>
-                {recipe.prepTime && (
-                  <View style={styles.timeItem}>
-                    <Text style={styles.timeLabel}>Préparation</Text>
-                    <Text style={styles.timeValue}>{formatTime(recipe.prepTime)}</Text>
-                  </View>
-                )}
-                {recipe.cookTime && (
-                  <View style={styles.timeItem}>
-                    <Text style={styles.timeLabel}>Cuisson</Text>
-                    <Text style={styles.timeValue}>{formatTime(recipe.cookTime)}</Text>
-                  </View>
-                )}
-              </View>
-            )}
           </View>
 
-          {/* Interactive Mode Toggle */}
-          <View style={styles.modeToggleContainer}>
-            <TouchableOpacity
-              style={[styles.modeToggle, interactiveMode && styles.modeToggleActive]}
-              onPress={toggleInteractiveMode}
-            >
-              <Text style={[
-                styles.modeToggleText,
-                interactiveMode && styles.modeToggleTextActive
-              ]}>
-                {interactiveMode ? '✓ Mode cuisine' : '👨‍🍳 Mode cuisine'}
-              </Text>
-            </TouchableOpacity>
-            
-            {interactiveMode && (
-              <Text style={styles.modeDescription}>
-                Cochez les étapes au fur et à mesure
-              </Text>
-            )}
-          </View>
 
-          {/* Ingredients Section */}
-          <View style={styles.sectionContainer}>
+          {/* Ingredients Section Card */}
+          <View style={styles.sectionCard}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
+            />
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>
                 🧄 Ingrédients ({recipe.ingredients.length})
@@ -374,13 +404,19 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
                 servings={recipe.servings || 4}
                 onServingsChange={handleServingsChange}
                 showUsageStats={true}
-                interactive={interactiveMode}
+                interactive={false}
               />
             </View>
           </View>
 
-          {/* Instructions Section */}
-          <View style={styles.sectionContainer}>
+          {/* Instructions Section Card */}
+          <View style={styles.sectionCard}>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.gradientAccent}
+            />
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>
                 👨‍🍳 Instructions ({recipe.instructions.length})
@@ -390,7 +426,7 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ recipeId
               <RecipeInstructionsList
                 instructions={recipe.instructions}
                 showTimer={true}
-                interactive={interactiveMode}
+                interactive={true}
               />
             </View>
           </View>
@@ -484,139 +520,155 @@ const styles = StyleSheet.create({
 
   photoSection: {
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.xs,
     backgroundColor: colors.background,
   },
 
-  infoSection: {
-    padding: spacing.lg,
+  // Compact Info Card
+  infoCard: {
+    backgroundColor: colors.backgroundLight,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.xs,
+    borderRadius: 12,
+    overflow: 'hidden',
+    ...colors.shadow.small,
+    position: 'relative',
+  },
+
+  gradientAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    zIndex: 1,
+  },
+
+  cardContent: {
+    padding: 12,
   },
 
 
   recipeDescription: {
-    ...typography.styles.h3,
+    fontSize: 13,
     color: colors.textSecondary,
-    lineHeight: 24,
-    marginBottom: spacing.lg,
+    lineHeight: 18,
+    marginBottom: spacing.sm,
     fontWeight: typography.weights.medium,
     fontStyle: 'italic',
   },
 
-  statsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-    marginBottom: spacing.lg,
+  // Compact Metadata Styling
+  metadataContainer: {
+    marginBottom: spacing.sm,
   },
 
-  statItem: {
+  metadataRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  metadataItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.backgroundLight,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: spacing.borderRadius.lg,
+    flex: 1,
+    justifyContent: 'center',
   },
 
-  statIcon: {
-    fontSize: 16,
-    marginRight: spacing.xs,
+  metadataIcon: {
+    fontSize: 14,
+    marginRight: 4,
   },
 
-  statText: {
-    ...typography.styles.small,
-    color: colors.textPrimary,
+  metadataText: {
+    fontSize: 12,
+    color: colors.textSecondary,
     fontWeight: typography.weights.medium,
   },
 
-  timeBreakdown: {
+  // Compact Tags Styling
+  tagsContainer: {
     flexDirection: 'row',
-    gap: spacing.lg,
-  },
-
-  timeItem: {
-    alignItems: 'center',
-  },
-
-  timeLabel: {
-    ...typography.styles.small,
-    color: colors.textLight,
+    gap: 6,
     marginBottom: spacing.xs,
   },
 
-  timeValue: {
-    ...typography.styles.body,
+  tag: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+
+  tagText: {
+    fontSize: 10,
     fontWeight: typography.weights.semibold,
-    color: colors.primary,
+    color: colors.textWhite,
   },
 
-  modeToggleContainer: {
-    paddingHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
+  // Time Pills Container
+  timePillsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: spacing.xs,
+    flexWrap: 'wrap',
   },
 
-  modeToggle: {
-    backgroundColor: colors.backgroundLight,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderRadius: spacing.borderRadius.lg,
+  timePill: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.border,
-    ...colors.shadow.small,
+    backgroundColor: colors.background,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
 
-  modeToggleActive: {
-    backgroundColor: colors.primary,
+  totalTimePill: {
+    backgroundColor: colors.primaryLight,
     borderColor: colors.primary,
-    ...colors.shadow.medium,
   },
 
-  modeToggleText: {
-    ...typography.styles.body,
+  timePillEmoji: {
+    fontSize: 14,
+  },
+
+  timePillValue: {
+    fontSize: 12,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
   },
 
-  modeToggleTextActive: {
-    color: colors.textWhite,
-  },
 
-  modeDescription: {
-    ...typography.styles.small,
-    color: colors.textLight,
-    textAlign: 'center',
-    marginTop: spacing.xs,
-  },
-
-  sectionContainer: {
-    marginBottom: spacing.lg,
+  // Compact Section Cards
+  sectionCard: {
     backgroundColor: colors.backgroundLight,
     marginHorizontal: spacing.lg,
-    borderRadius: spacing.borderRadius.lg,
+    marginBottom: spacing.sm,
+    borderRadius: 12,
+    overflow: 'hidden',
     ...colors.shadow.small,
+    position: 'relative',
   },
 
   sectionHeader: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     backgroundColor: colors.backgroundLight,
-    borderTopLeftRadius: spacing.borderRadius.lg,
-    borderTopRightRadius: spacing.borderRadius.lg,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
 
   sectionTitle: {
-    ...typography.styles.h3,
-    fontWeight: typography.weights.semibold,
+    fontSize: 14,
+    fontWeight: typography.weights.bold,
     color: colors.textPrimary,
   },
 
   sectionContent: {
-    padding: spacing.lg,
-    borderBottomLeftRadius: spacing.borderRadius.lg,
-    borderBottomRightRadius: spacing.borderRadius.lg,
+    padding: 12,
   },
 
   bottomSpacer: {

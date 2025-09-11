@@ -62,65 +62,44 @@ const IngredientItem: React.FC<IngredientItemProps> = ({
   };
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.ingredientContainer,
-        isChecked && styles.checkedIngredient,
-        ingredient.optional && styles.optionalIngredient,
-        !interactive && styles.nonInteractive
-      ]}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
+    <View style={[
+      styles.compactIngredientContainer,
+      isChecked && styles.checkedIngredient,
+      ingredient.optional && styles.optionalIngredient
+    ]}>
       {/* Checkbox (for interactive mode) */}
       {interactive && (
         <TouchableOpacity
           style={[
-            styles.checkbox,
+            styles.compactCheckbox,
             isChecked && styles.checkedCheckbox
           ]}
           onPress={handleToggleCheck}
         >
           {isChecked && (
-            <Text style={styles.checkmark}>✓</Text>
+            <Text style={styles.compactCheckmark}>✓</Text>
           )}
         </TouchableOpacity>
       )}
 
-      {/* Ingredient Info */}
-      <View style={styles.ingredientInfo}>
-        <View style={styles.ingredientHeader}>
-          <Text style={[
-            styles.ingredientName,
-            isChecked && styles.checkedIngredientName
-          ]}>
-            {ingredient.ingredient.name}
-            {ingredient.optional && (
-              <Text style={styles.optionalText}> (optionnel)</Text>
-            )}
-          </Text>
-          
-          <Text style={[
-            styles.quantityText,
-            isChecked && styles.checkedQuantityText
-          ]}>
-            {formatQuantity(adjustedQuantity)} {ingredient.unit}
-          </Text>
-        </View>
-
-        {/* Usage Stats */}
-        {showUsageStats && usageStats && (
-          <Text style={styles.usageStatsText}>
-            {usageStats}
-          </Text>
-        )}
-
-        {/* Ingredient Category/Subcategory */}
-        <Text style={styles.ingredientCategory}>
-          {ingredient.ingredient.subcategory}
+      {/* Compact Ingredient Info */}
+      <View style={styles.compactIngredientInfo}>
+        <Text style={[
+          styles.compactIngredientName,
+          isChecked && styles.checkedIngredientName
+        ]}>
+          {ingredient.ingredient.name}
+          {ingredient.optional && <Text style={styles.compactOptionalText}> (opt.)</Text>}
+        </Text>
+        
+        <Text style={[
+          styles.compactQuantityText,
+          isChecked && styles.checkedQuantityText
+        ]}>
+          {formatQuantity(adjustedQuantity)} {ingredient.unit}
         </Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -195,73 +174,37 @@ export const RecipeIngredientsSection: React.FC<RecipeIngredientsSectionProps> =
 
   return (
     <View style={styles.container}>
-      {/* Header with servings control */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.sectionTitle}>
-          Ingrédients ({sortedIngredients.length})
-        </Text>
-        
-        {onServingsChange && (
-          <View style={styles.servingsControl}>
-            <Text style={styles.servingsLabel}>Pour</Text>
-            <TouchableOpacity
-              style={styles.servingsButton}
-              onPress={() => handleServingsChange(false)}
-            >
-              <Text style={styles.servingsButtonText}>−</Text>
-            </TouchableOpacity>
-            <Text style={styles.servingsText}>{currentServings}</Text>
-            <TouchableOpacity
-              style={styles.servingsButton}
-              onPress={() => handleServingsChange(true)}
-            >
-              <Text style={styles.servingsButtonText}>+</Text>
-            </TouchableOpacity>
-            <Text style={styles.servingsLabel}>
-              {currentServings > 1 ? 'personnes' : 'personne'}
-            </Text>
-          </View>
-        )}
-      </View>
-
-      {/* Progress indicator for interactive mode */}
-      {interactive && (
-        <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
-            Ingrédients préparés: {checkedIngredients.size}/{ingredients.length}
+      {/* Compact servings control - only show if editable */}
+      {onServingsChange && (
+        <View style={styles.compactServingsControl}>
+          <Text style={styles.compactServingsLabel}>Pour</Text>
+          <TouchableOpacity
+            style={styles.compactServingsButton}
+            onPress={() => handleServingsChange(false)}
+          >
+            <Text style={styles.compactServingsButtonText}>−</Text>
+          </TouchableOpacity>
+          <Text style={styles.compactServingsText}>{currentServings}</Text>
+          <TouchableOpacity
+            style={styles.compactServingsButton}
+            onPress={() => handleServingsChange(true)}
+          >
+            <Text style={styles.compactServingsButtonText}>+</Text>
+          </TouchableOpacity>
+          <Text style={styles.compactServingsLabel}>
+            {currentServings > 1 ? 'pers.' : 'pers.'}
           </Text>
-          {checkedIngredients.size > 0 && (
-            <TouchableOpacity
-              style={styles.resetButton}
-              onPress={() => setCheckedIngredients(new Set())}
-            >
-              <Text style={styles.resetButtonText}>Réinitialiser</Text>
-            </TouchableOpacity>
-          )}
         </View>
       )}
 
-      {/* Ingredients List */}
-      <View style={styles.listContainer}>
+      {/* Compact Ingredients List */}
+      <View style={styles.compactListContainer}>
         {sortedIngredients.map((item, index) => (
           <View key={item.id}>
             {renderIngredient({ item, index })}
-            {index < sortedIngredients.length - 1 && <View style={styles.separator} />}
           </View>
         ))}
       </View>
-
-      {/* Shopping List Export (placeholder) */}
-      {interactive && (
-        <TouchableOpacity
-          style={styles.exportButton}
-          onPress={() => Alert.alert('Liste de courses', 'Fonctionnalité bientôt disponible')}
-        >
-          <Text style={styles.exportButtonText}>
-            📋 Créer une liste de courses
-          </Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
@@ -271,55 +214,46 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-
-  sectionTitle: {
-    ...typography.styles.h3,
-    fontWeight: typography.weights.semibold,
-    color: colors.textPrimary,
-  },
-
-  servingsControl: {
+  // Compact servings control
+  compactServingsControl: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.backgroundLight,
-    borderRadius: spacing.borderRadius.lg,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 8,
+    alignSelf: 'flex-start',
   },
 
-  servingsLabel: {
-    ...typography.styles.small,
+  compactServingsLabel: {
+    fontSize: 11,
     color: colors.textSecondary,
-    marginHorizontal: spacing.xs,
+    marginHorizontal: 4,
   },
 
-  servingsButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+  compactServingsButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: spacing.xs,
+    marginHorizontal: 4,
   },
 
-  servingsButtonText: {
-    ...typography.styles.body,
+  compactServingsButtonText: {
+    fontSize: 12,
     color: colors.textWhite,
     fontWeight: typography.weights.bold,
+    lineHeight: 12,
   },
 
-  servingsText: {
-    ...typography.styles.body,
+  compactServingsText: {
+    fontSize: 12,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
-    minWidth: 20,
+    minWidth: 16,
     textAlign: 'center',
   },
 
@@ -352,18 +286,21 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  listContainer: {
-    paddingVertical: spacing.xs,
+  compactListContainer: {
+    paddingVertical: 2,
   },
 
-  ingredientContainer: {
+  // Compact ingredient styles
+  compactIngredientContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: spacing.md,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     backgroundColor: colors.background,
-    borderRadius: spacing.borderRadius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderRadius: 6,
+    marginBottom: 2,
+    borderWidth: 0.5,
+    borderColor: colors.borderLight,
   },
 
   checkedIngredient: {
@@ -379,44 +316,44 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
 
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 2,
+  // Compact checkbox styles
+  compactCheckbox: {
+    width: 14,
+    height: 14,
+    borderRadius: 2,
+    borderWidth: 1,
     borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.md,
+    marginRight: 6,
   },
 
   checkedCheckbox: {
     backgroundColor: colors.primary,
   },
 
-  checkmark: {
+  compactCheckmark: {
     color: colors.textWhite,
-    fontSize: 12,
+    fontSize: 8,
     fontWeight: typography.weights.bold,
+    lineHeight: 8,
   },
 
-  ingredientInfo: {
+  // Compact ingredient info
+  compactIngredientInfo: {
     flex: 1,
-  },
-
-  ingredientHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: spacing.xs,
+    alignItems: 'center',
   },
 
-  ingredientName: {
-    ...typography.styles.body,
+  compactIngredientName: {
+    fontSize: 13,
     fontWeight: typography.weights.medium,
     color: colors.textPrimary,
     flex: 1,
-    marginRight: spacing.sm,
+    marginRight: 8,
+    lineHeight: 16,
   },
 
   checkedIngredientName: {
@@ -424,16 +361,17 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
   },
 
-  optionalText: {
-    ...typography.styles.small,
+  compactOptionalText: {
+    fontSize: 11,
     color: colors.textLight,
     fontStyle: 'italic',
   },
 
-  quantityText: {
-    ...typography.styles.body,
+  compactQuantityText: {
+    fontSize: 12,
     fontWeight: typography.weights.semibold,
     color: colors.primary,
+    lineHeight: 14,
   },
 
   checkedQuantityText: {
